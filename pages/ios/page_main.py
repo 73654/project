@@ -5,8 +5,10 @@
 # Description:
 # -------------------------------------------------------------------------
 from common.ui import poco
-from pages.android.page_main import PageMain
+from pages.base.page_main import BasePageMain
 
 
-class PageMain(PageMain):
-    pass
+class IOSPageMain(BasePageMain):
+    @staticmethod
+    def _real_click(name):
+        poco(type='TabBar', name='标签页栏').offspring(type="StaticText", name=name).click()

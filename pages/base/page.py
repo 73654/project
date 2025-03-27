@@ -1,15 +1,10 @@
 # -------------------------------------------------------------------------
 # Project: dogdog-ui
 # Author: songjianfeng
-# Date: 2025/3/24 20:24
+# Date: 2025/3/26 17:28
 # Description:
 # -------------------------------------------------------------------------
-
-from common.ui import poco
-from pages.base.page_main import BasePageMain
-
-
-class AndroidPageMain(BasePageMain):
+class BasePage(object):
     @staticmethod
-    def _real_click(name):
-        poco(nameMatches=".*id/tab_txt", text=name).click()
+    def _wait_for_enter():
+        pass

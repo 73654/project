@@ -7,8 +7,7 @@
 import functools
 
 import allure
-
-from common import log
+from airtest.core.helper import log
 
 
 class DogAllure:
@@ -31,7 +30,7 @@ class DogAllure:
     @staticmethod
     def before(attr_name, *args, **kwargs):
         if attr_name == 'step':
-            log.info(f"步骤: ==> {args[0]}")
+            log(f"步骤: ==> {args[0]}")
         return args, kwargs
 
     @staticmethod

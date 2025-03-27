@@ -1,11 +1,11 @@
 import os
 
-from common import log
+from airtest.core.helper import log
 
 
 class __ConfigManage(object):
     __project_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-    log.info(f"---------当前项目根目录为：{__project_path}-----------")
+    log(f"---------当前项目根目录为：{__project_path}-----------")
 
     TEST_DIR_NAME = "test"
 

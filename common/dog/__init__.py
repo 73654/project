@@ -9,6 +9,7 @@
 import sys
 
 from common.dog.d_allure import dog_allure
+from common.dog.d_cv import DogTemplate as Template
 from common.dog.d_pytest_check import dog_check
 
 for attr_name in dog_allure.__all__:
@@ -70,5 +71,8 @@ __all__ = [
     'severity_level',
     'attach',
     'attachment_type',
-    'parameter_mode'
+    'parameter_mode',
+
+    # airtest Template
+    "Template"
 ]
