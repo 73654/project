@@ -7,7 +7,8 @@
 import re
 from enum import Enum
 
-from airtest.core.api import *
+from airtest.core.api import auto_setup, connect_device, device, sleep, start_app, stop_app
+from airtest.core.helper import log
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.drivers.ios import iosPoco
 
@@ -75,4 +76,6 @@ def stop_wg_app():
 auto_setup(__file__)
 
 poco = get_poco()
+stop_wg_app()
+
 device = device()

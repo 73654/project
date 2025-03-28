@@ -7,8 +7,7 @@
 from airtest.core.api import touch
 
 from common import dog
-from common.dog import Template
-
+from common.ui import Template, find_area_image
 from pages.base.page import BasePage
 
 
@@ -31,7 +30,7 @@ class BasePageShop(BasePage):
             touch(Template(r"BasePageShop_tab_video_1.png"))
 
     @classmethod
-    def tab_picture_collection(cls):
+    def tab_picture_grid(cls):
         with dog.step(f"店铺主页-图集"):
             touch(Template(r"BasePageShop_tab_picture_collection_1.png"))
 
@@ -49,3 +48,18 @@ class BasePageShop(BasePage):
     def button_contact(cls):
         with dog.step(f"店铺主页-联系Ta"):
             touch(Template(r"BasePageShop_button_contact_1.png"))
+
+    @classmethod
+    def check_vip_status(cls):
+        with dog.step("店铺主页-VIP/SVIP图标暂时是否正常"):
+            find_area_image(Template(r"common_svip.png"))
+
+    @classmethod
+    def check_new_number(cls):
+        with dog.step("店铺主页-上新及数量"):
+            pass
+
+    @classmethod
+    def check_total_number(cls):
+        with dog.step("店铺主页-总数及数量"):
+            pass

@@ -23,6 +23,18 @@ class TestCompanyA:
     def test_0006(self):
         PageMain.tab_friends()
         PageFriends.my_album()
-        PageShop.tab_new()
+
+        # PageShop.check_vip_status()
+        # PageShop.check_new_number()
+        # PageShop.check_total_number()
+        #
+        # PageShop.check_all_list()
+        #
+        # PageShop.tab_new()
+        # PageShop.check_new_list()
+
         PageShop.tab_video()
-        PageShop.tab_picture_collection()
+        PageShop.check_video_list()
+
+        PageShop.tab_picture_grid()
+        PageShop.check_picture_grid()

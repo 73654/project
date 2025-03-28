@@ -4,10 +4,8 @@
 # Date: 2025/3/25 18:01
 # Description:
 # -------------------------------------------------------------------------
-from airtest.core.api import wait
 
 from common import dog
-from common.dog import Template
 from pages.base.page import BasePage
 
 
