@@ -8,3 +8,4 @@ python-dateutil==2.9.0.post0
 airtest==1.3.5
 pocoui==1.0.94
 #ios用 tidevice 安装airtest会自动引入
+scikit-image==0.25.2

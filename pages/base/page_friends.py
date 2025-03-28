@@ -10,6 +10,7 @@ from pages.base.page import BasePage
 
 class BasePageFriends(BasePage):
     """主页-好友页面"""
+
     @staticmethod
     def _real_click(name):
         pass
@@ -36,15 +37,15 @@ class BasePageFriends(BasePage):
 
     @classmethod
     def extension_agent(cls):
-        """帮卖代理"""
+        """推广员"""
         cls._base_click("推广员")
 
     @classmethod
     def my_album(cls):
-        """帮卖代理"""
+        """我的相册"""
         cls._base_click("我的相册")
 
     @classmethod
-    def goto_album(cls, album_name):
+    def goto_other_album(cls, album_name):
         """进入到列表其他相册中去"""
         cls._base_click(name=album_name)
