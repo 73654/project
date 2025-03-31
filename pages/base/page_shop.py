@@ -4,7 +4,7 @@
 # Date: 2025/3/26 19:03
 # Description:
 # -------------------------------------------------------------------------
-from airtest.core.api import touch
+from airtest.core.api import keyevent, touch
 
 from common import dog
 from common.ui import Template, find_area_image
@@ -63,3 +63,9 @@ class BasePageShop(BasePage):
     def check_total_number(cls):
         with dog.step("店铺主页-总数及数量"):
             pass
+
+
+    @classmethod
+    def back_to_main_page(cls):
+        with dog.step("店铺主页-返回到主页"):
+            keyevent("BACK")

@@ -4,11 +4,11 @@
 # Date: 2025/3/27 16:46
 # Description:
 # -------------------------------------------------------------------------
-from airtest.core.api import swipe
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 
 from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
+from common.ui.ui import swipe_wait_for
 from pages.base.page_shop import BasePageShop
 
 
@@ -117,11 +117,8 @@ class AndroidPageShop(BasePageShop):
         with dog.step("店铺主页-小视频列表-判断视频播放按钮是否存在"):
             assert_true(poco(nameMatches=".*id/dynamic_video_play").exists())
 
-        with dog.step("店铺主页-小视频列表-上滑"):
-            swipe_up()
-
-        with dog.step("店铺主页-小视频列表-确认删除按钮是否存在"):
-            assert_true(poco(nameMatches=".*id/ll_dynamic_edit").offspring(text="删除").exists())
+        with dog.step("店铺主页-小视频列表-上滑、确认删除按钮是否存在"):
+            assert_true(swipe_wait_for(poco(nameMatches=".*id/ll_dynamic_edit").offspring(text="删除")))
 
     @classmethod
     def check_picture_grid(cls):

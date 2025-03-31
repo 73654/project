@@ -7,7 +7,7 @@
 import os
 
 from airtest.aircv import aircv
-from airtest.core.api import sleep, snapshot, swipe
+from airtest.core.api import sleep, swipe
 from airtest.core.cv import Template
 from airtest.core.helper import G, log
 from poco.proxy import UIObjectProxy
@@ -87,3 +87,25 @@ def swipe_left():
 
 def swipe_right():
     swipe((0.6, 0.5), (0.4, 0.5))
+
+
+def swipe_wait_for(element: UIObjectProxy, direction: int = 1, times: int = 5, click=False):
+    """
+    滑动找到对应的控件
+    :param element: 需要查找的控件
+
+    """
+    for _ in range(times):
+        if element.exists():
+            if click:
+                element.click()
+            return True
+        if direction == 1:
+            swipe_up()
+        elif direction == 2:
+            swipe_down()
+        elif direction == 3:
+            swipe_left()
+        elif direction == 4:
+            swipe_right()
+    return False
