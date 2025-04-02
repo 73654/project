@@ -91,6 +91,6 @@ if __name__ == "__main__":
     IMAGES_DIR = Path("d:/code/python/dogdog-ui/test/images")
     _android_dir = IMAGES_DIR / "android"
     _ios_dir = IMAGES_DIR / "ios"
-    _file_path = "d:/code/python/dogdog-ui/pages/base/page_shop.py"
-    # rename_images_and_update_code(_file_path, _ios_dir)
-    find_similar_images(_ios_dir, _android_dir)
+    _file_path = "d:/code/python/dogdog-ui/pages/ios/page_shop.py"
+    rename_images_and_update_code(_file_path, _ios_dir)
+    # find_similar_images(_ios_dir, _android_dir)

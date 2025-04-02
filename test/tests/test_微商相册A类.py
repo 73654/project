@@ -7,6 +7,8 @@
 from common import dog
 from common.ui import *
 from pages import *
+from pages.base.page_mine import PageMine
+from pages.base.page_qr_share import PageQrShare
 
 
 class TestCompanyA:
@@ -52,3 +54,21 @@ class TestCompanyA:
 
             PageShop.tab_picture_grid()
             PageShop.check_picture_grid()
+
+    @dog.title("通用_0007:我的tab-二维码、小程序码展示&刷新")
+    def test_0007(self):
+        PageMain.tab_mine()
+        PageMine.qr_entry()
+
+        with dog.step("检查相册分享-二维码"):
+            PageQrShare.check_qr()
+
+            PageQrShare.refresh()
+            PageQrShare.check_qr()
+
+        with dog.step("检查相册分享-小程序码"):
+            PageQrShare.tab_mini_qr()
+            PageQrShare.check_mini_qr()
+
+            PageQrShare.refresh()
+            PageQrShare.check_mini_qr()

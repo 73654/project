@@ -15,44 +15,45 @@ class BasePageShop(BasePage):
     """我的店铺主页"""
 
     @classmethod
+    def _click_tab(cls, name):
+        pass
+
+    @classmethod
+    def _click_button(cls, view_id, name):
+        pass
+
+    @classmethod
     def tab_all(cls):
-        with dog.step(f"店铺主页-全部"):
-            touch(Template(r"BasePageShop_tab_all_1.png"))
+        cls._click_tab("全部")
 
     @classmethod
     def tab_new(cls):
-        with dog.step(f"店铺主页-上新"):
-            touch(Template(r"BasePageShop_tab_new_1.png"))
+        cls._click_tab("上新")
 
     @classmethod
     def tab_video(cls):
-        with dog.step(f"店铺主页-小视频"):
-            touch(Template(r"BasePageShop_tab_video_1.png"))
+        cls._click_tab("小视频")
 
     @classmethod
     def tab_picture_grid(cls):
-        with dog.step(f"店铺主页-图集"):
-            touch(Template(r"BasePageShop_tab_picture_collection_1.png"))
+        cls._click_tab("图集")
 
     @classmethod
     def button_goods(cls):
-        with dog.step(f"店铺主页-商品分类按钮"):
-            touch(Template(r"BasePageShop_button_goods_1.png"))
+        cls._click_button("tv_tag_category_container", "商品分类")
 
     @classmethod
     def button_batch_share(cls):
-        with dog.step(f"店铺主页-批量编辑和分享"):
-            touch(Template(r"BasePageShop_button_batch_share_1.png"))
+        cls._click_button("ll_batch_share", "批量编辑和分享")
 
     @classmethod
     def button_contact(cls):
-        with dog.step(f"店铺主页-联系Ta"):
-            touch(Template(r"BasePageShop_button_contact_1.png"))
+        cls._click_button("tv_connect_other", "联系Ta")
 
     @classmethod
     def check_vip_status(cls):
         with dog.step("店铺主页-VIP/SVIP图标暂时是否正常"):
-            find_area_image(Template(r"common_svip.png"))
+            pass
 
     @classmethod
     def check_new_number(cls):
@@ -63,7 +64,6 @@ class BasePageShop(BasePage):
     def check_total_number(cls):
         with dog.step("店铺主页-总数及数量"):
             pass
-
 
     @classmethod
     def back_to_main_page(cls):

@@ -10,15 +10,18 @@ from pages.base.page import BasePage
 
 
 class BasePageMain(BasePage):
-    """主页"""
+    """首页"""
+    page_name = "首页"
+
     @staticmethod
     def _real_click(name):
         pass
 
     @classmethod
     def _base_click(cls, name):
-        with dog.step(f"点击首页-{name}"):
+        with dog.step(f"f{cls.page_name}-点击{name}"):
             cls._real_click(name)
+            cls.wait_for_enter()
 
     @classmethod
     def tab_dynamic(cls):

@@ -10,6 +10,7 @@ from pages.base.page import BasePage
 
 class BasePageFriends(BasePage):
     """主页-好友页面"""
+    page_name = "主页-好友页面"
 
     @staticmethod
     def _real_click(name):
@@ -17,7 +18,7 @@ class BasePageFriends(BasePage):
 
     @classmethod
     def _base_click(cls, name):
-        with dog.step(f"点击好友列表-{name}"):
+        with dog.step(f"{cls.page_name}-点击好友列表-{name}"):
             cls._real_click(name)
 
     @classmethod

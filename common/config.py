@@ -25,6 +25,9 @@ class __ConfigManage(object):
     def get_images_dir(cls):
         return os.path.join(cls.get_project_dir(), cls.TEST_DIR_NAME, 'images')
 
+    @classmethod
+    def get_temp_dir(cls):
+        return os.path.join(cls.get_project_dir(), 'reports', "temp")
 
 config = __ConfigManage
 
