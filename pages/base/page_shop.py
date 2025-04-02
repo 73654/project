@@ -68,4 +68,4 @@ class BasePageShop(BasePage):
     @classmethod
     def back_to_main_page(cls):
         with dog.step("店铺主页-返回到主页"):
-            keyevent("BACK")
+            cls.back()

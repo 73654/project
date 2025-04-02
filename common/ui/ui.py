@@ -10,7 +10,7 @@ import time
 import cv2
 from PIL import Image
 from airtest.aircv import aircv
-from airtest.core.api import sleep, swipe, touch
+from airtest.core.api import sleep, snapshot, swipe, touch
 from airtest.core.assertions import assert_true
 from airtest.core.cv import Template
 from airtest.core.helper import G, log
@@ -146,10 +146,11 @@ def find_area_image(source: Template, parent: UIObjectProxy = None, target_rect=
     return None
 
 
-def is_white_screen(image: Image.Image | Template = None) -> bool:
+def is_white_screen(image: Image.Image | Template = None, threshold=0.98) -> bool:
     """
     判断图片是否为白屏
     :param image: PIL.Image | Template | None-自动截屏
+    :param threshold: 白屏占比认定为是白屏
     :return: 是否为白屏
     """
     if image is None:
@@ -161,38 +162,36 @@ def is_white_screen(image: Image.Image | Template = None) -> bool:
 
     white = 0
     non_white = 0
-    has_white = False
 
     log(f"白屏情况{percentages}")
     for p in percentages:
-        if p >= 0.95:
-            has_white = True
+        if p >= threshold:
             white += 1
         else:
-            # 如果开始是白的，中间出现非白色区域，认为不是白屏
-            if has_white:
-                log("中间区域出现非白屏区域，认定为非白屏.")
-                if ui.DEBUG_ON:
-                    save_image(image, "is_white_screen")
-                return False
             non_white += 1
 
     # 上面一节不是白色，下面全是白色，按百分比认为是白屏
-    if ui.DEBUG_ON:
-        save_image(image, "is_white_screen")
-    return white / len(percentages) > 0.7
+    percentage = white / len(percentages) > 0.7
+    if percentage:
+        log(f"区域白屏情况比例：{percentage}")
+        if ui.DEBUG_ON:
+            save_image(image, "is_white_screen")
+        return True
+    else:
+        return False
 
 
-def is_white_area(image: Template = None, view: UIObjectProxy = None, target_rect=None) -> bool:
+def is_white_area(image: Template = None, view: UIObjectProxy = None, target_rect=None, threshold=0.98) -> bool:
     """
     判断图片是否为白屏
     :param image: Template | None-自动截屏
     :param view: 控件范围是否白屏
     :param target_rect: 屏幕截图区域(x0,y0, x1,y1) 这个是相对坐标在0~1之间
+    :param threshold: 白屏占比认定为是白屏
     :return: 是否为白屏
     """
     if image is None:
-        image = G.DEVICE.screenshot(quality=99)
+        image = G.DEVICE.snapshot(quality=99)
     elif isinstance(image, Template):
         image = cv2.imread(image.filepath, cv2.IMREAD_COLOR_RGB)
     image = Image.fromarray(image)
@@ -202,7 +201,7 @@ def is_white_area(image: Template = None, view: UIObjectProxy = None, target_rec
     log(f"区域图片白屏占比：{percentage}")
     if ui.DEBUG_ON:
         save_image(image, "is_white_area")
-    return percentage > 0.95
+    return percentage > threshold
 
 
 if __name__ == "__main__":

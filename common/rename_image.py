@@ -35,13 +35,16 @@ def rename_images_and_update_code(file_path, image_dir):
             continue
 
         # 查找下一行中的 Template 参数
-        if line.strip().startswith("touch(Template"):
-            count += 1
+        if line.strip().__contains__("(Template("):
             # 提取旧文件名
             old_path = line.split('"')[1]
             old_name = os.path.splitext(os.path.basename(old_path))[0]
+            if not old_name.startswith("tpl"):
+                print(f"Template Not StartWith: {line}")
+                continue
 
             # 生成新文件名
+            count += 1
             new_name = f"{class_name}_{method_name}_{count}"
             new_path = old_path.replace(old_name, new_name)
 
