@@ -5,6 +5,7 @@
 # Description:
 # -------------------------------------------------------------------------
 from airtest.core.assertions import assert_is_not_none
+from airtest.core.helper import log
 
 from common import dog, utils
 from common.ui import Template, find_area_image, poco
@@ -16,6 +17,11 @@ class PageQrShare(BasePage):
     page_name = "我的-分享相册"
 
     @classmethod
+    def _click_tab(cls, name):
+        with dog.step(f"{cls.page_name}-点击{name}"):
+            cls._tab_view(name)
+
+    @classmethod
     def _tab_view(cls, name):
         pass
 
@@ -24,7 +30,7 @@ class PageQrShare(BasePage):
         with dog.step(f"{cls.page_name}-解析“{name}”不为空"):
             if name == "小程序码":
                 assert assert_is_not_none(
-                    find_area_image(Template("common_mini_qr.png", threshold=0.6), target_rect=(0.2, 0, 1, 0.8)))
+                    find_area_image(Template("common_mini_qr.png", threshold=0.6), target_rect=(0, 0, 1, 0.8)))
             elif name == "二维码":
                 assert_is_not_none(utils.parse_qr_code())
             else:
@@ -35,20 +41,21 @@ class PageQrShare(BasePage):
     def refresh(cls):
         with dog.step(f"{cls.page_name}-刷新二维码/小程序码"):
             find_area_image(Template("PageQrShare_refresh_1.png"), target_rect=(0.8, 0, 1, 0.2), click=True)
-            poco(text="刷新成功").wait_for_appearance(timeout=5)
+            # poco(text="刷新成功").wait_for_appearance(timeout=5)
+            # 是个toast不好捕获
 
     @classmethod
     def tab_qr(cls):
-        cls._tab_view("二维码")
+        cls._click_tab("二维码")
 
     @classmethod
     def tab_mini_qr(cls):
-        cls._tab_view("小程序码")
+        cls._click_tab("小程序码")
 
     @classmethod
     def tab_payee_qr(cls):
         """收款码"""
-        cls._tab_view("收款码")
+        cls._click_tab("收款码")
 
     @classmethod
     def check_qr(cls):

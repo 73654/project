@@ -7,8 +7,6 @@
 from common import dog
 from common.ui import *
 from pages import *
-from pages.base.page_mine import PageMine
-from pages.base.page_qr_share import PageQrShare
 
 
 class TestCompanyA:

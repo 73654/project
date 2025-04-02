@@ -80,7 +80,7 @@ def get_area(parent: UIObjectProxy = None, target_rect=None) -> tuple[float, flo
     target_rect: 屏幕截图区域(x0,y0, x1,y1) 这个是相对坐标在0~1之间
     return: 返回绝对坐标值[x0,y0, x1,y1]
     """
-    rect = []
+
     w, h = poco.get_screen_size()
     if parent:
         view_w, view_h = parent.get_size()  # 这个是相对值
@@ -163,7 +163,7 @@ def is_white_screen(image: Image.Image | Template = None, threshold=0.98) -> boo
     white = 0
     non_white = 0
 
-    log(f"白屏情况{percentages}")
+    log(f"全屏白屏情况{percentages}")
     for p in percentages:
         if p >= threshold:
             white += 1
@@ -171,9 +171,9 @@ def is_white_screen(image: Image.Image | Template = None, threshold=0.98) -> boo
             non_white += 1
 
     # 上面一节不是白色，下面全是白色，按百分比认为是白屏
-    percentage = white / len(percentages) > 0.7
+    percentage = white / len(percentages) >= 0.7
+    log(f"全屏白屏情况比例：{percentage}")
     if percentage:
-        log(f"区域白屏情况比例：{percentage}")
         if ui.DEBUG_ON:
             save_image(image, "is_white_screen")
         return True
