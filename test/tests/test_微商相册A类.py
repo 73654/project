@@ -70,3 +70,19 @@ class TestCompanyA:
 
             PageQrShare.refresh()
             PageQrShare.check_mini_qr()
+
+    @dog.title("通用_0014:普通商品-海报分享")
+    def test_0014(self):
+        PageMain.tab_friends()
+        PageFriends.my_album()
+
+        PageShop.good_share()
+        PageShare.enable_mini_code()
+        PageShare.share_wechat_poster()
+
+        PageShare.choose_wechat()
+
+        PageWechat.poster_publish()
+        PageWechat.enter_mini_program()
+
+        PageMiniProgram.check_goods_show()

@@ -4,7 +4,6 @@
 # Date: 2025/3/26 19:03
 # Description:
 # -------------------------------------------------------------------------
-from airtest.core.api import keyevent, touch
 
 from common import dog
 from common.ui import Template, find_area_image
@@ -13,6 +12,8 @@ from pages.base.page import BasePage
 
 class BasePageShop(BasePage):
     """我的店铺主页"""
+
+    page_name = "店铺主页"
 
     @classmethod
     def _click_tab(cls, name):
@@ -52,20 +53,42 @@ class BasePageShop(BasePage):
 
     @classmethod
     def check_vip_status(cls):
-        with dog.step("店铺主页-VIP/SVIP图标暂时是否正常"):
+        with dog.step(f"{cls.page_name}-VIP/SVIP图标暂时是否正常"):
             pass
 
     @classmethod
     def check_new_number(cls):
-        with dog.step("店铺主页-上新及数量"):
+        with dog.step(f"{cls.page_name}-上新及数量"):
             pass
 
     @classmethod
     def check_total_number(cls):
-        with dog.step("店铺主页-总数及数量"):
+        with dog.step(f"{cls.page_name}-总数及数量"):
             pass
 
     @classmethod
     def back_to_main_page(cls):
-        with dog.step("店铺主页-返回到主页"):
+        with dog.step(f"{cls.page_name}-返回到主页"):
             cls.back()
+
+    @classmethod
+    def check_all_list(cls):
+        pass
+
+    @classmethod
+    def check_new_list(cls):
+        pass
+
+    @classmethod
+    def check_video_list(cls):
+        pass
+
+    @classmethod
+    def check_picture_grid(cls):
+        pass
+
+    @classmethod
+    def good_share(cls):
+        with dog.step(f"{cls.page_name}-下滑找到分享按钮，并点击分享"):
+            pass
+

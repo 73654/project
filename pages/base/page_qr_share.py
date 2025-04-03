@@ -5,10 +5,9 @@
 # Description:
 # -------------------------------------------------------------------------
 from airtest.core.assertions import assert_is_not_none
-from airtest.core.helper import log
 
 from common import dog, utils
-from common.ui import Template, find_area_image, poco
+from common.ui import Template, find_area_image
 from pages.base.page import BasePage
 
 

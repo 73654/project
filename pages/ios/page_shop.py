@@ -4,14 +4,17 @@
 # Date: 2025/3/27 16:46
 # Description:
 # -------------------------------------------------------------------------
+
 from airtest.core.assertions import assert_false, assert_true
 
 from common import dog, ui
 from common.ui import Template, find_area_image, swipe_up
+from common.ui.ui import swipe_wait_for
 from pages.base.page_shop import BasePageShop
 
 
 class IOSPageShop(BasePageShop):
+
     @classmethod
     def __get_info_area(cls):
         """用户信息，上新，svip标识这块区域"""
@@ -127,3 +130,8 @@ class IOSPageShop(BasePageShop):
 
         with dog.step(f"{cls.page_name}-图集-判断界面是否白屏"):
             assert_false(ui.is_white_area(target_rect=cls.__get_list_area()))
+
+    @classmethod
+    def good_share(cls):
+        super().good_share()
+        swipe_wait_for(Template(r"IOSPageShop_good_share_1.png", threshold=0.9), click=True)

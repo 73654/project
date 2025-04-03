@@ -3,13 +3,14 @@ import re
 import subprocess
 import time
 
+import numpy as np
 from PIL import Image
 from airtest.core.api import snapshot
-from airtest.core.helper import log
+from airtest.core.cv import Template
+from airtest.core.helper import G, log
 from pyzbar import pyzbar
 
 from common.config import config
-from common.ui import *
 
 
 def execute_command(command: str):
@@ -22,14 +23,37 @@ def execute_command(command: str):
     return subprocess.check_output(command).decode("utf-8").strip()
 
 
-def save_image(image, prefix):
+def save_image(image: Image.Image | np.ndarray = None, prefix="") -> str:
+    """
+    保存图片
+    :param image:需要保存的图片 不传自动截图
+    :param  prefix: 保存截图的前缀
+    :return: 返回保存图片的地址
+    """
     path = os.path.join(config.get_temp_dir(), f"{prefix}{time.time()}.png")
-    if isinstance(image, Image.Image):
+    if image is None:
+        snapshot(filename=path, quality=99)
+    elif isinstance(image, Image.Image):
         image.save(path)
-    else:
+    elif isinstance(image, np.ndarray):
         Image.fromarray(image).save(path)
     log(f"文件保存在：{path}")
     return path
+
+
+def image_toarray(image: Image.Image | Template | str = None, prefix=""):
+    """将图片转为图片数组
+        image 需要转的图片，不传自动截图
+        prefix 自动截图的前缀名称
+    """
+    if isinstance(image, Image.Image):
+        return np.array(image)
+    elif isinstance(image, Template):
+        return np.array(Image.open(image.filepath))
+    elif isinstance(image, str):
+        return np.array(Image.open(image))
+    else:
+        return np.array(Image.open(save_image(prefix=prefix)))
 
 
 def parse_qr_code():
@@ -38,8 +62,7 @@ def parse_qr_code():
 
     return: 返回二维码内容 或者 None-未识别到
     """
-    filename = os.path.join(config.get_temp_dir(), f"parse_qr_code{time.time()}.png")
-    snapshot(filename=filename, quality=99)
+    filename = save_image(prefix="parse_qr_code")
     image = Image.open(filename)
     decoded_objects = pyzbar.decode(image)
     for obj in decoded_objects:
@@ -102,6 +125,8 @@ def calculate_white_percentage_parts(image: Image, parts: int, white_threshold: 
 
 
 if __name__ == "__main__":
-    a = parse_qr_code()
+    from common.ui import DEBUG_ON
+
+    a = save_image(prefix="test")
     # a = find_area_image(Template("common_mini_qr.png", threshold=0.6), target_rect=(0.2, 0, 1, 0.8))
     print(a)

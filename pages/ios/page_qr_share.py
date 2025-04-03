@@ -4,7 +4,6 @@
 # Date: 2025/4/1 14:39
 # Description:
 # -------------------------------------------------------------------------
-from common import dog
 from common.ui import poco
 from pages.base.page_qr_share import PageQrShare
 

@@ -11,4 +11,4 @@ if current_device_type == DeviceType.Android:
 elif current_device_type == DeviceType.IOS:
     from pages.ios import *
 
-__all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare"]
+__all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram", "PageShare"]

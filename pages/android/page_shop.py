@@ -4,6 +4,7 @@
 # Date: 2025/3/27 16:46
 # Description:
 # -------------------------------------------------------------------------
+from airtest.core.api import touch
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 
 from common import dog
@@ -13,6 +14,11 @@ from pages.base.page_shop import BasePageShop
 
 
 class AndroidPageShop(BasePageShop):
+
+    @classmethod
+    def __share_button(cls):
+        return poco(nameMatches=".*id/share_home_fragment", text="分享")
+
     @classmethod
     def _click_tab(cls, name):
         with dog.step(f"{cls.page_name}-TAB-{name}"):
@@ -70,7 +76,7 @@ class AndroidPageShop(BasePageShop):
             swipe_up()
 
         with dog.step(f"{cls.page_name}-全部列表-确认分享按钮是否存在"):
-            assert_true(swipe_wait_for(poco(nameMatches=".*id/share_home_fragment", text="分享")))
+            assert_true(swipe_wait_for(cls.__share_button()))
 
     @classmethod
     def check_new_list(cls):
@@ -80,7 +86,7 @@ class AndroidPageShop(BasePageShop):
             swipe_up()
 
         with dog.step(f"{cls.page_name}-上新列表-确认分享按钮是否存在"):
-            assert_true(swipe_wait_for(poco(nameMatches=".*id/share_home_fragment", text="分享")))
+            assert_true(swipe_wait_for(cls.__share_button()))
 
     @classmethod
     def check_video_list(cls):
@@ -104,3 +110,10 @@ class AndroidPageShop(BasePageShop):
 
         with dog.step(f"{cls.page_name}-图集列表-判断商品是否存在"):
             assert_true(poco(nameMatches=".*id/iv_grid_video").exists())
+
+    @classmethod
+    def good_share(cls):
+        super().good_share()
+        swipe_wait_for(cls.__share_button(), times=10)
+        swipe_up()
+        cls.__share_button().click()
