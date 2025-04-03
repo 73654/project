@@ -6,7 +6,7 @@
 # -------------------------------------------------------------------------
 from common import dog
 from common.ui import Template, find_area_image, poco
-from pages.base.page_share import PageShare
+from pages.base.page_share import PageShare, PageShare2
 
 
 class AndroidPageShare(PageShare):
@@ -22,3 +22,7 @@ class AndroidPageShare(PageShare):
         mini = poco(nameMatches=".*:id/cb_mini_code")
         if not mini.attr("checked"):
             mini.click()
+
+
+class AndroidPageShare2(PageShare2):
+    pass

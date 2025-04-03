@@ -60,6 +60,38 @@ def swipe_right(start):
     sleep(ui.step_wait_time)
 
 
+def get_vertical_rect(ration, middle=False):
+    """
+    获取垂直屏幕区域
+    :param ration: 范围 0 ~ +-1，正数从上往下的比例区域，负数从下往上的比例区域
+    :param middle: 从中间展开对称的比例, 比如ration=0.2，那就是中间区域占比0.6（上下各减0.2）
+    :return:
+    """
+    if middle:
+        return 0, abs(ration), 1, 1 - abs(ration)
+
+    if ration > 0:
+        return 0, 0, 1, ration
+    else:
+        return 0, 1 + ration, 1, 1
+
+
+def get_horizontal_rect(ration, middle=False):
+    """
+    获取水平屏幕区域
+    :param ration: 范围 0 ~ +-1，正数从左往右的比例区域，负数从右往左的比例区域
+    :param middle: 从中间展开对称的比例, 比如ration=0.2，那就是中间区域占比0.6（左右各减0.2）
+    :return:
+    """
+    if middle:
+        return abs(ration), 0, 1 - abs(ration), 1
+
+    if ration > 0:
+        return 0, 0, ration, 1
+    else:
+        return 1 + ration, 0, 1, 1
+
+
 def swipe_wait_for(element: UIObjectProxy | Template, direction: int = 1, start=0.5, times: int = 10,
                    click=False) -> bool:
     """

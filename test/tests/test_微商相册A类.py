@@ -77,12 +77,16 @@ class TestCompanyA:
         PageFriends.my_album()
 
         PageShop.good_share()
-        PageShare.enable_mini_code()
-        PageShare.share_wechat_poster()
 
+        PageShare.enable_mini_code()
+        PageShare.share_pingtu()
+        PageShare.top_right_corner_button()
         PageShare.choose_wechat()
 
-        PageWechat.poster_publish()
+        PageShare2.share_wechat()
+
+        PageWechat.send_to_file_assistant()
+        PageWechat.keep_weixin()
         PageWechat.enter_mini_program()
 
         PageMiniProgram.check_goods_show()

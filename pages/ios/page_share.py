@@ -6,9 +6,8 @@
 # -------------------------------------------------------------------------
 from airtest.core.api import touch
 
-from common import dog
 from common.ui import Template, find_area_image
-from pages.base.page_share import PageShare
+from pages.base.page_share import PageShare, PageShare2
 
 
 class IOSPageShare(PageShare):
@@ -25,3 +24,7 @@ class IOSPageShare(PageShare):
                               target_rect=cls._get_share_area())
         if pos:
             touch(pos)
+
+
+class IOSPageShare2(PageShare2):
+    pass
