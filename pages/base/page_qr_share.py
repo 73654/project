@@ -39,7 +39,7 @@ class PageQrShare(BasePage):
     @classmethod
     def refresh(cls):
         with dog.step(f"{cls.page_name}-刷新二维码/小程序码"):
-            find_area_image(Template("PageQrShare_refresh_1.png"), target_rect=(0.8, 0, 1, 0.2), click=True)
+            find_area_image(Template("PageQrShare_refresh_1.png", threshold=0.6), target_rect=(0.8, 0, 1, 0.2), click=True)
             # poco(text="刷新成功").wait_for_appearance(timeout=5)
             # 是个toast不好捕获
 

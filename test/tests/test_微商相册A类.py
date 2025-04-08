@@ -76,17 +76,18 @@ class TestCompanyA:
         PageMain.tab_friends()
         PageFriends.my_album()
 
-        PageShop.good_share()
+        with dog.step("点击分享按钮，进行分享"):
+            PageShop.good_share()
 
-        PageShare.enable_mini_code()
-        PageShare.share_pingtu()
-        PageShare.top_right_corner_button()
-        PageShare.choose_wechat()
+            PageShare.enable_mini_code()
+            PageShare.share_haibao()
+            PageShare.top_right_corner_button()
 
-        PageShare2.share_wechat()
+        with dog.step("分享至微信文件传输助手，并识别二维码进入小程序"):
+            PageShare2.share_wechat()
+            PageShare.choose_wechat()
 
-        PageWechat.send_to_file_assistant()
-        PageWechat.keep_weixin()
-        PageWechat.enter_mini_program()
+            PageWechat.send_to_file_assistant()
+            PageWechat.enter_mini_program()
 
-        PageMiniProgram.check_goods_show()
+            PageMiniProgram.check_enter_mini_program()

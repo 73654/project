@@ -7,7 +7,7 @@
 from airtest.core.api import touch
 
 from common import dog
-from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect
+from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from pages.base.page import BasePage
 
 
@@ -24,9 +24,9 @@ class PageShare(BasePage):
         """分享时的弹框，如果是微信多开的话，会有多个图标"""
         with dog.step(f"{cls.page_name}-分享时，多微信选择"):
             pos = find_all_area_image(Template(r"PageShare_choose_wechat_1.png", threshold=0.6),
-                                      target_rect=(0, 0.7, 1, 1))
+                                      target_rect=get_vertical_rect(-0.3), timeout=5)
             if pos and len(pos) >= num:
-                touch(pos[num - 1])
+                touch_and_wait(pos[num - 1])
 
     @classmethod
     def enable_mini_code(cls):
@@ -55,11 +55,23 @@ class PageShare(BasePage):
                             click=True)
 
     @classmethod
+    def share_haibao(cls):
+        """海报分享"""
+        with dog.step(f"{cls.page_name}-商品分享，并点击'海报分享'"):
+            swipe_wait_for(Template(r"tpl1743997022119.png"), direction=3, start=0.9, times=3,
+                           target_rect=cls._get_share_area(), click=True)
+            # find_area_image(Template(r"tpl1743997022119.png"), target_rect=cls._get_share_area(),
+            #                 click=True)
+
+    @classmethod
     def top_right_corner_button(cls):
         """右上角分享按钮"""
         with dog.step(f"{cls.page_name}-拼图/海报分享详情页，并点击'右上角分享按钮'"):
-            find_area_image(Template(r"tpl1743672972925.png"), target_rect=get_vertical_rect(0.1),
-                            click=True)
+            target_rect = get_vertical_rect(0.1)
+            # 等待进入分享界面
+            find_area_image(Template(r"tpl1744018282338.png"), target_rect=target_rect)
+
+            find_area_image(Template(r"tpl1744016384889.png"), target_rect=target_rect, click=True)
 
 
 class PageShare2(BasePage):
@@ -74,5 +86,5 @@ class PageShare2(BasePage):
     def share_wechat(cls):
         """好友分享"""
         with dog.step(f"{cls.page_name}-分享，并点击'微信'"):
-            find_area_image(Template(r"tpl1743670657392.png"), target_rect=cls._get_share_area(),
+            find_area_image(Template(r"tpl1743673313942.png"), target_rect=cls._get_share_area(),
                             click=True)

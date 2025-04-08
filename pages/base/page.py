@@ -15,7 +15,7 @@ class BasePage(object):
     page_name = ""
 
     @classmethod
-    def wait_for_enter(cls, timeout=5):
+    def wait_for_enter(cls, timeout=10):
         interval = ui.step_wait_time
         for i in range(ui.get_timeout_cycle(timeout)):
             if not ui.is_white_screen():

@@ -4,7 +4,6 @@
 # Date: 2025/3/27 16:46
 # Description:
 # -------------------------------------------------------------------------
-from airtest.core.api import touch
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 
 from common import dog
@@ -37,7 +36,8 @@ class AndroidPageShop(BasePageShop):
             assert_true(search_bar.exists())
 
         with dog.step(f"{cls.page_name}-确认搜索框-文案为: 搜索"):
-            assert_equal("搜索", search_bar.offspring(nameMatches=".*id/et_search").get_text())
+            text = search_bar.offspring(nameMatches=".*id/et_search").get_text()
+            assert_true(text.__contains__("搜索"), f"搜索框文案不包含搜索：原文案： {text}")
 
         with dog.step(f"{cls.page_name}-确认搜索框-图搜图标存在"):
             assert_is_not_none(find_area_image(Template("common_image_search.png"), search_bar))

@@ -6,7 +6,7 @@
 # -------------------------------------------------------------------------
 from airtest.core.api import touch
 
-from common.ui import Template, find_area_image
+from common.ui import Template, find_area_image, touch_and_wait
 from pages.base.page_share import PageShare, PageShare2
 
 
@@ -23,7 +23,7 @@ class IOSPageShare(PageShare):
         pos = find_area_image(Template(r"IOSPageShare_enable_mini_code_1.png", threshold=0.9), timeout=3,
                               target_rect=cls._get_share_area())
         if pos:
-            touch(pos)
+            touch_and_wait(pos)
 
 
 class IOSPageShare2(PageShare2):

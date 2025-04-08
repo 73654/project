@@ -5,7 +5,7 @@
 # Description:
 # -------------------------------------------------------------------------
 from common import dog
-from common.ui import find_area_image, Template
+from common.ui import find_area_image, Template, get_vertical_rect, touch_and_wait
 from pages.base.page import BasePage
 
 
@@ -16,5 +16,10 @@ class PageMine(BasePage):
     @classmethod
     def qr_entry(cls):
         with dog.step(f"{cls.page_name}-进入二维码（相册分享）页面"):
-            find_area_image(Template("PageMine_qr_entry_1.png"), target_rect=(0.7, 0.1, 1, 0.5), click=True)
+            find_area_image(Template("PageMine_qr_entry_1.png"), target_rect=(0.7, 0.2, 1, 0.4), click=True)
             cls.wait_for_enter()
+
+            # 第一次进入会弹框，点取消
+            pos = find_area_image(Template(r"tpl1744091568935.png"), target_rect=get_vertical_rect(-0.15))
+            if pos:
+                touch_and_wait(pos)

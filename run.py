@@ -138,4 +138,4 @@ def main(tests='', m='', k=''):
 
 
 if __name__ == '__main__':
-    main(tests='test/tests/test_微商相册A类.py::TestCompanyA::test_0014')
+    main(tests='test/tests/test_微商相册A类.py::TestCompanyA')

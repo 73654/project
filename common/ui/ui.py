@@ -44,7 +44,7 @@ def swipe_down(start=0.5):
     sleep(ui.step_wait_time)
 
 
-def swipe_left(start=0.5):
+def swipe_right(start=0.5):
     """
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
@@ -52,12 +52,18 @@ def swipe_left(start=0.5):
     sleep(ui.step_wait_time)
 
 
-def swipe_right(start):
+def swipe_left(start):
     """
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
     swipe((0.6, start), (0.4, start))
     sleep(ui.step_wait_time)
+
+
+def touch_and_wait(pos, wait: float = ui.step_wait_time, times=1, **kwargs):
+    sleep(wait * 0.5)
+    touch(pos, times=times, **kwargs)
+    sleep(wait)
 
 
 def get_vertical_rect(ration, middle=False):
@@ -93,13 +99,14 @@ def get_horizontal_rect(ration, middle=False):
 
 
 def swipe_wait_for(element: UIObjectProxy | Template, direction: int = 1, start=0.5, times: int = 10,
-                   click=False) -> bool:
+                   target_rect: UIObjectProxy | tuple[float, float, float, float] = None, click=False) -> bool:
     """
     滑动找到对应的控件
     :param element: 需要查找的控件
     :param direction: 滑动的方向，1上，2下，3左，4右
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     :param times: 最多滑动几次
+    :param target_rect: 在所需控件范围内查找 或 指定区域(x0,y0, x1,y1) 是相对坐标值，None - 截屏查找
     :param click: 找到后是否点击，默认：False
     :return: True 或者 False - 滑动times次数后未找到
     """
@@ -110,10 +117,10 @@ def swipe_wait_for(element: UIObjectProxy | Template, direction: int = 1, start=
                     element.click()
                 return True
         else:
-            pos = find_area_image(element, timeout=1)
+            pos = find_area_image(element, target_rect=target_rect, timeout=1)
             if pos:
                 if click:
-                    touch(pos)
+                    touch_and_wait(pos)
                 return True
 
         if direction == 1:
@@ -183,6 +190,7 @@ def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, 
     """
     rect = get_area(target_rect)
 
+    path = ""
     locality_image = None
     cycle = 1 if target is not None else get_timeout_cycle(timeout)
     for i in range(cycle):
@@ -194,20 +202,52 @@ def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, 
         locality_image = aircv.crop_image(locality, rect)
         r = source.match_in(locality_image)
         if r:
-            log(f"区域图片里面找到图片{r} {source.filepath}")
+            r = (r[0] + rect[0], r[1] + rect[1])
+            log(f"区域图片{path}里面找到图片{r} {source.filepath}")
             if click:
-                r = (r[0] + rect[0], r[1] + rect[1])
-                touch(r)
-                sleep(ui.step_wait_time)
+                touch_and_wait(r)
             return r
 
         sleep(ui.step_wait_time)
 
-    path = ""
     if ui.DEBUG_ON:
         path = save_image(locality_image, "find_area_image")
     if click:
         assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
+    return None
+
+
+def find_loop_area_image(source: Template, area_size: float, click=False, target: Template = None):
+    """
+    在指定控件内查找图片或者点击图片
+
+    :param source: 需要查找的图片
+    :param area_size: 查找区域大小(0~1)，大于0从上往下查找，小于0从下往上查找，比如：0.2，查找区域为(0,0,1,0.2),(0,0.1,1,0.3)...，步长默认0.1
+    :param click: 是否需要点击
+    :param target: 在指定的图片中找（如果是指定图片，timeout没用），None - 自动截屏
+    :return: 查找到了就返回对应的坐标值，否则返回None
+    """
+    step = 0.1
+
+    for i in range(10):
+        if area_size > 0:
+            h1 = i * step
+            h2 = h1 + area_size
+        else:
+            h2 = 1 - i * step
+            h1 = h2 + area_size
+
+        if h1 < 0 or h2 > 1:
+            break
+
+        r = find_area_image(source, target_rect=(0, h1, 1, h2), click=False, target=target, timeout=1)
+        if r:
+            log(f"循环查找图片：找到对应图片{r}")
+            if click:
+                touch_and_wait(r)
+            return r
+    if click:
+        assert_true(False, f"循环查找图片：未找到对应图片{source.filepath}")
     return None
 
 
@@ -225,6 +265,7 @@ def find_all_area_image(source: Template, target_rect: UIObjectProxy | tuple[flo
     """
     rect = get_area(target_rect)
 
+    path = ""
     locality_image = None
     cycle = 1 if target is not None else get_timeout_cycle(timeout)
     for i in range(cycle):
@@ -237,19 +278,17 @@ def find_all_area_image(source: Template, target_rect: UIObjectProxy | tuple[flo
         r = source.match_all_in(locality_image)
         if r:
             r = [x['result'] for x in r]
-            log(f"区域图片里面找到图片{r} {source.filepath}")
+            log(f"区域图片{path}里面找到图片{r} {source.filepath}")
             if 0 < click <= len(r):
                 r = r[click - 1]
-                touch((r[0] + rect[0], r[1] + rect[1]))
-                sleep(ui.step_wait_time)
+                touch_and_wait((r[0] + rect[0], r[1] + rect[1]))
             r = [(x[0] + rect[0], x[1] + rect[1]) for x in r]
             return r
 
         sleep(ui.step_wait_time)
 
-    path = ""
     if ui.DEBUG_ON:
-        path = save_image(locality_image, "find_area_image")
+        path = save_image(locality_image, "find_all_area_image")
     if click >= 1:
         assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
     return None
@@ -316,4 +355,4 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")
-    print(find_area_image(DogTemplate("tpl1743662716089.png", threshold=0.5), target_rect=(0, 0.2, 1, 1)))
+    find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4),timeout=1)
