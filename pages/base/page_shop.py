@@ -6,7 +6,7 @@
 # -------------------------------------------------------------------------
 
 from common import dog
-from common.ui import Template, find_area_image
+from common.ui import Template, find_area_image,poco,get_vertical_rect,scroll_and_find_element
 from pages.base.page import BasePage
 
 
@@ -92,3 +92,34 @@ class BasePageShop(BasePage):
         with dog.step(f"{cls.page_name}-下滑找到分享按钮，并点击分享"):
             pass
 
+
+    @classmethod
+    def shop_table_share(cls):
+        with dog.step(f"{cls.page_name}-右上角分享标识"):
+            pass
+
+
+
+    @classmethod
+    def table_share_code(cls):
+        with dog.step(f"{cls.page_name}-分享我的主页--二维码"):
+            pass
+
+
+    @classmethod
+    def share_wx_friend(cls):
+        with dog.step(f"{cls.page_name}-分享我的主页--点击微信好友"):
+            find_area_image(Template(r"tpl1744599239811.png"),target_rect=get_vertical_rect(-0.3),click=True)
+            cls.wait_for_enter()
+
+
+
+    @classmethod
+    def shop_table_search(cls):
+        with dog.step(f"{cls.page_name}--搜索"):
+            pass
+
+    @classmethod
+    def find_top_element(cls):
+        with dog.step(f"{cls.page_name}--往下滚动查询商品"):
+            scroll_and_find_element(max_scroll_times=3,target_condition={'text':'验证商品置顶刷新'},click=True)

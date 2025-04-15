@@ -9,3 +9,5 @@ from pages.base.page_mine import PageMine
 
 class AndroidPageMine(PageMine):
     pass
+
+

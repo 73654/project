@@ -4,12 +4,14 @@
 # Date: 2025/3/27 16:46
 # Description:
 # -------------------------------------------------------------------------
+from airtest.core.api import text
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 
 from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
 from common.ui.ui import swipe_wait_for
 from pages.base.page_shop import BasePageShop
+
 
 
 class AndroidPageShop(BasePageShop):
@@ -117,3 +119,43 @@ class AndroidPageShop(BasePageShop):
         swipe_wait_for(cls.__share_button(), times=10)
         swipe_up()
         cls.__share_button().click()
+
+
+    @classmethod
+    def shop_table_share(cls):
+        with dog.step(f"{cls.page_name}-右上角分享标识"):
+            poco("com.truedian.dragon:id/iv_date").click()
+
+    @classmethod
+    def table_share_code(cls):
+        with dog.step(f"{cls.page_name}-分享我的主页--二维码"):
+            poco("com.truedian.dragon:id/qr_code").click()
+
+
+    @classmethod
+    def shop_table_search(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--搜索"):
+            poco("com.truedian.dragon:id/et_search").click()
+            cls.wait_for_enter()
+
+    @classmethod
+    def shop_search_first_value(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--点击搜索出来的第一个商品标题"):
+            poco("com.truedian.dragon:id/title_home_fragment").click()
+
+
+
+    @classmethod
+    def shop_search_name(cls):
+        cls.shop_table_search()
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            text("验证商品置顶刷新")
+            cls.wait_for_enter()
+        cls.shop_search_first_value()
+
+
+
+
+
+
+

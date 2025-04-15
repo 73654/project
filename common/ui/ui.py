@@ -60,6 +60,7 @@ def swipe_left(start):
     sleep(ui.step_wait_time)
 
 
+
 def touch_and_wait(pos, wait: float = ui.step_wait_time, times=1, **kwargs):
     sleep(wait * 0.5)
     touch(pos, times=times, **kwargs)
@@ -350,6 +351,50 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     if ui.DEBUG_ON:
         save_image(image, "is_white_area")
     return percentage > threshold
+
+
+
+def scroll_and_find_element(max_scroll_times: int, target_condition: dict, click=False):
+    """
+    滚动屏幕查找目标元素
+    :param max_scroll_times: 最大滚动次数
+    :param target_condition: 目标元素的查找条件，例如 {'text': '验证商品置顶刷新'}
+    :param click: 是否点击找到的目标元素，默认为 False
+    """
+    scroll_count = 0
+    while scroll_count < max_scroll_times:
+        # 查找目标元素
+        poco.scroll("vertical", 0.5)
+        sleep(ui.step_wait_time)
+        target_element = poco(**target_condition)
+        if target_element.exists():
+            if click:
+                # 若目标元素存在且 click 为 True，点击该元素
+                target_element.click()
+                assert not target_element.exists(), "点击目标元素后，元素仍存在"
+            else:
+                assert target_element.exists(), "找到目标元素，但检查时元素不存在"
+            break
+        else:
+            # 若目标元素不存在，继续向下滚动
+            poco.scroll("vertical", 0.2)
+            scroll_count += 1
+
+    # 如果滚动指定次数后仍未找到目标元素
+    if scroll_count == max_scroll_times:
+        assert not poco(**target_condition).exists(), "滚动指定次数后，找到了目标元素"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

@@ -12,6 +12,8 @@ from .page_qr_share import AndroidPageQrShare as PageQrShare
 from .page_wechat import AndroidPageWechat as PageWechat
 from .page_mini_program import AndroidPageMiniProgram as PageMiniProgram
 from .page_share import AndroidPageShare as PageShare, AndroidPageShare2 as PageShare2
+from .page_clubber_recharge import AndroidPageClubberRecharge as PageClubberRecharge
+from .page_dynamic_detail import AndroidPageDynamicDetail as PageDynamicDetail
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
-           "PageShare", "PageShare2"]
+           "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail"]

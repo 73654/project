@@ -27,11 +27,13 @@ class BasePage(object):
     @classmethod
     def back(cls):
         with dog.step("返回上一页"):
-            if ui.DeviceType == DeviceType.Android:
+            if ui.current_device_type == DeviceType.Android:
                 keyevent("BACK")
+
             else:
                 swipe((0, 0.5), (0.8, 0.5), duration=1)
 
+            sleep(ui.step_wait_time)
     @classmethod
     def home(cls):
         with dog.step("按home键返回主页面"):

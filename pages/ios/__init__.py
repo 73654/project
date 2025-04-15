@@ -12,6 +12,11 @@ from .page_qr_share import IOSPageQrShare as PageQrShare
 from .page_wechat import IOSPageWechat as PageWechat
 from .page_mini_program import IOSPageMiniProgram as PageMiniProgram
 from .page_share import IOSPageShare as PageShare, IOSPageShare2 as PageShare2
+from .page_clubber_recharge import IOSPageClubberRecharge as PageClubberRecharge
+from .page_dynamic_detail import IOSPageDynamicDetail as PageDynamicDetail
+
+
+
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
-           "PageShare", "PageShare2"]
+           "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail"]

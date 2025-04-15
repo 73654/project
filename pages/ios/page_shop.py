@@ -8,9 +8,11 @@
 from airtest.core.assertions import assert_false, assert_true
 
 from common import dog, ui
-from common.ui import Template, find_area_image, swipe_up
+from common.ui import Template, find_area_image, swipe_up,poco
 from common.ui.ui import swipe_wait_for
 from pages.base.page_shop import BasePageShop
+from airtest.core.api import text
+from common.ui import poco
 
 
 class IOSPageShop(BasePageShop):
@@ -135,3 +137,27 @@ class IOSPageShop(BasePageShop):
     def good_share(cls):
         super().good_share()
         swipe_wait_for(Template(r"IOSPageShop_good_share_1.png", threshold=0.9), click=True)
+
+    @classmethod
+    def shop_table_share(cls):
+        with dog.step(f"{cls.page_name}-右上角分享标识"):
+            poco("nav share icon").click()
+
+    @classmethod
+    def table_share_code(cls):
+        with dog.step(f"{cls.page_name}-分享我的主页--二维码"):
+            poco("com.truedian.dragon:id/qr_code").click()
+
+    @classmethod
+    def shop_search_first_value(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--点击搜索出来的第一个商品标题"):
+            poco("com.truedian.dragon:id/title_home_fragment").click()
+
+
+    @classmethod
+    def shop_search_name(cls):
+        cls.shop_table_search()
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            text("验证商品置顶刷新")
+            cls.wait_for_enter()
+        cls.shop_search_first_value()

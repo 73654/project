@@ -75,3 +75,33 @@ class PageWechat(BasePage):
 
         with dog.step(f"{cls.page_name}-等待进入文件传输助手对话框"):
             find_area_image(Template(r"tpl1744010225134.png"), target_rect=get_vertical_rect(0.1))
+
+
+
+    @classmethod
+    def enter_wx_code(cls):
+        """识别文件传输助手中的二维码"""
+        with dog.step(f"{cls.page_name}-点击文件传输助手的二维码"):
+            find_loop_area_image(Template("tpl1744602748379.png", threshold=0.6), area_size=-0.2,
+                                 click=True)
+
+        with dog.step(f"{cls.page_name}-长按图片"):
+            touch_and_wait((0.5, 0.5), duration=3)
+            sleep(step_wait_time)
+
+        with dog.step(f"{cls.page_name}-点击进入小程序"):
+            pos = find_area_image(Template(r"tpl1744602885005.png", threshold=0.6), target_rect=get_vertical_rect(-0.2))
+            sleep(step_wait_time)
+            touch_and_wait(pos)
+
+
+
+
+    @classmethod
+    def wx_open_immediately(cls):
+        """
+        识别二维码--跳转打开app看款
+        """
+        pass
+
+
