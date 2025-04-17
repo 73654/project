@@ -63,6 +63,22 @@ class IOSPageShop(BasePageShop):
                 find_area_image(Template(r"IOSPageShop__check_search_bar_2.png"), target_rect=cls.__get_tab_area()))
 
     @classmethod
+    def batch_edit_share(cls):
+        with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
+            poco("com.truedian.dragon:id/tv_batch_share").click()
+
+    @classmethod
+    def table_batch_edit(cls):
+        with dog.step(f"{cls.page_name}-批量编辑/分享唤起的弹框--点击批量编辑"):
+            poco(text="批量编辑").click()
+
+    @classmethod
+    def batch_forward(cls):
+        with dog.step(f"{cls.page_name}-点击好友个人相册--批量转发按钮"):
+            poco("com.truedian.dragon:id/tv_batch_share").click()
+
+
+    @classmethod
     def check_vip_status(cls):
         with dog.step(f"{cls.page_name}-校验VIP/SVIP图标暂时是否正常"):
             assert_true(find_area_image(Template(r"common_svip.png"), target_rect=cls.__get_info_area()))

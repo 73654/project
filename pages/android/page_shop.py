@@ -32,6 +32,24 @@ class AndroidPageShop(BasePageShop):
             poco(nameMatches=f".*id/{view_id}", type="android.widget.LinearLayout").click()
 
     @classmethod
+    def batch_edit_share(cls):
+        with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
+            poco("com.truedian.dragon:id/tv_batch_share").click()
+
+    @classmethod
+    def table_batch_edit(cls):
+        with dog.step(f"{cls.page_name}-批量编辑/分享唤起的弹框--点击批量编辑"):
+            poco(text="批量编辑").click()
+
+    @classmethod
+    def batch_forward(cls):
+        with dog.step(f"{cls.page_name}-点击好友个人相册--批量转发按钮"):
+            poco("com.truedian.dragon:id/tv_batch_share").click()
+
+
+
+
+    @classmethod
     def _check_search_bar(cls):
         with dog.step(f"{cls.page_name}-确认搜索框存在"):
             search_bar = poco(nameMatches=".*id/search_view_home")
@@ -154,7 +172,9 @@ class AndroidPageShop(BasePageShop):
         cls.shop_search_first_value()
 
 
-
+    # @classmethod
+    # def button_batch_share(cls):
+    #     cls._click_button("ll_batch_share", "批量编辑/分享")
 
 
 

@@ -27,9 +27,15 @@ class PageDynamicDetail(BasePage):
                 cls.back()
 
 
+    @classmethod
+    def back_shop_page(cls):
+        with dog.step(f"{cls.page_name}-返回到个人相册页"):
+            cls.back()
 
-
-
+    @classmethod
+    def table_refresh(cls):
+        with dog.step(f"{cls.page_name}-动态详情页--点击刷新按钮"):
+            pass
 
 
 

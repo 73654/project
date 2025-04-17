@@ -50,3 +50,4 @@ class BasePageFriends(BasePage):
     def goto_other_album(cls, album_name):
         """进入到列表其他相册中去"""
         cls._base_click(name=album_name)
+

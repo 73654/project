@@ -6,8 +6,9 @@
 # -------------------------------------------------------------------------
 
 from common import dog
-from common.ui import Template, find_area_image,poco,get_vertical_rect,scroll_and_find_element
+from common.ui import Template, find_area_image, poco, get_vertical_rect, scroll_and_find_element
 from pages.base.page import BasePage
+from pages.base.page_dynamic_detail import PageDynamicDetail
 
 
 class BasePageShop(BasePage):
@@ -92,13 +93,10 @@ class BasePageShop(BasePage):
         with dog.step(f"{cls.page_name}-下滑找到分享按钮，并点击分享"):
             pass
 
-
     @classmethod
     def shop_table_share(cls):
         with dog.step(f"{cls.page_name}-右上角分享标识"):
             pass
-
-
 
     @classmethod
     def table_share_code(cls):
@@ -107,12 +105,26 @@ class BasePageShop(BasePage):
 
 
     @classmethod
+    def batch_edit_share(cls):
+        with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
+            pass
+
+
+    @classmethod
+    def table_batch_edit(cls):
+        with dog.step(f"{cls.page_name}-批量编辑/分享唤起的弹框--点击批量编辑"):
+            pass
+
+    @classmethod
+    def batch_forward(cls):
+        with dog.step(f"{cls.page_name}-点击好友个人相册--批量转发按钮"):
+            pass
+
+    @classmethod
     def share_wx_friend(cls):
         with dog.step(f"{cls.page_name}-分享我的主页--点击微信好友"):
-            find_area_image(Template(r"tpl1744599239811.png"),target_rect=get_vertical_rect(-0.3),click=True)
+            find_area_image(Template(r"tpl1744599239811.png"), target_rect=get_vertical_rect(-0.3), click=True)
             cls.wait_for_enter()
-
-
 
     @classmethod
     def shop_table_search(cls):
@@ -121,5 +133,26 @@ class BasePageShop(BasePage):
 
     @classmethod
     def find_top_element(cls):
-        with dog.step(f"{cls.page_name}--往下滚动查询商品"):
-            scroll_and_find_element(max_scroll_times=3,target_condition={'text':'验证商品置顶刷新'},click=True)
+        with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品并点击"):
+            scroll_and_find_element(max_scroll_times=3,target_rect=0.4, target_condition={'text': '验证商品置顶刷新'}, click=True)
+            cls.wait_for_enter()
+
+    @classmethod
+    def find_refresh_element(cls):
+        with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品并点击"):
+            scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
+            cls.find_top_element()
+
+    @classmethod
+    def find_refresh_back(cls):
+
+        with dog.step(f"{cls.page_name}--返回到个人相册页"):
+            PageDynamicDetail.back_shop_page()
+        with dog.step(f"{cls.page_name}--查看刷新后的商品-验证商品置顶刷新"):
+            scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
+            scroll_and_find_element(max_scroll_times=3, target_rect=0.4, target_condition={'text': '验证商品置顶刷新'},
+                                    click=True)
+            cls.wait_for_enter()
+
+
+

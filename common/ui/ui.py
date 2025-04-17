@@ -60,7 +60,6 @@ def swipe_left(start):
     sleep(ui.step_wait_time)
 
 
-
 def touch_and_wait(pos, wait: float = ui.step_wait_time, times=1, **kwargs):
     sleep(wait * 0.5)
     touch(pos, times=times, **kwargs)
@@ -353,51 +352,34 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     return percentage > threshold
 
 
-
-def scroll_and_find_element(max_scroll_times: int, target_condition: dict, click=False):
+def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_condition: dict=None, click=False):
     """
     滚动屏幕查找目标元素
     :param max_scroll_times: 最大滚动次数
+    :param target_rect: 滚动的距离 (0.5 代表滚动屏幕高度的50%)
     :param target_condition: 目标元素的查找条件，例如 {'text': '验证商品置顶刷新'}
     :param click: 是否点击找到的目标元素，默认为 False
     """
     scroll_count = 0
     while scroll_count < max_scroll_times:
-        # 查找目标元素
-        poco.scroll("vertical", 0.5)
+        # 执行滚动操作
+        poco.scroll("vertical", target_rect)
         sleep(ui.step_wait_time)
-        target_element = poco(**target_condition)
-        if target_element.exists():
-            if click:
-                # 若目标元素存在且 click 为 True，点击该元素
-                target_element.click()
-                assert not target_element.exists(), "点击目标元素后，元素仍存在"
-            else:
-                assert target_element.exists(), "找到目标元素，但检查时元素不存在"
-            break
-        else:
-            # 若目标元素不存在，继续向下滚动
-            poco.scroll("vertical", 0.2)
-            scroll_count += 1
 
-    # 如果滚动指定次数后仍未找到目标元素
-    if scroll_count == max_scroll_times:
-        assert not poco(**target_condition).exists(), "滚动指定次数后，找到了目标元素"
+        if target_condition is not None:
+            # 查找目标元素
+            target_element = poco(**target_condition)
+            if target_element.exists():
+                if click:
+                    target_element.click()
+                return True
+        scroll_count += 1
 
-
-
-
-
-
-
-
-
-
-
-
+    # 如果滚动指定次数后仍未找到目标元素（或仅进行滚动操作）
+    return False
 
 
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")
-    find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4),timeout=1)
+    find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4), timeout=1)

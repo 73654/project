@@ -152,14 +152,82 @@ class TestCompanyA:
 
     @dog.title("通用_0018:商品置顶&刷新")
     def test_0018(self):
-        PageMain.tab_friends()
-        PageFriends.my_album()
-        PageShop.shop_search_name()
-        PageDynamicDetail.table_commodity_top()
-        PageDynamicDetail.back_to_friend_page()
-        PageMain.tab_friends()
-        PageFriends.my_album()
-        PageShop.find_top_element()
+        with dog.step("验证商品置顶/取顶功能"):
+            PageMain.tab_friends()
+            PageFriends.my_album()
+            PageShop.shop_search_name()
+            PageDynamicDetail.table_commodity_top()
+            PageDynamicDetail.back_to_friend_page()
+            PageMain.tab_friends()
+            PageFriends.my_album()
+            PageShop.find_top_element()
+            PageDynamicDetail.table_commodity_obtain_top()
+            PageDynamicDetail.back_shop_page()
+
+        with dog.step("验证刷新功能"):
+            PageShop.find_refresh_element()
+            PageDynamicDetail.table_refresh()
+            PageShop.find_refresh_back()
+
+
+    @dog.title("通用_0019:批量转发好友")
+    def test_0019(self):
+        with dog.step("进入到个人相册页"):
+            PageMain.tab_friends()
+            PageFriends.my_album()
+            PageShop.batch_edit_share()
+            PageShop.table_batch_edit()
+            PageBatchEdit.check_page_scroll()
+            PageFriends.goto_other_album(album_name="test01")
+            PageShop.batch_forward()
+        with dog.step("进入到好友相册页--批量转发"):
+            PageBatchForward.page_batch_filter()
+            PageBatchForward.page_batch_end_time()
+            PageBatchForward.page_filter_little_video()
+            PageBatchForward.page_filter_confirm()
+            PageBatchForward.page_batch_search()
+            PageBatchForward.click_search_result()
+        with dog.step("批量转发页--进行自动加价/选择标签操作"):
+            PageBatchForward.page_batch_increase_price()
+            PageBatchForward.page_batch_enter_price()
+            PageBatchForward.page_batch_label()
+        with dog.step("查看批量转发后的商品"):
+            PageBatchForward.page_batch_mine_shop()
+            PageBatchForward.check_tabel_info()
+
+
+    @dog.title("通用_0022:开单")
+    def test_0022(self):
+        with dog.step("开单"):
+            PageMain.tab_workbench()
+            PageWorkBench.page_invoice_write()
+            PageWorkBench.check_invoice_windows()
+            PagePlaceOrder.page_place_customer()
+            PagePlaceOrder.page_place_choose_customer()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
