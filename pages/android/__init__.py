@@ -18,7 +18,10 @@ from .page_batch_edit import AndroidPageBatchEdit as PageBatchEdit
 from .page_batch_forward import AndroidPageBatchForward as PageBatchForward
 from .page_work_bench import AndroidPageWorkBench as PageWorkBench
 from .page_place_order import AndroidPagePlaceOrder as PagePlaceOrder
+from .page_send_receive_messages import AndroidPageSendReceiveMessages as PageSendReceiveMessages
+from .page_choose_goods import AndroidPageChooseGoods as PageChooseGoods
+from .page_configure import AndroidPageConfigure as PageConfigure
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
-           "PageWorkBench", "PagePlaceOrder"]
+           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages","PageChooseGoods","PageConfigure"]

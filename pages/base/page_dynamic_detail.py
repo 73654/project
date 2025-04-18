@@ -29,7 +29,7 @@ class PageDynamicDetail(BasePage):
 
     @classmethod
     def back_shop_page(cls):
-        with dog.step(f"{cls.page_name}-返回到个人相册页"):
+        with dog.step(f"{cls.page_name}-返回上一层"):
             cls.back()
 
     @classmethod

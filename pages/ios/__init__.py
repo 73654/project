@@ -18,7 +18,12 @@ from .page_batch_edit import IOSPageBatchEdit as PageBatchEdit
 from .page_batch_forward import IOSPageBatchForward as PageBatchForward
 from .page_work_bench import IOSPageWorkBench as PageWorkBench
 from .page_place_order import IOSPagePlaceOrder as PagePlaceOrder
+from .page_send_receive_messages import IOSPageSendReceiveMessages as PageSendReceiveMessages
+from .page_choose_goods import IOSPageChooseGoods as PageChooseGoods
+from .page_configure import IOSPageConfigure as PageConfigure
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
-           "PageWorkBench", "PagePlaceOrder"]
+           "PageWorkBench", "PagePlaceOrder","PageSendReceiveMessages","PageChooseGoods","PageConfigure"]
+
+

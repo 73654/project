@@ -204,6 +204,51 @@ class TestCompanyA:
             PageWorkBench.check_invoice_windows()
             PagePlaceOrder.page_place_customer()
             PagePlaceOrder.page_place_choose_customer()
+            PagePlaceOrder.page_place_delivery_mode()
+            PagePlaceOrder.page_place_delivery_choose()
+            PagePlaceOrder.page_place_delivery_information()
+            PageSendReceiveMessages.page_receive_historical_address()
+            PageSendReceiveMessages.page_receive_search()
+            PagePlaceOrder.page_place_choose_goods()
+            PageChooseGoods.page_choose_goods()
+            PageChooseGoods.page_choose_next_step()
+            PageChooseGoods.page_choose_payment_status()
+            PageChooseGoods.page_choose_confirm_order()
+
+
+    @dog.title("通用_0021:访客足迹")
+    def test_0021(self):
+        with dog.step("A进入B相册主页查看"):
+            PageMain.tab_friends()
+            PageFriends.goto_other_album(album_name="test01")
+            PageChooseGoods.page_back_lever()
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

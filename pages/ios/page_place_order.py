@@ -22,3 +22,27 @@ class IOSPagePlaceOrder(PagePlaceOrder):
     def page_place_customer(cls):
         with dog.step(f"{cls.page_name}-点击客户"):
             poco("客户").click()
+
+
+    @classmethod
+    def page_place_delivery_mode(cls):
+        with dog.step(f"{cls.page_name}-发货方式"):
+            poco("发货方式").click()
+            cls.wait_for_enter()
+
+    @classmethod
+    def page_place_delivery_choose(cls):
+        with dog.step(f"{cls.page_name}-选择发货方式"):
+            poco("快递").click()
+
+
+    @classmethod
+    def page_place_delivery_information(cls):
+        with dog.step(f"{cls.page_name}-选择收货信息"):
+            poco("收货信息").click()
+
+    @classmethod
+    def page_place_choose_goods(cls):
+        with dog.step(f"{cls.page_name}-选择商品"):
+            poco("选择商品").click()
+            cls.wait_for_enter()

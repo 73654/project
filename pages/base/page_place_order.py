@@ -24,3 +24,28 @@ class PagePlaceOrder(BasePage):
         with dog.step(f"{cls.page_name}-点击选择客户"):
             find_area_image(Template(r"tpl1744883934215.png"), target_rect=get_vertical_rect(0.3), click=True)
             cls.wait_for_enter()
+
+
+    @classmethod
+    def page_place_delivery_mode(cls):
+        with dog.step(f"{cls.page_name}-点击发货方式"):
+            pass
+
+
+    @classmethod
+    def page_place_delivery_choose(cls):
+        with dog.step(f"{cls.page_name}-选择发货方式"):
+            pass
+
+
+
+    @classmethod
+    def page_place_delivery_information(cls):
+        with dog.step(f"{cls.page_name}-选择发货方式"):
+            pass
+
+
+    @classmethod
+    def page_place_choose_goods(cls):
+        with dog.step(f"{cls.page_name}-选择商品"):
+            poco("选择商品").click()

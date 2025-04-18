@@ -126,6 +126,7 @@ class BasePageShop(BasePage):
             find_area_image(Template(r"tpl1744599239811.png"), target_rect=get_vertical_rect(-0.3), click=True)
             cls.wait_for_enter()
 
+
     @classmethod
     def shop_table_search(cls):
         with dog.step(f"{cls.page_name}--搜索"):
@@ -139,7 +140,7 @@ class BasePageShop(BasePage):
 
     @classmethod
     def find_refresh_element(cls):
-        with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品并点击"):
+        with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品"):
             scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
             cls.find_top_element()
 

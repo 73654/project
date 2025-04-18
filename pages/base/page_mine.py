@@ -31,4 +31,9 @@ class PageMine(BasePage):
             find_area_image(Template(r"tpl1744264284483.png"), target_rect=get_vertical_rect(0.3),click=True)
             cls.wait_for_enter()
 
+    @classmethod
+    def page_mine_configure(cls):
+        with dog.step(f"{cls.page_name}-设置标识"):
+            find_area_image(Template(r"tpl1744963717160.png"), target_rect=get_vertical_rect(0.12), click=True)
+            cls.wait_for_enter()
 

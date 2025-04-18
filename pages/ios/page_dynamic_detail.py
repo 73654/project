@@ -58,3 +58,5 @@ class IOSPageDynamicDetail(PageDynamicDetail):
         with dog.step(f"{cls.page_name}-动态详情页--断言出现刷新成功字样"):
             find_area_image(Template(r"tpl1744785314244.png"), target_rect=(get_vertical_rect(-0.4)))
 
+
+

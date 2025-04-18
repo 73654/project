@@ -6,6 +6,7 @@
 # -------------------------------------------------------------------------
 from common import dog
 from pages.base.page import BasePage
+from common.ui import poco
 
 
 class BasePageFriends(BasePage):
@@ -50,4 +51,5 @@ class BasePageFriends(BasePage):
     def goto_other_album(cls, album_name):
         """进入到列表其他相册中去"""
         cls._base_click(name=album_name)
+
 
