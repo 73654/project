@@ -13,4 +13,5 @@ elif current_device_type == DeviceType.IOS:
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
-           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages","PageChooseGoods","PageConfigure"]
+           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
+           "PageVisitor", "PageReceiveAndPayment","BasePageAlbumDynamic","PageAddProductsCart"]

@@ -177,3 +177,8 @@ class IOSPageShop(BasePageShop):
             text("验证商品置顶刷新")
             cls.wait_for_enter()
         cls.shop_search_first_value()
+
+    @classmethod
+    def page_add_shop_car(cls):
+        with dog.step(f"{cls.page_name}-点击购物车"):
+            poco("com.truedian.dragon:id/gouwuche").click()

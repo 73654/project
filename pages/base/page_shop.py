@@ -9,7 +9,7 @@ from common import dog
 from common.ui import Template, find_area_image, poco, get_vertical_rect, scroll_and_find_element
 from pages.base.page import BasePage
 from pages.base.page_dynamic_detail import PageDynamicDetail
-
+from airtest.core.api import home, keyevent, sleep, swipe
 
 class BasePageShop(BasePage):
     """我的店铺主页"""
@@ -155,5 +155,12 @@ class BasePageShop(BasePage):
                                     click=True)
             cls.wait_for_enter()
 
+    @classmethod
+    def shop_cart_add(cls):
+        with dog.step(f"{cls.page_name}-搜索要查询的商品名称"):
+            pass
 
-
+    @classmethod
+    def page_add_shop_car(cls):
+        with dog.step(f"{cls.page_name}-点击购物车"):
+            pass

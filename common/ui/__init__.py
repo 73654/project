@@ -9,7 +9,7 @@ from .start import step_wait_time
 from .ui import DogTemplate as Template
 from .ui import find_area_image, swipe_up, swipe_down, swipe_right, swipe_left, is_white_area, is_white_screen, \
     get_timeout_cycle, find_all_area_image, get_vertical_rect, get_horizontal_rect, find_loop_area_image, \
-    swipe_wait_for, touch_and_wait,scroll_and_find_element
+    swipe_wait_for, touch_and_wait,scroll_and_find_element,long_click_custom
 
 # 控制导出的对象
 __all__ = [
@@ -17,5 +17,5 @@ __all__ = [
     "stop_wg_app",
     "step_wait_time", "Template", "find_area_image", "swipe_up", "swipe_down", "swipe_right", "swipe_left",
     "is_white_area", "is_white_screen", "get_timeout_cycle", "find_all_area_image", "get_vertical_rect",
-    "get_horizontal_rect", "find_loop_area_image", "swipe_wait_for", "touch_and_wait","scroll_and_find_element"
+    "get_horizontal_rect", "find_loop_area_image", "swipe_wait_for", "touch_and_wait","scroll_and_find_element","long_click_custom"
 ]

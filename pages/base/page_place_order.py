@@ -49,3 +49,4 @@ class PagePlaceOrder(BasePage):
     def page_place_choose_goods(cls):
         with dog.step(f"{cls.page_name}-选择商品"):
             poco("选择商品").click()
+

@@ -379,6 +379,17 @@ def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_co
     return False
 
 
+def long_click_custom(target, duration=2):
+    """
+    自定义长按操作函数
+    :param target: 目标元素，可以是坐标或者图片模板匹配结果
+    :param duration: 长按持续时间，默认为 2 秒
+    """
+    touch(target, duration=duration)
+
+
+
+
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")

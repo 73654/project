@@ -34,6 +34,28 @@ class PageMine(BasePage):
     @classmethod
     def page_mine_configure(cls):
         with dog.step(f"{cls.page_name}-设置标识"):
-            find_area_image(Template(r"tpl1744963717160.png"), target_rect=get_vertical_rect(0.12), click=True)
+            mine_config=find_area_image(Template(r"tpl1744963717160.png"), target_rect=get_vertical_rect(0.12))
+
+            if mine_config:
+                touch_and_wait(mine_config)
+            else:
+                find_area_image(Template(r"tpl1745203758139.png"), target_rect=get_vertical_rect(0.12),click=True)
+
+
             cls.wait_for_enter()
+
+
+    @classmethod
+    def page_mine_visitor(cls):
+        # 当前迭代根据尾号去控制我的table页的背景颜色，test01为深蓝，冒泡为白色，后面需要再调整
+        with dog.step(f"{cls.page_name}-点击访客"):
+            find_area_image(Template(r"tpl1745200900426.png"), target_rect=get_vertical_rect(0.25), click=True)
+            cls.wait_for_enter()
+            visitor_img=find_area_image(Template(r"tpl1745201015761.png"), target_rect=get_vertical_rect(0.5))
+            if visitor_img:
+                find_area_image(Template(r"tpl1745201161124.png"), target_rect=get_vertical_rect(-0.15), click=True)
+
+
+
+
 

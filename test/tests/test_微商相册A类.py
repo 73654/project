@@ -138,6 +138,7 @@ class TestCompanyA:
         PageMain.tab_friends()
         PageFriends.my_album()
         PageShop.shop_table_share()
+        PageShop.table_share_code()
         PageShop.share_wx_friend()
         PageShare.choose_wechat()
         PageWechat.send_to_file_assistant()
@@ -224,7 +225,77 @@ class TestCompanyA:
             PageChooseGoods.page_back_lever()
             PageMain.tab_mine()
             PageMine.page_mine_configure()
+        with dog.step("切换B账号"):
             PageConfigure.page_switch_account()
+            PageConfigure.page_config_click()
+            PageMain.tab_mine()
+            PageMine.page_mine_visitor()
+            PageVisitor.check_page_visitor_title()
+            PageVisitor.check_page_visitor()
+            PageChooseGoods.page_back_lever()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_other_click()
+
+
+    @dog.title("通用_0023:收款码支付")
+    def test_0023(self):
+        with dog.step("A进入工作台，保存收款码"):
+            PageMain.tab_workbench()
+            PageWorkBench.receiving_payment_code()
+            PageReceiveAndPayment.page_click_payment_code()
+            PageReceiveAndPayment.page_send_friend_window()
+            PageShare.choose_wechat()
+            PageWechat.send_to_file_assistant()
+            PageWechat.click_wx_payment_code()
+            PageWechat.page_payment_amount()
+
+
+    @dog.title("通用_0026:加购自己商品")
+    def test_0026(self):
+        with dog.step("加购自己的商品--开单"):
+            PageMain.tab_dynamic()
+            BasePageAlbumDynamic.text_search()
+            PageAddProductsCart.page_products_invoice()
+            PageAddProductsCart.check_products_invoice()
+
+
+        with dog.step("加购自己的商品--立即购买"):
+            PageAddProductsCart.page_clean_invoice()
+            PageAddProductsCart.page_products_buy()
+            PageAddProductsCart.check_enter_order()
+
+
+    @dog.title("通用_0027:加购自己商品")
+    def test_0027(self):
+        with dog.step("采购未开通在线收款用户的商品"):
+            PageMain.tab_friends()
+            PageFriends.goto_other_album(album_name="test01")
+            PageShop.shop_cart_add()
+            PageShop.page_add_shop_car()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -29,3 +29,13 @@ class PageWorkBench(BasePage):
                 touch_and_wait(invoice_windows)
 
 
+    @classmethod
+    def receiving_payment_code(cls):
+        with dog.step(f"{cls.page_name}-收款码"):
+            find_area_image(Template(r"tpl1745204867043.png"), target_rect=(get_vertical_rect(0.3)), click=True)
+            cls.wait_for_enter()
+
+
+
+
+

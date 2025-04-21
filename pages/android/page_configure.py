@@ -9,8 +9,8 @@ from pages.base.page import BasePage
 from common import dog, ui
 from common.ui import poco
 from common.ui.ui import scroll_and_find_element
-
-class AndroidPageConfigure(BasePage):
+from pages.base.page_configure import PageConfigure
+class AndroidPageConfigure(PageConfigure):
     page_name="设置页面"
 
 

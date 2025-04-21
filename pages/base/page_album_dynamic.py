@@ -5,7 +5,7 @@
 @ time:    2025/4/14 15:43 
 @ desc:
 """
-
+from airtest.core.api import text
 from airtest.core.assertions import assert_exists, assert_is_not_none
 from pages.base.page import BasePage
 from common import dog

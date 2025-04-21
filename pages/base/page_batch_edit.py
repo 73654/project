@@ -8,7 +8,7 @@
 
 from pages.base.page import BasePage
 from common import dog
-from common.ui.ui import scroll_and_find_element
+from common.ui import scroll_and_find_element
 
 class PageBatchEdit(BasePage):
     page_name = "批量编辑页"

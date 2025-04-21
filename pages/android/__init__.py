@@ -21,7 +21,12 @@ from .page_place_order import AndroidPagePlaceOrder as PagePlaceOrder
 from .page_send_receive_messages import AndroidPageSendReceiveMessages as PageSendReceiveMessages
 from .page_choose_goods import AndroidPageChooseGoods as PageChooseGoods
 from .page_configure import AndroidPageConfigure as PageConfigure
+from .page_visitor import AndroidPageVisitor as PageVisitor
+from .page_receive_and_payment import AndroidPageReceiveAndPayment as PageReceiveAndPayment
+from .page_album_dynamic import AndroidBasePageAlbumDynamic as BasePageAlbumDynamic
+from .page_add_products_cart import AndroidPageAddProductsCart as PageAddProductsCart
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
-           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages","PageChooseGoods","PageConfigure"]
+           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
+           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic","PageAddProductsCart"]

@@ -21,9 +21,11 @@ from .page_place_order import IOSPagePlaceOrder as PagePlaceOrder
 from .page_send_receive_messages import IOSPageSendReceiveMessages as PageSendReceiveMessages
 from .page_choose_goods import IOSPageChooseGoods as PageChooseGoods
 from .page_configure import IOSPageConfigure as PageConfigure
-
+from .page_visitor import IOSPageVisitor as PageVisitor
+from .page_receive_and_payment import IOSPageReceiveAndPayment as PageReceiveAndPayment
+from .page_album_dynamic import IOSBasePageAlbumDynamic as BasePageAlbumDynamic
+from .page_add_products_cart import IOSPageAddProductsCart as PageAddProductsCart
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
-           "PageWorkBench", "PagePlaceOrder","PageSendReceiveMessages","PageChooseGoods","PageConfigure"]
-
-
+           "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
+           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic","PageAddProductsCart"]

@@ -8,7 +8,8 @@
 from pages.base.page import BasePage
 from common import dog, ui
 from common.ui import poco
+from pages.base.page_configure import PageConfigure
 
-class IOSPageConfigure(BasePage):
+class IOSPageConfigure(PageConfigure):
     page_name="设置页面"
 

@@ -6,12 +6,12 @@
 # -------------------------------------------------------------------------
 from airtest.core.api import text
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
-
+from common import dog, ui
 from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
-from common.ui.ui import swipe_wait_for
+from common.ui import swipe_wait_for
 from pages.base.page_shop import BasePageShop
-
+from airtest.core.api import home, keyevent, sleep, swipe
 
 
 class AndroidPageShop(BasePageShop):
@@ -144,6 +144,7 @@ class AndroidPageShop(BasePageShop):
         with dog.step(f"{cls.page_name}-右上角分享标识"):
             poco("com.truedian.dragon:id/iv_date").click()
 
+
     @classmethod
     def table_share_code(cls):
         with dog.step(f"{cls.page_name}-分享我的主页--二维码"):
@@ -172,9 +173,18 @@ class AndroidPageShop(BasePageShop):
         cls.shop_search_first_value()
 
 
-    # @classmethod
-    # def button_batch_share(cls):
-    #     cls._click_button("ll_batch_share", "批量编辑/分享")
+
+    @classmethod
+    def shop_cart_add(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("标题价格499元")
+
+    @classmethod
+    def page_add_shop_car(cls):
+        with dog.step(f"{cls.page_name}-点击购物车"):
+            poco("com.truedian.dragon:id/gouwuche").click()
+            cls.wait_for_enter()
 
 
 
