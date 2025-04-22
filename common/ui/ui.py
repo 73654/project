@@ -387,7 +387,28 @@ def long_click_custom(target, duration=2):
     """
     touch(target, duration=duration)
 
+def drag_to(from_: Template, to: Template | tuple[float, float],
+            target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
+            duration=2.0):
+    """
+    将一个元素拖拽到目标位置
 
+    参数:
+        from_: Template类型，起始拖拽的模板图片
+        to: Template或tuple类型，拖拽的目标位置
+            - 如果是Template：表示拖拽到目标图片位置
+            - 如果是tuple：表示拖拽到指定的相对坐标位置(x, y)，坐标值范围0~1
+        target_rect: UIObjectProxy或tuple类型，可选，默认为None
+            - 如果是UIObjectProxy：在指定控件范围内查找
+            - 如果是tuple：指定区域的相对坐标(x0, y0, x1, y1)，坐标值范围0~1
+            - 如果是None：在全屏范围内查找
+        duration: float类型，可选，拖拽动作持续时间，单位秒，默认2.0秒
+
+    功能:
+        在指定区域内查找起始模板图片，并将其拖拽到目标位置。
+        目标位置可以是另一个模板图片或指定的坐标位置。
+    """
+    pass
 
 
 if __name__ == "__main__":
