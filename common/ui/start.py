@@ -56,6 +56,7 @@ def get_device_id(device_type: DeviceType) -> str | None:
         unique_device_id = match.group(1)
         log(f"获取{device_type.name}设备id： {unique_device_id}")
         return unique_device_id
+    return None
 
 
 current_device_type = get_device_type()
@@ -69,6 +70,7 @@ def get_poco():
     elif current_device_type == DeviceType.IOS:
         connect_device(f"ios:////http+usbmux://{current_device_id}")
         return iosPoco(use_airtest_input=True, screenshot_each_action=False, action_interval=step_wait_time)
+    return None
 
 
 def start_wg_app():
