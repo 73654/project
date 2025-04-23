@@ -404,7 +404,9 @@ def drag_to(from_: Template, to: Template | tuple[float, float],
             - 如果是UIObjectProxy：在指定控件范围内查找
             - 如果是tuple：指定区域的相对坐标(x0, y0, x1, y1)，坐标值范围0~1
             - 如果是None：在全屏范围内查找
-        duration: float类型，可选，拖拽动作持续时间，单位秒，默认2.0秒
+        long_click_duration：拖动长按的时间，默认1秒
+        steps：拖动的步数，默认5步完成
+        duration: float类型，可选，拖拽动作持续时间，单位秒，默认1秒
 
     功能:
         在指定区域内查找起始模板图片，并将其拖拽到目标位置。
