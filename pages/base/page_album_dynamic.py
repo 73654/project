@@ -21,6 +21,14 @@ class BasePageAlbumDynamic(BasePage):
     def text_search(cls):
         pass
 
+    @classmethod
+    def page_add_content(cls):
+
+        find_area_image(Template(r"tpl1745402221872.png"), target_rect=(get_vertical_rect(0.15)), click=True)
 
 
 
+    @classmethod
+    def page_release(cls):
+        with dog.step(f"{cls.page_name}-发布"):
+            pass

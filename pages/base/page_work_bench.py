@@ -36,6 +36,14 @@ class PageWorkBench(BasePage):
             cls.wait_for_enter()
 
 
+    @classmethod
+    def page_work_check_earning(cls):
+        with dog.step(f"{cls.page_name}-查看收益"):
+            find_area_image(Template(r"tpl1745493384205.png"), target_rect=(get_vertical_rect(-0.6)), click=True)
+            cls.wait_for_enter()
+
+
+
 
 
 

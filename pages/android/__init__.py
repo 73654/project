@@ -25,8 +25,14 @@ from .page_visitor import AndroidPageVisitor as PageVisitor
 from .page_receive_and_payment import AndroidPageReceiveAndPayment as PageReceiveAndPayment
 from .page_album_dynamic import AndroidBasePageAlbumDynamic as BasePageAlbumDynamic
 from .page_add_products_cart import AndroidPageAddProductsCart as PageAddProductsCart
+from .page_im_message import AndroidPageImMessage as PageImMessage
+from .page_clean_up_images import AndroidPageCleanUpImages as PageCleanUpImages
+from .page_live_stream import AndroidPageLiveStream as PageLiveStream
+from .page_team_permissons import AndroidPageTeamPermissions as PageTeamPermissions
+from .page_mobile_phone_album import AndroidPageMobilePhoneAlbum as PageMobilePhoneAlbum
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
            "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
-           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic","PageAddProductsCart"]
+           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic", "PageAddProductsCart", "PageImMessage",
+           "PageCleanUpImages","PageLiveStream","PageTeamPermissions","PageMobilePhoneAlbum"]

@@ -7,9 +7,10 @@
 """
 
 from pages.base.page import BasePage
-from common.ui import poco
+from common.ui import poco,find_area_image
 from pages.base.page_album_dynamic import BasePageAlbumDynamic
 from airtest.core.api import text
+from common import dog, ui
 
 class IOSBasePageAlbumDynamic(BasePageAlbumDynamic):
     """相册动态页"""
@@ -19,4 +20,9 @@ class IOSBasePageAlbumDynamic(BasePageAlbumDynamic):
     @classmethod
     def text_search(cls):
         poco("com.truedian.dragon:id/et_search").click()
+
+    @classmethod
+    def page_release(cls):
+        with dog.step(f"{cls.page_name}-发布"):
+            poco("发布").click()
 

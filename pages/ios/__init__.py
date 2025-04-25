@@ -25,7 +25,13 @@ from .page_visitor import IOSPageVisitor as PageVisitor
 from .page_receive_and_payment import IOSPageReceiveAndPayment as PageReceiveAndPayment
 from .page_album_dynamic import IOSBasePageAlbumDynamic as BasePageAlbumDynamic
 from .page_add_products_cart import IOSPageAddProductsCart as PageAddProductsCart
+from .page_im_message import IOSPageImMessage as PageImMessage
+from .page_clean_up_images import IOSPageCleanUpImages as PageCleanUpImages
+from .page_live_stream import IOSPageLiveStream as PageLiveStream
+from .page_mobile_phone_album import IOSPageMobilePhoneAlbum as PageMobilePhoneAlbum
+
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
            "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
-           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic","PageAddProductsCart"]
+           "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic", "PageAddProductsCart", "PageImMessage",
+           "PageCleanUpImages","PageLiveStream","PageMobilePhoneAlbum"]

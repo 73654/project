@@ -141,6 +141,19 @@ class PageWechat(BasePage):
 
 
 
+    @classmethod
+    def page_wechat_live(cls):
+        with dog.step(f"{cls.page_name}-点击直播分享"):
+            find_loop_area_image(Template("tpl1745481323508.png", threshold=0.6), area_size=-0.2,
+                                 click=True)
+            cls.wait_for_enter()
+            find_area_image(Template("tpl1745480451564.png",threshold=0.6), target_rect=get_vertical_rect(-0.15), click=True)
+            cls.wait_for_enter()
+            find_area_image(Template("tpl1745480675892.png"), target_rect=get_vertical_rect(-0.7),
+                            click=True)
+            cls.wait_for_enter()
+            find_area_image(Template("tpl1745480710998.png"), target_rect=get_vertical_rect(-0.15),
+                            click=True)
 
 
 

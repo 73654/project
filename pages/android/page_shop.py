@@ -9,7 +9,7 @@ from airtest.core.assertions import assert_equal, assert_is_not_none, assert_tru
 from common import dog, ui
 from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
-from common.ui import swipe_wait_for
+from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect
 from pages.base.page_shop import BasePageShop
 from airtest.core.api import home, keyevent, sleep, swipe
 
@@ -33,7 +33,7 @@ class AndroidPageShop(BasePageShop):
 
     @classmethod
     def batch_edit_share(cls):
-        with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
+        with dog.step(f"{cls.page_name}-点击批量分享/编辑"):
             poco("com.truedian.dragon:id/tv_batch_share").click()
 
     @classmethod
@@ -176,7 +176,7 @@ class AndroidPageShop(BasePageShop):
 
     @classmethod
     def shop_cart_add(cls):
-        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+        with dog.step(f"{cls.page_name}-好友相册页--输入要查询的商品名称"):
             cls.shop_table_search()
             text("标题价格499元")
 
@@ -186,6 +186,46 @@ class AndroidPageShop(BasePageShop):
             poco("com.truedian.dragon:id/gouwuche").click()
             cls.wait_for_enter()
 
+    @classmethod
+    def shop_mine_cart_add(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("标题价格300元")
+            sleep(ui.step_wait_time)
+            scroll_and_find_element(max_scroll_times=2, target_rect=0.3)
+
+    @classmethod
+    def page_shop_forward(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--转发"):
+            poco("com.truedian.dragon:id/share_home_fragment").click()
 
 
 
+    @classmethod
+    def shop_friend_search(cls):
+        cls.shop_table_search()
+        text("验证转发商品测试数")
+        sleep(ui.step_wait_time)
+        scroll_and_find_element(max_scroll_times=2,target_rect=0.3,target_condition={'text':'验证转发商品测试数'},click=True)
+        # find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.3), click=True)
+        cls.wait_for_enter()
+
+    @classmethod
+    def shop_friend_click(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("验证转发商品测试数")
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.35), click=True)
+            cls.wait_for_enter()
+
+
+    @classmethod
+    def page_friend_contact(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--联系ta"):
+            find_area_image(Template(r"tpl1745314413629.png"), target_rect=get_vertical_rect(-0.15), click=True)
+
+    @classmethod
+    def page_shop_clean_up(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
+            poco(text="批量删除/图文清理").click()

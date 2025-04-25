@@ -390,6 +390,10 @@ def long_click_custom(target, duration=2):
 
 
 
+
+
+
+
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")

@@ -164,3 +164,32 @@ class BasePageShop(BasePage):
     def page_add_shop_car(cls):
         with dog.step(f"{cls.page_name}-点击购物车"):
             pass
+
+    @classmethod
+    def shop_mine_cart_add(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            pass
+
+    @classmethod
+    def page_shop_forward(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--转发"):
+            pass
+
+    @classmethod
+    def shop_friend_search(cls):
+        pass
+
+
+    @classmethod
+    def shop_friend_click(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            pass
+
+    @classmethod
+    def page_friend_contact(cls):
+        pass
+
+    @classmethod
+    def page_shop_clean_up(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
+            pass

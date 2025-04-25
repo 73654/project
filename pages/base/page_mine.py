@@ -7,7 +7,7 @@
 from common import dog
 from common.ui import find_area_image, Template, get_vertical_rect, touch_and_wait
 from pages.base.page import BasePage
-
+from airtest.core.assertions import assert_exists, assert_is_not_none
 
 class PageMine(BasePage):
     """我的"""
@@ -41,8 +41,8 @@ class PageMine(BasePage):
             else:
                 find_area_image(Template(r"tpl1745203758139.png"), target_rect=get_vertical_rect(0.12),click=True)
 
-
             cls.wait_for_enter()
+
 
 
     @classmethod
@@ -55,6 +55,30 @@ class PageMine(BasePage):
             if visitor_img:
                 find_area_image(Template(r"tpl1745201161124.png"), target_rect=get_vertical_rect(-0.15), click=True)
 
+
+
+    @classmethod
+    def page_switch_sub_account(cls):
+        with dog.step(f"{cls.page_name}-切换test01子账号"):
+            switch_sub_test01 = find_area_image(Template(r"tpl1745478099289.png"), target_rect=get_vertical_rect(0.2))
+            if switch_sub_test01:
+                touch_and_wait(switch_sub_test01)
+                cls.wait_for_enter()
+                find_area_image(Template(r"tpl1745479758305.png"), target_rect=get_vertical_rect(0.35),click=True)
+                cls.wait_for_enter()
+
+
+    @classmethod
+    def page_mine_my_wallet(cls):
+        with dog.step(f"{cls.page_name}-我的钱包"):
+
+            mine_waller=find_area_image(Template(r"tpl1745488227792.png"), target_rect=get_vertical_rect(0.3))
+            if mine_waller:
+                touch_and_wait(mine_waller)
+
+            cls.wait_for_enter()
+            assert_is_not_none(find_area_image(Template(r"tpl1745488484046.png"), target_rect=get_vertical_rect(0.3)))
+            assert_is_not_none(find_area_image(Template(r"tpl1745488632368.png"), target_rect=get_vertical_rect(0.3)))
 
 
 

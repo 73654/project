@@ -12,6 +12,7 @@ from airtest.core.api import text
 from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from airtest.core.api import home, keyevent, sleep, swipe
 from pages.base.page_choose_goods import PageChooseGoods
+
 class AndroidPageChooseGoods(PageChooseGoods):
     page_name="选择商品"
 

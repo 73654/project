@@ -6,10 +6,10 @@
 # -------------------------------------------------------------------------
 
 from airtest.core.assertions import assert_false, assert_true
-
+from airtest.core.api import home, keyevent, sleep, swipe
 from common import dog, ui
 from common.ui import Template, find_area_image, swipe_up,poco
-from common.ui.ui import swipe_wait_for
+from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect
 from pages.base.page_shop import BasePageShop
 from airtest.core.api import text
 from common.ui import poco
@@ -182,3 +182,45 @@ class IOSPageShop(BasePageShop):
     def page_add_shop_car(cls):
         with dog.step(f"{cls.page_name}-点击购物车"):
             poco("com.truedian.dragon:id/gouwuche").click()
+            cls.wait_for_enter()
+
+
+    @classmethod
+    def shop_mine_cart_add(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("标题价格300元")
+
+    @classmethod
+    def page_shop_forward(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--转发"):
+            poco("com.truedian.dragon:id/share_home_fragment").click()
+
+    @classmethod
+    def shop_friend_search(cls):
+        cls.shop_table_search()
+        text("验证转发商品测试数")
+        sleep(ui.step_wait_time)
+
+        scroll_and_find_element(max_scroll_times=2,target_rect=0.3,target_condition={'text':'验证转发商品测试数'},click=True)
+
+        cls.wait_for_enter()
+
+    @classmethod
+    def shop_friend_click(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("验证转发商品测试数")
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.35), click=True)
+            cls.wait_for_enter()
+
+    @classmethod
+    def page_friend_contact(cls):
+        find_area_image(Template(r"tpl1745314413629.png"), target_rect=get_vertical_rect(-0.15), click=True)
+        sleep(ui.step_wait_time)
+
+    @classmethod
+    def page_shop_clean_up(cls):
+        with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
+            poco("批量删除/图文清理").click()

@@ -35,3 +35,5 @@ class PageConfigure(BasePage):
             find_area_image(Template(r"tpl1745202515162.png"), target_rect=(get_vertical_rect(0.5)), click=True)
             cls.wait_for_enter()
 
+
+

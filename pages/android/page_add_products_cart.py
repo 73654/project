@@ -11,7 +11,7 @@ from common.ui import poco
 from pages.base.page_add_products_cart import PageAddProductsCart
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 from airtest.core.api import text
-from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
+
 
 class AndroidPageAddProductsCart(PageAddProductsCart):
     page_name = "加购商品页面"
