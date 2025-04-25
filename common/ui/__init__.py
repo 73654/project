@@ -9,22 +9,13 @@ from .start import step_wait_time
 from .ui import DogTemplate as Template
 from .ui import find_area_image, swipe_up, swipe_down, swipe_right, swipe_left, is_white_area, is_white_screen, \
     get_timeout_cycle, find_all_area_image, get_vertical_rect, get_horizontal_rect, find_loop_area_image, \
-<<<<<<< HEAD
-    swipe_wait_for, touch_and_wait, scroll_and_find_element, long_click_custom
-=======
-    swipe_wait_for, touch_and_wait, scroll_and_find_element, long_click_custom, drag_to
->>>>>>> 55d286b1138f33b19e1cdc7b4af680cafe06ce06
+    swipe_wait_for, touch_and_wait, scroll_and_find_element, long_click_custom,swipe_wait_for, touch_and_wait, scroll_and_find_element, long_click_custom, drag_to
 
 # 控制导出的对象
 __all__ = [
-    "DeviceType", "DEBUG_ON", "current_device_id", "current_device_type", "poco", "device", "start_wg_app",
-    "stop_wg_app",
-    "step_wait_time", "Template", "find_area_image", "swipe_up", "swipe_down", "swipe_right", "swipe_left",
-    "is_white_area", "is_white_screen", "get_timeout_cycle", "find_all_area_image", "get_vertical_rect",
-    "get_horizontal_rect", "find_loop_area_image", "swipe_wait_for", "touch_and_wait", "scroll_and_find_element",
-<<<<<<< HEAD
-    "long_click_custom"
-=======
-    "long_click_custom", "drag_to"
->>>>>>> 55d286b1138f33b19e1cdc7b4af680cafe06ce06
-]
+              "DeviceType", "DEBUG_ON", "current_device_id", "current_device_type", "poco", "device", "start_wg_app",
+              "stop_wg_app",
+              "step_wait_time", "Template", "find_area_image", "swipe_up", "swipe_down", "swipe_right", "swipe_left",
+              "is_white_area", "is_white_screen", "get_timeout_cycle", "find_all_area_image", "get_vertical_rect",
+              "get_horizontal_rect", "find_loop_area_image", "swipe_wait_for", "touch_and_wait",
+              "scroll_and_find_element","long_click_custom","long_click_custom", "drag_to"]
