@@ -9,6 +9,7 @@ import os
 import cv2
 from PIL import Image
 from airtest.aircv import aircv
+from airtest.core.android.touch_methods.base_touch import DownEvent, MotionEvent, MoveEvent, SleepEvent, UpEvent
 from airtest.core.api import sleep, swipe, touch
 from airtest.core.assertions import assert_true
 from airtest.core.cv import Template
@@ -17,7 +18,7 @@ from poco.proxy import UIObjectProxy
 
 from common import ui, utils
 from common.config import config
-from common.ui import current_device_type, poco
+from common.ui import current_device_type, device, poco
 from common.utils import save_image
 
 
@@ -352,7 +353,7 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     return percentage > threshold
 
 
-def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_condition: dict=None, click=False):
+def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_condition: dict = None, click=False):
     """
     滚动屏幕查找目标元素
     :param max_scroll_times: 最大滚动次数
@@ -388,6 +389,56 @@ def long_click_custom(target, duration=2):
     touch(target, duration=duration)
 
 
+def drag_to(from_: Template, to: Template | tuple[float, float],
+            target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
+            long_click_duration=1, steps=5, duration=1):
+    """
+    将一个图片拖拽到目标位置（只有Android可以用，iOS不支持）
+
+    参数:
+        from_: Template类型，起始拖拽的模板图片
+        to: Template或tuple类型，拖拽的目标位置
+            - 如果是Template：表示拖拽到目标图片位置
+            - 如果是tuple：表示拖拽到指定的相对坐标位置(x, y)，坐标值范围0~1
+        target_rect: UIObjectProxy或tuple类型，可选，默认为None
+            - 如果是UIObjectProxy：在指定控件范围内查找
+            - 如果是tuple：指定区域的相对坐标(x0, y0, x1, y1)，坐标值范围0~1
+            - 如果是None：在全屏范围内查找
+        long_click_duration：拖动长按的时间，默认1秒
+        steps：拖动的步数，默认5步完成
+        duration: float类型，可选，拖拽动作持续时间，单位秒，默认1秒
+
+    功能:
+        在指定区域内查找起始模板图片，并将其拖拽到目标位置。
+        目标位置可以是另一个模板图片或指定的坐标位置。
+    """
+    from common.ui import DeviceType
+    if current_device_type == DeviceType.IOS:
+        raise RuntimeError("该方法不支持iOS使用。")
+
+    from_pos = find_area_image(from_, target_rect=target_rect, timeout=1, click=False)
+    if isinstance(to, Template):
+        to_pos = find_area_image(to, target_rect=target_rect, timeout=1, click=False)
+    else:
+        to_pos = to
+    pass
+
+    x_step = (to_pos[0] - from_pos[0]) / steps
+    y_step = (to_pos[1] - from_pos[1]) / steps
+    duration_step = duration / steps
+
+    events: list[MotionEvent] = [DownEvent(from_pos), SleepEvent(long_click_duration)]
+
+    for step in range(steps - 2):
+        step = step + 1
+        events.append(MoveEvent((from_pos[0] + x_step * step, from_pos[1] + y_step * step)))
+        events.append(SleepEvent(duration_step))
+    events.append(MoveEvent(to_pos))
+
+    events.append(SleepEvent(0.01))
+    events.append(UpEvent(0))
+
+    device.touch_proxy.perform(events)
 
 
 
@@ -397,4 +448,6 @@ def long_click_custom(target, duration=2):
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")
-    find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4), timeout=1)
+    # find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4), timeout=1)
+    drag_to(DogTemplate(r"tpl1745390496173.png"), DogTemplate(r"tpl1745390507116.png", target_pos=6),
+            target_rect=get_vertical_rect(0.5))
