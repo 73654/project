@@ -21,6 +21,7 @@ class AndroidPageMobilePhoneAlbum(PageMobilePhoneAlbum):
     @classmethod
     def page_mobile_phone(cls):
         with dog.step(f"{cls.page_name}-选择相册中的第一张图片"):
+            sleep(ui.step_wait_time)
             first_img = poco("android.widget.FrameLayout").child("android.widget.LinearLayout").offspring(
                 "android:id/content").offspring("com.truedian.dragon:id/recyclerView").child(
                 "android.widget.RelativeLayout")[0].offspring("com.truedian.dragon:id/check")
@@ -28,7 +29,7 @@ class AndroidPageMobilePhoneAlbum(PageMobilePhoneAlbum):
                 first_img.click()
 
             else:
-                first_picture = find_area_image(Template(r"tpl1745552659688.png"),
+                first_picture = find_area_image(Template(r"tpl1745565194144.png"),
                                                 target_rect=(get_vertical_rect(0.25)))
                 touch_and_wait(first_picture, times=2)
             sleep(ui.step_wait_time)

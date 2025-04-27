@@ -409,23 +409,19 @@ class TestCompanyA:
             PageMobilePhoneAlbum.page_select_from_mobile()
             PageMobilePhoneAlbum.page_choose_one_img()
             PageMobilePhoneAlbum.page_mobile_img_enter()
-            # PageMobilePhoneAlbum.page_add_details()
+
             PageMobilePhoneAlbum.page_scroll_little_down()
             PageMobilePhoneAlbum.page_commodity_properties()
             PageMobilePhoneAlbum.page_click_commodity_selling_price()
+            PageMobilePhoneAlbum.page_click_commodity_wholesale_price()
+            PageMobilePhoneAlbum.page_click_commodity_package_price()
+            PageMobilePhoneAlbum.page_click_commodity_drop_shipping_price()
+            PageMobilePhoneAlbum.page_commodity_release()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        with dog.step("切换test01账号看直播"):
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_click()
+            BasePageAlbumDynamic.page_new_commodity_search()
+            BasePageAlbumDynamic.page_check_commodity_info()
