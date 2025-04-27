@@ -202,8 +202,8 @@ class IOSPageShop(BasePageShop):
         text("验证转发商品测试数")
         sleep(ui.step_wait_time)
 
-        scroll_and_find_element(max_scroll_times=2,target_rect=0.3,target_condition={'text':'验证转发商品测试数'},click=True)
-
+        find_area_image(Template(r"tpl1745743211519.png"),
+                                        target_rect=(get_vertical_rect(0.45)),click=True)
         cls.wait_for_enter()
 
     @classmethod
@@ -212,7 +212,7 @@ class IOSPageShop(BasePageShop):
             cls.shop_table_search()
             text("验证转发商品测试数")
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.35), click=True)
+            find_area_image(Template(r"tpl1745743211519.png"), target_rect=get_vertical_rect(-0.45), click=True)
             cls.wait_for_enter()
 
     @classmethod

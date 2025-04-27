@@ -67,5 +67,6 @@ class PageChooseGoods(BasePage):
     def page_back_lever(cls):
         with dog.step(f"{cls.page_name}-返回上一层"):
             cls.back()
+            sleep(ui.step_wait_time)
 
 

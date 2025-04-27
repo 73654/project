@@ -8,7 +8,7 @@
 from common import dog, ui
 from pages.base.page import BasePage
 from airtest.core.api import text
-from common.ui import poco,Template,find_area_image,get_vertical_rect
+from common.ui import poco,Template,find_area_image,get_vertical_rect,scroll_and_find_element
 from airtest.core.api import home, keyevent, sleep, swipe
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
 
@@ -49,17 +49,25 @@ class PageDynamicDetail(BasePage):
     @classmethod
     def page_detail_delete_material(cls):
         with dog.step(f"{cls.page_name}-删除子素材"):
-            pass
+            scroll_and_find_element(max_scroll_times=2,target_rect=0.3,target_condition={'text':'谁可以看'})
             if poco("com.truedian.dragon:id/iv_delete"):
                 poco("com.truedian.dragon:id/iv_delete").click()
                 poco(text="删除").click()
+            sleep(ui.step_wait_time)
 
 
     @classmethod
     def page_detail_forward_album(cls):
         with dog.step(f"{cls.page_name}-转发至我的主页"):
-            find_area_image(Template(r"tpl1745305822894.png"), target_rect=(get_vertical_rect(-0.15)), click=True)
             sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745305822894.png"), target_rect=(get_vertical_rect(-0.25)), click=True)
+            sleep(ui.step_wait_time)
+            detail_forward_windows=find_area_image(Template(r"tpl1745745267672.png"), target_rect=(get_vertical_rect(-0.65)))
+            if detail_forward_windows:
+                find_area_image(Template(r"tpl1745745283867.png"), target_rect=(get_vertical_rect(-0.5)),click=True)
+            sleep(ui.step_wait_time)
+            cls.wait_for_enter()
+
 
     @classmethod
     def check_detail_forward_product(cls):

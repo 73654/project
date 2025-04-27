@@ -70,12 +70,18 @@ class PageImMessage(BasePage):
     def page_send_message_switch(cls):
         with dog.step(f"{cls.page_name}-聊天消息接收开关"):
             cls.wait_for_enter()
-            send_message_switch=find_area_image(Template(r"tpl1745373012922.png"), target_rect=(get_vertical_rect(-0.35)))
+            sleep(ui.step_wait_time)
+            send_message_switch=find_area_image(Template(r"tpl1745753089954.png"), target_rect=(0.7,0.58,1,0.75))
             if send_message_switch:
                 touch_and_wait(send_message_switch)
                 sleep(ui.step_wait_time)
-                find_area_image(Template(r"tpl1745373415038.png"), target_rect=(get_vertical_rect(-0.5)))
+
+
+            send_message_window=find_area_image(Template(r"tpl1745373415038.png"), target_rect=(get_vertical_rect(-0.5)))
+            if send_message_window:
+                touch_and_wait(send_message_window)
                 sleep(ui.step_wait_time)
+
         with dog.step(f"{cls.page_name}-点击冒泡账号"):
             find_area_image(Template(r"tpl1745373614439.png"), target_rect=(get_vertical_rect(0.35)),click=True)
             cls.wait_for_enter()
@@ -90,8 +96,9 @@ class PageImMessage(BasePage):
     @classmethod
     def check_im_message(cls):
         with dog.step(f"{cls.page_name}-断言接收消息方获取消息内容"):
-            find_area_image(Template(r"tpl1745377090220.png"), target_rect=(get_vertical_rect(0.65)), click=True)
-            find_area_image(Template(r"tpl1745377107704.png"), target_rect=(get_vertical_rect(-0.65)), click=True)
+            sleep(ui.step_wait_time)
+            assert_is_not_none(find_area_image(Template(r"tpl1745377090220.png"), target_rect=(get_vertical_rect(0.75))))
+            assert_is_not_none(find_area_image(Template(r"tpl1745377107704.png"), target_rect=(0.1,0.1,0.4,0.6)))
 
 
     @classmethod

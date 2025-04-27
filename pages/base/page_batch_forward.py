@@ -8,9 +8,10 @@
 from airtest.core.assertions import assert_is_not_none
 
 from pages.base.page import BasePage
-from common import dog
+from common import dog,ui
 from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, scroll_and_find_element
 from common.ui import poco
+from airtest.core.api import home, keyevent, sleep, swipe
 
 class PageBatchForward(BasePage):
     page_name="批量转发页面"
@@ -52,6 +53,11 @@ class PageBatchForward(BasePage):
     @classmethod
     def click_search_result(cls):
         with dog.step(f"{cls.page_name}-点击搜索后的结果"):
+            search_result=find_area_image(Template(r"tpl1745746833047.png"), target_rect=(get_vertical_rect(-0.6)))
+            if search_result:
+                find_area_image(Template(r"tpl1745746844347.png"), target_rect=(get_vertical_rect(0.25)),click=True)
+
+            sleep(ui.step_wait_time)
             find_area_image(Template(r"tpl1744852657237.png"), target_rect=(get_vertical_rect(0.4)), click=True)
 
 
@@ -96,9 +102,11 @@ class PageBatchForward(BasePage):
                 cls.page_batch_add_tabel()
                 cls.wait_for_enter()
                 find_area_image(Template(r"tpl1744860208813.png"), target_rect=(get_vertical_rect(0.4)),click=True)
-                find_area_image(Template(r"tpl1744861170613.png"), target_rect=(get_vertical_rect(-0.15)), click=True)
-                cls.back()
+                cls.wait_for_enter()
+                sleep(ui.step_wait_time)
 
+                find_area_image(Template(r"tpl1744861170613.png"), target_rect=(get_vertical_rect(-0.15)), click=True)
+                sleep(ui.step_wait_time)
 
             cls.page_batch_next_step()
             cls.page_batch_next_button()

@@ -134,6 +134,69 @@ class TestCompanyA:
         with dog.step("跳转至他人代付支付页面"):
             PageClubberRecharge.check_other_pay()
 
+
+    @dog.title("通用_0012:新增商品")
+    def test_0012(self):
+        with dog.step("新增商品"):
+            PageMain.tab_dynamic()
+            BasePageAlbumDynamic.page_add_commodity_img()
+            PageImMessage.page_two_back()
+            BasePageAlbumDynamic.page_add_content()
+            BasePageAlbumDynamic.page_release()
+            PageMobilePhoneAlbum.page_mobile_phone()
+            PageMobilePhoneAlbum.page_mobile_img_enter()
+            PageMobilePhoneAlbum.page_enter_title_writing()
+            PageMobilePhoneAlbum.page_add_details()
+            PageMobilePhoneAlbum.page_select_from_mobile()
+            PageMobilePhoneAlbum.page_choose_img_mobile()
+            PageMobilePhoneAlbum.page_mobile_img_enter()
+            PageMobilePhoneAlbum.page_scroll_little_down()
+            PageMobilePhoneAlbum.page_add_details()
+            PageMobilePhoneAlbum.page_select_from_mobile()
+            PageMobilePhoneAlbum.page_choose_one_img()
+            PageMobilePhoneAlbum.page_mobile_img_enter()
+
+            PageMobilePhoneAlbum.page_scroll_little_down()
+            PageMobilePhoneAlbum.page_commodity_properties()
+            PageMobilePhoneAlbum.page_click_commodity_selling_price()
+            PageMobilePhoneAlbum.page_click_commodity_wholesale_price()
+            PageMobilePhoneAlbum.page_click_commodity_package_price()
+            PageMobilePhoneAlbum.page_click_commodity_drop_shipping_price()
+            PageMobilePhoneAlbum.page_commodity_release()
+
+        with dog.step("切换test01账号看新增商品"):
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_click()
+            BasePageAlbumDynamic.page_new_commodity_search()
+            BasePageAlbumDynamic.page_check_commodity_info()
+
+        with dog.step("切换冒泡账号"):
+            PageChooseGoods.page_back_lever()
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_other_click()
+
+
+    @dog.title("通用_0013:--转存商品分享")
+    def test_0013(self):
+        PageMain.tab_friends()
+        PageFriends.goto_other_album(album_name="test01")
+        PageShop.shop_friend_search()
+        PageDynamicDetail.page_one_click_forward()
+        PageDynamicDetail.page_detail_drag_other()
+        PageDynamicDetail.page_detail_delete_material()
+        PageDynamicDetail.page_detail_forward_album()
+        PageImMessage.page_two_back()
+        PageFriends.my_album()
+        PageShop.shop_friend_click()
+        PageDynamicDetail.check_detail_forward_product()
+
+
+
+
     @dog.title("通用_0015:店铺分享-卡片分享")
     def test_0015(self):
         PageMain.tab_friends()
@@ -146,9 +209,6 @@ class TestCompanyA:
         PageWechat.enter_wx_code()
         PageWechat.wx_open_immediately()
 
-    @dog.title("通用_0016:搜索-文搜")
-    def test_0016(self):
-        pass
 
     @dog.title("通用_0018:商品置顶&刷新")
     def test_0018(self):
@@ -284,49 +344,40 @@ class TestCompanyA:
             PageAddProductsCart.page_no_pay_windows()
             PageAddProductsCart.check_purchase_pay_page()
 
-    @dog.title("通用_0013:采购商品--转存商品分享")
-    def test_0013(self):
-        PageMain.tab_friends()
-        PageFriends.goto_other_album(album_name="test01")
-        PageShop.shop_friend_search()
-        PageDynamicDetail.page_one_click_forward()
-        PageDynamicDetail.page_detail_drag_other()
-        PageDynamicDetail.page_detail_delete_material()
-        PageDynamicDetail.page_detail_forward_album()
-        PageChooseGoods.page_back_lever()
-        PageFriends.my_album()
-        PageShop.shop_friend_click()
-        PageDynamicDetail.check_detail_forward_product()
+
 
     @dog.title("通用_0011:IM消息")
     def test_0011(self):
-        PageMain.tab_friends()
-        PageFriends.goto_other_album(album_name="test01")
-        PageShop.page_friend_contact()
-        PageImMessage.page_online_chat()
-        PageImMessage.page_message_windows()
+        with dog.step("冒泡查看给test01发送消息"):
+            PageMain.tab_friends()
+            PageFriends.goto_other_album(album_name="test01")
+            PageShop.page_friend_contact()
+            PageImMessage.page_online_chat()
+            PageImMessage.page_message_windows()
 
-        PageImMessage.page_send_sticker()
-        PageImMessage.page_send_sticker_packs()
-        PageImMessage.page_click_send_enter()
+            PageImMessage.page_send_sticker()
+            PageImMessage.page_send_sticker_packs()
+            PageImMessage.page_click_send_enter()
 
-        PageImMessage.page_send_message()
+            PageImMessage.page_send_message()
 
-        PageImMessage.page_click_plus_sign()
-        PageImMessage.page_choose_photo_album()
-        PageImMessage.page_two_back()
-        PageMain.tab_mine()
-        PageMine.page_mine_configure()
-        PageConfigure.page_switch_account()
-        PageConfigure.page_config_click()
-        PageMain.tab_message()
-        PageImMessage.page_send_message_switch()
-        PageImMessage.check_im_message()
-        PageChooseGoods.page_back_lever()
-        PageMain.tab_mine()
-        PageMine.page_mine_configure()
-        PageConfigure.page_switch_account()
-        PageConfigure.page_config_other_click()
+            PageImMessage.page_click_plus_sign()
+            PageImMessage.page_choose_photo_album()
+            PageImMessage.page_two_back()
+        with dog.step("切换test01账号,并查看对应消息是否正常展示"):
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_click()
+            PageMain.tab_message()
+            PageImMessage.page_send_message_switch()
+            PageImMessage.check_im_message()
+            PageChooseGoods.page_back_lever()
+        with dog.step("切换冒泡账号"):
+            PageMain.tab_mine()
+            PageMine.page_mine_configure()
+            PageConfigure.page_switch_account()
+            PageConfigure.page_config_other_click()
 
     @dog.title("通用_0029:云盘一键清理")
     def test_0029(self):
@@ -389,39 +440,3 @@ class TestCompanyA:
             PageWorkBench.page_work_check_earning()
             PageTeamPermissions.check_team_statistical_data()
 
-    @dog.title("通用_0012:新增商品")
-    def test_0012(self):
-        with dog.step("新增商品"):
-            PageMain.tab_dynamic()
-            BasePageAlbumDynamic.page_add_commodity_img()
-            PageImMessage.page_two_back()
-            BasePageAlbumDynamic.page_add_content()
-            BasePageAlbumDynamic.page_release()
-            PageMobilePhoneAlbum.page_mobile_phone()
-            PageMobilePhoneAlbum.page_mobile_img_enter()
-            PageMobilePhoneAlbum.page_enter_title_writing()
-            PageMobilePhoneAlbum.page_add_details()
-            PageMobilePhoneAlbum.page_select_from_mobile()
-            PageMobilePhoneAlbum.page_choose_img_mobile()
-            PageMobilePhoneAlbum.page_mobile_img_enter()
-            PageMobilePhoneAlbum.page_scroll_little_down()
-            PageMobilePhoneAlbum.page_add_details()
-            PageMobilePhoneAlbum.page_select_from_mobile()
-            PageMobilePhoneAlbum.page_choose_one_img()
-            PageMobilePhoneAlbum.page_mobile_img_enter()
-
-            PageMobilePhoneAlbum.page_scroll_little_down()
-            PageMobilePhoneAlbum.page_commodity_properties()
-            PageMobilePhoneAlbum.page_click_commodity_selling_price()
-            PageMobilePhoneAlbum.page_click_commodity_wholesale_price()
-            PageMobilePhoneAlbum.page_click_commodity_package_price()
-            PageMobilePhoneAlbum.page_click_commodity_drop_shipping_price()
-            PageMobilePhoneAlbum.page_commodity_release()
-
-        with dog.step("切换test01账号看直播"):
-            PageMain.tab_mine()
-            PageMine.page_mine_configure()
-            PageConfigure.page_switch_account()
-            PageConfigure.page_config_click()
-            BasePageAlbumDynamic.page_new_commodity_search()
-            BasePageAlbumDynamic.page_check_commodity_info()

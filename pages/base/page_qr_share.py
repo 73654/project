@@ -9,7 +9,7 @@ from airtest.core.assertions import assert_is_not_none
 from common import dog, utils
 from common.ui import Template, find_area_image
 from pages.base.page import BasePage
-
+from common.ui import Template, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 
 class PageQrShare(BasePage):
     """分享我的相册页面（分享二维码）"""
@@ -68,3 +68,10 @@ class PageQrShare(BasePage):
     def check_payee_qr(cls):
         """收款码"""
         cls._check_qr_code("收款码")
+
+
+    @classmethod
+    def tab_mini_qr_img(cls):
+        with dog.step(f"{cls.page_name}-点击小程序码"):
+            find_area_image(Template("tpl1745755795184.png"), target_rect=(0.35, 0.1, 0.7, 0.35), click=True)
+
