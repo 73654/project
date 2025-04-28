@@ -8,9 +8,10 @@
 from airtest.core.api import text
 from airtest.core.assertions import assert_exists, assert_is_not_none
 from pages.base.page import BasePage
-from common import dog
+from common import dog,ui
 from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from common.ui import poco
+from airtest.core.api import home, keyevent, sleep, swipe
 
 class BasePageAlbumDynamic(BasePage):
     """相册动态页"""

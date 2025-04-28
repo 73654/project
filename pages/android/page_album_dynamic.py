@@ -57,6 +57,17 @@ class AndroidBasePageAlbumDynamic(BasePageAlbumDynamic):
             for i in range(4):
                 sleep(ui.step_wait_time)
 
+            cls.back()
+            for i in range(2):
+                sleep(ui.step_wait_time)
+            left_img=find_area_image(Template(r"tpl1745824972643.png"), target_rect=(get_vertical_rect(0.35)))
+            if left_img:
+                find_area_image(Template(r"tpl1745824007562.png"), target_rect=(0.85,0.08,1,0.25),click=True)
+
+            cls.back()
+
+
+
 
 
     @classmethod

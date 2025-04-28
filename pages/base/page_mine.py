@@ -28,7 +28,8 @@ class PageMine(BasePage):
     @classmethod
     def clubber(cls):
         with dog.step(f"{cls.page_name}-进入会员(充值)页面"):
-            find_area_image(Template(r"tpl1744264284483.png"), target_rect=get_vertical_rect(0.3),click=True)
+            # find_area_image(Template(r"tpl1744264284483.png"), target_rect=get_vertical_rect(0.3),click=True)
+            find_area_image(Template(r"tpl1745821867141.png"), target_rect=get_vertical_rect(0.3), click=True)
             cls.wait_for_enter()
 
     @classmethod

@@ -9,7 +9,7 @@ from airtest.core.assertions import assert_equal, assert_is_not_none, assert_tru
 from common import dog, ui
 from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
-from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect
+from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect,get_horizontal_rect
 from pages.base.page_shop import BasePageShop
 from airtest.core.api import home, keyevent, sleep, swipe
 
@@ -96,7 +96,12 @@ class AndroidPageShop(BasePageShop):
             swipe_up()
 
         with dog.step(f"{cls.page_name}-全部列表-确认分享按钮是否存在"):
-            assert_true(swipe_wait_for(cls.__share_button()))
+            poco.scroll("vertical", 0.38)
+
+            assert_is_not_none(find_area_image(Template(r"tpl1745820651067.png"), target_rect=(get_vertical_rect(-0.6))))
+            poco.scroll("vertical", -0.38)
+
+            # assert_true(swipe_wait_for(cls.__share_button()))
 
     @classmethod
     def check_new_list(cls):
@@ -116,7 +121,10 @@ class AndroidPageShop(BasePageShop):
             assert_true(poco(nameMatches=".*id/dynamic_video_play").exists())
 
         with dog.step(f"{cls.page_name}-小视频列表-上滑、确认删除按钮是否存在"):
-            assert_true(swipe_wait_for(poco(nameMatches=".*id/ll_dynamic_edit").offspring(text="删除")))
+            poco.scroll("vertical", 0.45)
+            assert_is_not_none(find_area_image(Template(r"tpl1745821075739.png"), target_rect=(get_horizontal_rect(0.4))))
+            poco.scroll("vertical", -0.45)
+            # assert_true(swipe_wait_for(poco(nameMatches=".*id/ll_dynamic_edit").offspring(text="删除")))
 
     @classmethod
     def check_picture_grid(cls):
@@ -216,7 +224,17 @@ class AndroidPageShop(BasePageShop):
             cls.shop_table_search()
             text("验证转发商品测试数")
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.35), click=True)
+            find_area_image(Template(r"tpl1745310773304.png"), target_rect=get_vertical_rect(-0.39), click=True)
+            cls.wait_for_enter()
+
+
+    @classmethod
+    def shop_share_poster_click(cls):
+        with dog.step(f"{cls.page_name}-搜索--海报分享-勿删商品"):
+            cls.shop_table_search()
+            text("海报分享-勿删")
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745811562751.png"), target_rect=(0.7,0.6,1,0.85), click=True)
             cls.wait_for_enter()
 
 

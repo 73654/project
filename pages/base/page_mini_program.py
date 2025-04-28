@@ -23,4 +23,6 @@ class PageMiniProgram(BasePage):
     def check_enter_mini_program(cls):
         with dog.step(f"{cls.page_name}-确认是否进入小程序，并且不是白屏"):
             cls.wait_for_enter()
-            assert_is_not_none(find_area_image(Template(r"tpl1744080381046.png"), target_rect=get_vertical_rect(-0.1)))
+            assert_is_not_none(find_area_image(Template(r"tpl1745812599965.png"), target_rect=get_vertical_rect(-0.5)))
+            assert_is_not_none(find_area_image(Template(r"tpl1745812653495.png"), target_rect=get_vertical_rect(-0.4)))
+            # assert_is_not_none(find_area_image(Template(r"tpl1744080381046.png"), target_rect=get_vertical_rect(-0.1)))

@@ -134,6 +134,7 @@ class IOSPageShop(BasePageShop):
             swipe_up()
 
         with dog.step(f"{cls.page_name}-小视频列表-判断界面是否白屏"):
+
             assert_false(ui.is_white_area(target_rect=cls.__get_list_area()))
 
     @classmethod

@@ -29,6 +29,7 @@ class PageMobilePhoneAlbum(BasePage):
     @classmethod
     def page_add_details(cls):
         with dog.step(f"{cls.page_name}-加详情"):
+            sleep(ui.step_wait_time)
             find_area_image(Template(r"tpl1745562354186.png"), target_rect=(get_vertical_rect(0.7)), click=True)
             sleep(ui.step_wait_time)
 

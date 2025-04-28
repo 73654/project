@@ -35,6 +35,7 @@ class TestCompanyA:
         with dog.step("检查个人主页-全部列表"):
             PageShop.check_all_list()
 
+
         with dog.step("检查个人主页-上新列表"):
             PageShop.back_to_main_page()
             PageFriends.my_album()
@@ -80,7 +81,9 @@ class TestCompanyA:
         PageFriends.my_album()
 
         with dog.step("点击分享按钮，进行分享"):
-            PageShop.good_share()
+
+            # PageShop.good_share()
+            PageShop.shop_share_poster_click()
 
             PageShare.enable_mini_code()
             PageShare.share_haibao()
@@ -140,7 +143,6 @@ class TestCompanyA:
         with dog.step("新增商品"):
             PageMain.tab_dynamic()
             BasePageAlbumDynamic.page_add_commodity_img()
-            PageImMessage.page_two_back()
             BasePageAlbumDynamic.page_add_content()
             BasePageAlbumDynamic.page_release()
             PageMobilePhoneAlbum.page_mobile_phone()
@@ -318,7 +320,7 @@ class TestCompanyA:
             PageAddProductsCart.page_products_buy()
             PageAddProductsCart.check_enter_order()
 
-    @dog.title("通用_0027:采购商品--在未开通在线收款")
+    @dog.title("通用_0027_1:采购商品--在未开通在线收款")
     def test_0027_1(self):
         with dog.step("采购未开通在线收款用户的商品"):
             PageMain.tab_friends()
@@ -331,7 +333,7 @@ class TestCompanyA:
         with dog.step("确认采购页检查"):
             PageAddProductsCart.check_ensure_purchase()
 
-    @dog.title("通用_0027:采购商品--已开通在线收款")
+    @dog.title("通用_0027_2:采购商品--已开通在线收款")
     def test_0027_2(self):
         with dog.step("采购已开通在线收款用户的商品"):
             PageMain.tab_friends()

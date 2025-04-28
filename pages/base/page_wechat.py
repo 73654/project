@@ -6,7 +6,7 @@
 # -------------------------------------------------------------------------
 from airtest.core.api import sleep, text, touch
 
-from common import dog, utils
+from common import dog, utils,ui
 from common.ui import DeviceType, Template, current_device_type, find_area_image, find_loop_area_image, \
     get_vertical_rect, step_wait_time, touch_and_wait
 from pages.base.page import BasePage
@@ -27,8 +27,11 @@ class PageWechat(BasePage):
     def enter_mini_program(cls):
         """识别小程序码"""
         with dog.step(f"{cls.page_name}-点击商品图片小程序码"):
-            find_loop_area_image(Template("PageWechat_enter_mini_program_1.png", threshold=0.6), area_size=-0.2,
+
+            find_loop_area_image(Template("tpl1745812127310.png"), area_size=-0.2,
                                  click=True)
+            # find_loop_area_image(Template("PageWechat_enter_mini_program_1.png", threshold=0.6), area_size=-0.2,
+            #                      click=True)
 
         with dog.step(f"{cls.page_name}-长按图片"):
             touch_and_wait((0.5, 0.5), duration=3)
@@ -114,9 +117,10 @@ class PageWechat(BasePage):
             find_loop_area_image(Template("tpl1745220549589.png", threshold=0.6), area_size=-0.2,
                                  click=True)
 
+            sleep(ui.step_wait_time)
         with dog.step(f"{cls.page_name}-长按图片"):
             touch_and_wait((0.5, 0.5), duration=3)
-            sleep(step_wait_time)
+            sleep(ui.step_wait_time)
 
         with dog.step(f"{cls.page_name}-点击进入收款码"):
             pos = find_area_image(Template(r"tpl1744602885005.png", threshold=0.6), target_rect=get_vertical_rect(-0.2))

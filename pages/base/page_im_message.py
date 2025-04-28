@@ -83,7 +83,7 @@ class PageImMessage(BasePage):
                 sleep(ui.step_wait_time)
 
         with dog.step(f"{cls.page_name}-点击冒泡账号"):
-            find_area_image(Template(r"tpl1745373614439.png"), target_rect=(get_vertical_rect(0.35)),click=True)
+            find_area_image(Template(r"tpl1745373614439.png"), target_rect=(get_vertical_rect(0.45)),click=True)
             cls.wait_for_enter()
 
     @classmethod
