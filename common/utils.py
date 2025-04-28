@@ -1,9 +1,12 @@
 import os.path
 import re
+import socket
 import subprocess
 import time
+from functools import reduce
 
 import numpy as np
+import requests
 from PIL import Image
 from airtest.core.api import snapshot
 from airtest.core.cv import Template
@@ -12,6 +15,35 @@ from pyzbar import pyzbar
 
 from common.config import config
 
+def add_user_route(user: str, sandbox: str, album_user_list: list[str]):
+    """
+    添加预发环境路由
+    """
+    headers = {"Content-Type": "application/json", "X-User": user}
+
+    param = [{
+        "pre_uuid": sandbox,
+        "rules": reduce(lambda x, y: x + [{"albumid": y}], album_user_list, [])
+    }]
+
+    result = requests.post(config.OPERATION_HOST + "/public/api/v1/envs/grayrule/update", json=param, headers=headers)
+    return result
+
+
+def get_host_ip() -> str:
+    """获取本机IP地址
+
+    Returns:
+        str: 本机IP地址
+    """
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(('8.8.8.8', 80))
+            ip = s.getsockname()[0]
+            return ip
+    except Exception as e:
+        log(f"获取IP地址失败: {str(e)}")
+        return ''
 
 def execute_command(command: str):
     """
@@ -69,6 +101,7 @@ def parse_qr_code():
         result = obj.data.decode("utf-8")
         log(f"二维码内容: {result}")
         return result
+    return None
 
 
 def create_white_image(width: int, height: int, save_path: str = None) -> Image:
