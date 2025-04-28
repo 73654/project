@@ -7,22 +7,24 @@
 # Description: 运行测试用例
 # -------------------------------------------------------------------------
 import argparse
+import math
 import os
 import platform
 import shutil
+import signal
 
 import requests
+from airtest.core.helper import log
 
 from common import utils
-from common.config import config
-from test import setting
+from common.config import Env, config
 
 root_dir = config.get_project_dir()
 results_dir = os.path.join(root_dir, 'reports', 'results')
 reports_dir = os.path.join(root_dir, 'reports', 'reports')
 results_history = os.path.join(results_dir, 'history')
 reports_history = os.path.join(reports_dir, 'history')
-metric_file = os.path.join(reports_dir, 'prometheusData.txt')
+metric_file = os.path.join(reports_dir, 'export', 'prometheusData.txt')
 allure_bin = os.path.join(root_dir, 'external', 'allure-2.32.2', 'bin', 'allure')
 environment_file = os.path.join(results_dir, 'environment.properties')
 pyconfig_file = os.path.join(root_dir, config.TEST_DIR_NAME, 'pytest.ini')
@@ -39,9 +41,9 @@ def run_test(tests: str = '', m='', k=''):
     :return:
     """
     if m:
-        m = f'-m {m}'
+        m = f'-m "{m}"'
     if k:
-        k = f'-k {k}'
+        k = f'-k "{k}"'
 
     # 删除之前的目录
     shutil.rmtree(results_dir, ignore_errors=True)
@@ -58,7 +60,22 @@ def gen_report():
 
 
 def open_report():
-    os.system(f"{allure_bin} open {reports_dir}")
+    # 杀掉之前占用 62012 端口的进程
+    try:
+        with os.popen('netstat -aon|findstr "62010"') as res:
+            res = res.read().split('\n')
+            pids = []
+            for line in res:
+                temp = [i for i in line.split(' ') if i != '']
+                if len(temp) > 4:
+                    pids.append(temp[4])
+        for pid in pids:
+            os.kill(int(pid), signal.SIGINT)
+            print(f"杀死占用端口的进程成功，该进程 pid：{pid}")
+    except Exception as msg:
+        print(msg)
+
+    os.system(f"{allure_bin} open {reports_dir} -p 62010")
 
 
 def set_environment():
@@ -73,10 +90,51 @@ def set_environment():
             f.write(f"{k}={v}\n")
 
 
-def send_notification():
+def get_executor():
+    env_map = {
+        "192.168.96.103": "吴有源",
+        "192.168.10.181": "黄炜邦",
+        "192.168.10.215": "吴楚如",
+        "192.168.10.25": "黄晓丹",
+        "192.168.10.63": "宋东红",
+        "192.168.10.17": "王荣",
+        "192.168.10.50": "李子琴",
+        "192.168.10.46": "鄢佳迎",
+        "192.168.10.111": "张芳",
+        "192.168.10.37": "郭昭德",
+        "192.168.10.49": "聂燕妮",
+        "192.168.10.27": "柯美银",
+        "192.168.10.11": "叶开",
+        "192.168.10.105": "宋剑锋"
+    }
+    return env_map.get(utils.get_host_ip())
+
+
+def convert_minutes(minutes):
+    days = minutes // 1440
+    hours = minutes // 60 - (days * 24)
+    minutes = minutes % 60
+
+    time_str = ""
+    if days > 0:
+        time_str += f"{days}天"
+    if hours > 0:
+        time_str += f"{hours}小时"
+    if minutes > 0:
+        time_str += f"{minutes}分钟"
+
+    return time_str if time_str else "0分钟"
+
+
+def send_notification(groups=None):
+    if groups:
+        groups = groups.split(",")
+    else:
+        groups = ["54fa5b01-f4f2-43a6-becb-ec148ca2af66"]
+
     def get_metric_data():
         """
-        这个依靠Jenkins插件去生成报告
+        读取prometheusData的数据
         :return:
         """
         results = {}
@@ -84,11 +142,15 @@ def send_notification():
             with open(metric_file, 'r') as file:
                 for line in file:
                     launch_name, num = line.strip('\n').split(' ')
-                    results[launch_name] = num
+                    results[launch_name] = int(num)
+        else:
+            log(f"未找到测试结果报告：{metric_file}")
 
         _metric = dict()
-        _metric["total"] = results.get("launch_retries_retries", 0)
-        _metric["time"] = results.get("launch_time_duration", 0)
+        _metric["total"] = results.get("launch_retries_run", 0)
+        cost = results.get("launch_time_duration", 0)
+        cost = math.ceil(cost / 1000 / 60)
+        _metric["time"] = convert_minutes(cost)
         _metric["pass"] = results.get("launch_status_passed", 0)
         _metric["fail"] = results.get("launch_status_failed", 0)
         _metric["error"] = results.get("launch_status_broken", 0) + results.get("launch_status_unknown", 0)
@@ -98,44 +160,90 @@ def send_notification():
         return _metric
 
     metric = get_metric_data()
-    param = setting.report
+
+    param = config.read_config(config.CARD_CONFIG).get("report")
     var = param["card"]["data"]["template_variable"]
     var["result"] = metric["ratio"] == "100%" and "<font color='green'>成功</font>" or "<font color='red'>失败</font>"
-    var["url"] = "https://cn.bing.com"
+
+    user = config.read_config(config.FEISHU_USER)['user']
+    var["user"] = user.get(get_executor(), "all")
     var.update(get_metric_data())
-    requests.post(setting.feishu_bot.format("54fa5b01-f4f2-43a6-becb-ec148ca2af66"))
+
+    # 发送通知
+    for group in groups:
+        a = requests.post(config.FEISHU_BOT.format(group), json=param)
+        log(a.text)
 
 
-def run(tests='', m='', k=''):
+def add_user_route(sandbox: str):
+    """
+    预发环境自动把用法id，添加到对应的沙箱环境中
+    :param sandbox: 预发沙箱名，对应运维平台接口 pre_uuid字段
+    :return: 错误报异常
+    """
+    operation_user = "songjianfeng"  # 用例执行人，运维平台用
+
+    # 使用嵌套列表推导式获取所有用户ID
+    album_user_ids = config.read_config(config.FEISHU_USER)['user'].get('ids')
+
+    if album_user_ids:
+        log(f"添加到沙箱环境[{sandbox}]的用户id={album_user_ids}")
+        utils.add_user_route(operation_user, sandbox, album_user_ids)
+    else:
+        raise RuntimeError("未获取到预发环境执行用例的用户ID，无法添加到沙箱中")
+
+
+def run(tests='', m='', k='', notice=''):
     run_test(tests, m, k)
     set_environment()
 
-    # 在服务器上跑，插件会自动生成测试报告
-    if local_run:
-        gen_report()
+    gen_report()
 
-    if not local_run:
-        send_notification()
+    open_report()
+
+    send_notification(notice)
 
 
-def main(tests='', m='', k=''):
+def main(tests='', m='', k='', env='', sandbox='', notice=''):
     class Args:
         pass
 
     if cmd_run:
         parser = argparse.ArgumentParser()
+        parser.add_argument('-env', type=str, default=Env.DAILY, help='测试环境')
+        parser.add_argument('-sandbox', type=str, default='', help='沙箱环境id')
         parser.add_argument('-tests', type=str, default='', help='测试集')
-        parser.add_argument('-m', type=str, default='', help='同pytest -m参数')
+        parser.add_argument('-m', type=str, default='',
+                            help='同pytest -m参数，同一个组用逗号分隔，解析为or，不同组用空格分隔，解析为and。"1,2 3,4"解析为(1 or 2) and (3 or 4)')
         parser.add_argument('-k', type=str, default='', help='同pytest -k参数')
+        parser.add_argument('-notice', type=str, default=None, help='飞书通知群id,多个群用逗号分隔')
         args = parser.parse_args()
     else:
         args = Args()
         args.tests = tests
         args.m = m
         args.k = k
+        args.env = env if env else Env.DAILY
+        args.sandbox = sandbox
+        args.notice = notice
 
-    run(args.tests, args.m, args.k)
+    if args.m:
+        # Jenkins多个标记是通过逗号分隔传进来的，转化一下
+        temp = []
+        for s in args.m.strip().split(' '):
+            temp.append(f"({' or '.join(s.split(','))})")
+        args.m = ' and '.join(temp)
+
+    if args.env == Env.PRE:
+        add_user_route(sandbox=args.sandbox)
+
+    log(f"请求参数为：{args.tests} {args.m} {args.k} {args.env} {args.sandbox}")
+    run(args.tests, args.m, args.k, args.notice)
 
 
 if __name__ == '__main__':
-    main(tests='test/tests/test_微商相册A类.py::TestCompanyA')
+    # 日常环境运行
+    main(tests='test/tests/test_微商相册A类.py::TestCompanyA::test_0006', env=Env.DAILY)
+
+    # 预发环境运行（sandbox为预发环境的沙箱id，按情况改，会自动把测试帐号加到对应的沙箱环境中去）
+    # main(tests='test/tests/test_微商相册A类.py', env=Env.PRE, sandbox='preprod')

@@ -1,0 +1,19 @@
+# 以下为测试报告的模板
+# 飞书卡片消息
+# https://open.feishu.cn/document/uAjLw4CM/ukzMukzMukzM/feishu-cards/quick-start/send-message-cards-with-custom-bot
+[report]
+msg_type = "interactive"
+
+[report.card]
+type = "template"
+
+[report.card.data]
+template_id = "AAqFedU6yWOYM"
+# 没有挂超链接
+template_version_name = "0.0.8"
+
+[report.card.data.template_variable]
+result = "<font color='red'>失败</font>"
+user = "all"
+#metric: { "time" = 20, "total" = 1000, "ratio" = "98%", "pass" = 100, "fail" = 90, "error" = 10, "skip" = 200 }
+# 以上为测试报告的模板
