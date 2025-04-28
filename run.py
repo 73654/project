@@ -242,8 +242,9 @@ def main(tests='', m='', k='', env='', sandbox='', notice=''):
 
 
 if __name__ == '__main__':
+    # test/tests/test_微商相册A类.py::TestCompanyA::test_0006 指定跑单个用例
     # 日常环境运行
-    main(tests='test/tests/test_微商相册A类.py::TestCompanyA::test_0006', env=Env.DAILY)
+    main(tests='test/tests/test_微商相册A类.py', env=Env.DAILY)
 
     # 预发环境运行（sandbox为预发环境的沙箱id，按情况改，会自动把测试帐号加到对应的沙箱环境中去）
     # main(tests='test/tests/test_微商相册A类.py', env=Env.PRE, sandbox='preprod')
