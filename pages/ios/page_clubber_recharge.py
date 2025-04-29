@@ -7,7 +7,8 @@
 """
 from common.ui import poco
 from pages.base.page_clubber_recharge import PageClubberRecharge
-from common import dog
+from common import dog,ui
+from airtest.core.api import home, keyevent, sleep, swipe
 
 class IOSPageClubberRecharge(PageClubberRecharge):
 
@@ -17,6 +18,7 @@ class IOSPageClubberRecharge(PageClubberRecharge):
 
     @classmethod
     def shop_version(cls):
+        sleep(ui.step_wait_time)
         poco("588").click()
 
     @classmethod

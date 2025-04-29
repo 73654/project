@@ -75,6 +75,7 @@ class PageAddProductsCart(BasePage):
     @classmethod
     def check_ensure_purchase(cls):
         with dog.step(f"{cls.page_name}-确认采购页"):
+            sleep(ui.step_wait_time)
             assert_is_not_none(
                 find_area_image(Template(r"tpl1745286360785.png"), target_rect=(get_vertical_rect(0.5)), click=True))
             assert_is_not_none(
@@ -99,11 +100,13 @@ class PageAddProductsCart(BasePage):
             cls.wait_for_enter()
             no_pay = find_area_image(Template(r"tpl1745290337883.png"), target_rect=(get_vertical_rect(0.5)))
             if no_pay:
+                sleep(ui.step_wait_time)
                 find_area_image(Template(r"tpl1745290365367.png"), target_rect=(get_vertical_rect(-0.5)), click=True)
 
     @classmethod
     def check_purchase_pay_page(cls):
         with dog.step(f"{cls.page_name}-采购单支付页面"):
+            sleep(ui.step_wait_time)
             assert_is_not_none(
                 find_area_image(Template(r"tpl1745290793707.png"), target_rect=(get_vertical_rect(-0.35))))
             assert_is_not_none(

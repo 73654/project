@@ -61,7 +61,13 @@ class IOSPageDynamicDetail(PageDynamicDetail):
     @classmethod
     def page_one_click_forward(cls):
         with dog.step(f"{cls.page_name}-动态详情页--一键转发"):
-            poco("一键转发").click()
+            test_click=poco("一键转发")
+            test_click1=poco("一键分享")
+            if test_click:
+                test_click.click()
+            elif test_click1:
+                test_click1.click()
+            cls.wait_for_enter()
 
     @classmethod
     def page_detail_drag_other(cls):

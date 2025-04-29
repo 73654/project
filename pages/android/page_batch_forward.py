@@ -24,14 +24,31 @@ class AndroidPageBatchForward(PageBatchForward):
     @classmethod
     def page_batch_end_time(cls):
         with dog.step(f"{cls.page_name}-筛选弹框--结束时间"):
-            poco(text="结束时间").click()
-        with dog.step(f"{cls.page_name}-筛选弹框--点击设置"):
-            poco("android:id/button1").click()
+            sleep(ui.step_wait_time)
+            end_time = poco(text="结束时间")
+            if end_time:
+                end_time.click()
+            else:
+                find_area_image(Template(r"tpl1745832225654.png"), target_rect=(get_vertical_rect(0.4)), click=True)
+            sleep(ui.step_wait_time)
+            text_img = poco("android:id/button1")
+            if text_img:
+                text_img.click()
+            else:
+                find_area_image(Template(r"tpl1745896494350.png"), target_rect=(0.5, 0.6, 0.9, 0.85), click=True)
+
+        sleep(ui.step_wait_time)
+
 
     @classmethod
     def page_filter_little_video(cls):
         with dog.step(f"{cls.page_name}-筛选弹框--小视频"):
-            poco(text="小视频").click()
+            little_video=poco(text="小视频")
+            if little_video:
+                little_video.click()
+            else:
+                find_area_image(Template(r"tpl1745892278150.png"), target_rect=(get_vertical_rect(0.4)), click=True)
+
 
     @classmethod
     def page_batch_search(cls):

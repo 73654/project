@@ -182,6 +182,9 @@ class IOSPageShop(BasePageShop):
     @classmethod
     def page_add_shop_car(cls):
         with dog.step(f"{cls.page_name}-点击购物车"):
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745743211519.png"),
+                            target_rect=(get_vertical_rect(0.45)), click=True)
             poco("com.truedian.dragon:id/gouwuche").click()
             cls.wait_for_enter()
 

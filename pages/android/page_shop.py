@@ -191,7 +191,13 @@ class AndroidPageShop(BasePageShop):
     @classmethod
     def page_add_shop_car(cls):
         with dog.step(f"{cls.page_name}-点击购物车"):
-            poco("com.truedian.dragon:id/gouwuche").click()
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745832710232.png"),
+                            target_rect=(get_vertical_rect(0.6)), click=True)
+            cls.wait_for_enter()
+            find_area_image(Template(r"tpl1745832781441.png"),
+                            target_rect=(get_vertical_rect(-0.65)), click=True)
+
             cls.wait_for_enter()
 
     @classmethod
@@ -201,6 +207,9 @@ class AndroidPageShop(BasePageShop):
             text("标题价格300元")
             sleep(ui.step_wait_time)
             scroll_and_find_element(max_scroll_times=2, target_rect=0.3)
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745893534161.png"),
+                            target_rect=(get_vertical_rect(0.5)), click=True)
 
     @classmethod
     def page_shop_forward(cls):

@@ -7,10 +7,10 @@
 """
 from airtest.core.assertions import assert_exists, assert_is_not_none
 from pages.base.page import BasePage
-from common import dog
+from common import dog,ui
 from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from common.ui import poco
-
+from airtest.core.api import home, keyevent, sleep, swipe
 
 class PageClubberRecharge(BasePage):
     page_name = "会员充值页面操作"
@@ -33,12 +33,14 @@ class PageClubberRecharge(BasePage):
     @classmethod
     def downgrade_person_click(cls):
         with dog.step(f"{cls.page_name}-点击 降级续费288/年 "):
+            sleep(ui.step_wait_time)
             find_area_image(Template(r"tpl1744337129259.png"), target_rect=(0.5, 0.5, 1, 1),
                             click=True)
 
     @classmethod
     def downgrade_shop_click(cls):
         with dog.step(f"{cls.page_name}-点击 降级续费588/年 "):
+            sleep(ui.step_wait_time)
             find_area_image(Template(r"tpl1744355649295.png"), target_rect=(get_vertical_rect(-0.3)), click=True)
 
     @classmethod

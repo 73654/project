@@ -75,15 +75,15 @@ class PageImMessage(BasePage):
             if send_message_switch:
                 touch_and_wait(send_message_switch)
                 sleep(ui.step_wait_time)
+                find_area_image(Template(r"tpl1745373415038.png"),
+                                                      target_rect=(get_vertical_rect(-0.5)),click=True)
 
-
-            send_message_window=find_area_image(Template(r"tpl1745373415038.png"), target_rect=(get_vertical_rect(-0.5)))
-            if send_message_window:
-                touch_and_wait(send_message_window)
                 sleep(ui.step_wait_time)
 
+
         with dog.step(f"{cls.page_name}-点击冒泡账号"):
-            find_area_image(Template(r"tpl1745373614439.png"), target_rect=(get_vertical_rect(0.45)),click=True)
+            # find_area_image(Template(r"tpl1745373614439.png"), target_rect=(get_vertical_rect(0.45)),click=True)
+            find_area_image(Template(r"tpl1745832075982.png"), target_rect=(get_vertical_rect(0.45)), click=True)
             cls.wait_for_enter()
 
     @classmethod
