@@ -92,7 +92,7 @@ def set_environment():
 
 def get_executor():
     env_map = {
-        "192.168.96.103": "吴有源",
+        "192.168.10.16": "吴有源",
         "192.168.10.181": "黄炜邦",
         "192.168.10.215": "吴楚如",
         "192.168.10.25": "黄晓丹",
@@ -130,7 +130,8 @@ def send_notification(groups=None):
     if groups:
         groups = groups.split(",")
     else:
-        groups = ["54fa5b01-f4f2-43a6-becb-ec148ca2af66"]
+        # groups = ["54fa5b01-f4f2-43a6-becb-ec148ca2af66"]
+        groups = ["92d9800b-74e3-4abf-ae58-924458c00b26"]
 
     def get_metric_data():
         """
@@ -198,10 +199,8 @@ def run(tests='', m='', k='', notice=''):
     set_environment()
 
     gen_report()
-
-    open_report()
-
     send_notification(notice)
+    open_report()
 
 
 def main(tests='', m='', k='', env='', sandbox='', notice=''):

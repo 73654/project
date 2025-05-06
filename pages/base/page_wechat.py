@@ -45,9 +45,12 @@ class PageWechat(BasePage):
     @classmethod
     def keep_weixin(cls):
         with dog.step(f"{cls.page_name}-是否留在微信弹框-点击留在微信"):
+            sleep(ui.step_wait_time)
             keep_wx=find_area_image(Template(r"tpl1743674795976.png"), target_rect=get_vertical_rect(0.2, middle=True))
             if keep_wx:
                 touch_and_wait(keep_wx)
+                sleep(ui.step_wait_time)
+
 
     @classmethod
     def back_album(cls):
@@ -75,8 +78,8 @@ class PageWechat(BasePage):
 
         # 苹果会弹一个框
         # if DeviceType.IOS == current_device_type:
-        # sleep(ui.step_wait_time)
-        # cls.keep_weixin()
+        sleep(ui.step_wait_time)
+        cls.keep_weixin()
 
         with dog.step(f"{cls.page_name}-等待进入文件传输助手对话框"):
             find_area_image(Template(r"tpl1744010225134.png"), target_rect=get_vertical_rect(0.1))
@@ -92,10 +95,14 @@ class PageWechat(BasePage):
         with dog.step(f"{cls.page_name}-点击文件传输助手的二维码"):
             sleep(ui.step_wait_time)
 
-            # find_loop_area_image(Template("tpl1745892459959.png",threshold=0.65), area_size=-0.25,
+            # find_loop_area_image(Template("tpl1745892459959.png",threshold=0.6), area_size=-0.25,
             #                      click=True)
-            find_area_image(Template("tpl1744602748379.png", threshold=0.6), target_rect=get_vertical_rect(-0.4),
+            # find_area_image(Template("tpl1744602748379.png", threshold=0.6), target_rect=get_vertical_rect(-0.24),
+            #                      click=True)
+            find_area_image(Template("tpl1746503352348.png", threshold=0.45), target_rect=get_vertical_rect(-0.4),
                                  click=True)
+            sleep(ui.step_wait_time)
+
         with dog.step(f"{cls.page_name}-长按图片"):
             touch_and_wait((0.5, 0.5), duration=3)
             sleep(step_wait_time)

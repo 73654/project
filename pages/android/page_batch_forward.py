@@ -64,6 +64,7 @@ class AndroidPageBatchForward(PageBatchForward):
             sleep(ui.step_wait_time)
             for i in range(3):
                 keyevent("KEYCODE_DEL")
+            sleep(ui.step_wait_time)
             text("10")
 
 
@@ -75,8 +76,13 @@ class AndroidPageBatchForward(PageBatchForward):
     @classmethod
     def page_batch_mine_shop(cls):
         with dog.step(f"{cls.page_name}-查看我的相册"):
-            poco(text="查看我的相册").click()
+            look_album=poco(text="查看我的相册")
+            if look_album:
+                look_album.click()
+            else:
+                find_area_image(Template(r"tpl1746510861352.png"), target_rect=(get_vertical_rect(-0.4)), click=True)
             cls.wait_for_enter()
+
 
 
 
