@@ -6,8 +6,9 @@
 @ desc:
 """
 from pages.base.page import BasePage
-from common import dog
-from common.ui import poco
+from common import dog,ui
+from airtest.core.api import home, keyevent, sleep, swipe
+from common.ui import poco,Template,find_area_image
 from pages.base.page_add_products_cart import PageAddProductsCart
 from airtest.core.api import text
 from airtest.core.assertions import assert_equal, assert_is_not_none, assert_true
@@ -23,9 +24,12 @@ class IOSPageAddProductsCart(PageAddProductsCart):
     @classmethod
     def page_clean_invoice(cls):
         with dog.step(f"{cls.page_name}-清理相册动态的原始数据"):
-            clean_search = poco("com.truedian.dragon:id/iv_search_clear")
+            clean_search=find_area_image(Template(r"tpl1746784587982.png"), target_rect=(0.7, 0.09, 1, 0.17),
+                            click=True)
+
             if clean_search:
                 clean_search.click()
+            sleep(ui.step_wait_time)
             text("通用26这是帮卖过来的商品")
 
 
@@ -33,7 +37,7 @@ class IOSPageAddProductsCart(PageAddProductsCart):
     @classmethod
     def page_products_buy(cls):
         with dog.step(f"{cls.page_name}-购买"):
-            poco(text="购买").click()
+            poco("购买").click()
             cls.wait_for_enter()
 
 

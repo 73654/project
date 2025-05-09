@@ -6,10 +6,10 @@
 # -------------------------------------------------------------------------
 from airtest.core.api import touch
 
-from common import dog
+from common import dog,ui
 from common.ui import Template, find_all_area_image, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from pages.base.page import BasePage
-
+from common.ui import DeviceType
 
 class PageShare(BasePage):
     page_name = "分享面板"
@@ -58,10 +58,12 @@ class PageShare(BasePage):
     def share_haibao(cls):
         """海报分享"""
         with dog.step(f"{cls.page_name}-商品分享，并点击'海报分享'"):
-            swipe_wait_for(Template(r"tpl1743997022119.png"), direction=3, start=0.9, times=3,
+            if ui.current_device_type == DeviceType.Android:
+                swipe_wait_for(Template(r"tpl1743997022119.png"), direction=3, start=0.9, times=3,
                            target_rect=cls._get_share_area(), click=True)
-            # find_area_image(Template(r"tpl1743997022119.png"), target_rect=cls._get_share_area(),
-            #                 click=True)
+            else:
+                find_area_image(Template(r"tpl1743997022119.png"), target_rect=(get_vertical_rect(-0.3)),
+                             click=True)
 
     @classmethod
     def top_right_corner_button(cls):

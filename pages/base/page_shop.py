@@ -5,11 +5,12 @@
 # Description:
 # -------------------------------------------------------------------------
 
-from common import dog
-from common.ui import Template, find_area_image, poco, get_vertical_rect, scroll_and_find_element
+from common import dog,ui
+from common.ui import Template, find_area_image, poco, get_vertical_rect, scroll_and_find_element, touch_and_wait
 from pages.base.page import BasePage
 from pages.base.page_dynamic_detail import PageDynamicDetail
 from airtest.core.api import home, keyevent, sleep, swipe
+from common.ui import DeviceType
 
 class BasePageShop(BasePage):
     """我的店铺主页"""
@@ -123,7 +124,8 @@ class BasePageShop(BasePage):
     @classmethod
     def share_wx_friend(cls):
         with dog.step(f"{cls.page_name}-分享我的主页--点击微信好友"):
-            find_area_image(Template(r"tpl1744599239811.png"), target_rect=get_vertical_rect(-0.3), click=True)
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1744599239811.png",threshold=0.6), target_rect=get_vertical_rect(-0.3), click=True)
             cls.wait_for_enter()
 
 
@@ -135,13 +137,25 @@ class BasePageShop(BasePage):
     @classmethod
     def find_top_element(cls):
         with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品并点击"):
-            scroll_and_find_element(max_scroll_times=3,target_rect=0.4, target_condition={'text': '验证商品置顶刷新'}, click=True)
+            sleep(ui.step_wait_time)
+            if ui.current_device_type == DeviceType.Android:
+                scroll_and_find_element(max_scroll_times=3,target_rect=0.4, target_condition={'text': '验证商品置顶刷新'}, click=True)
+            else:
+                # ios 机型走下面流程
+
+                find_area_image(Template(r"tpl1746685312964.png"), target_rect=(get_vertical_rect(-0.45)),
+                                click=True)
+
             cls.wait_for_enter()
 
     @classmethod
     def find_refresh_element(cls):
         with dog.step(f"{cls.page_name}--往下滚动查询title为验证商品置顶刷新商品"):
-            scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
+            if ui.current_device_type == DeviceType.Android:
+                scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
+            else:
+                poco.scroll("vertical", 0.3)
+
             cls.find_top_element()
 
     @classmethod
@@ -150,9 +164,13 @@ class BasePageShop(BasePage):
         with dog.step(f"{cls.page_name}--返回到个人相册页"):
             PageDynamicDetail.back_shop_page()
         with dog.step(f"{cls.page_name}--查看刷新后的商品-验证商品置顶刷新"):
-            scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
-            scroll_and_find_element(max_scroll_times=3, target_rect=0.4, target_condition={'text': '验证商品置顶刷新'},
+            if ui.current_device_type == DeviceType.Android:
+                scroll_and_find_element(max_scroll_times=1, target_rect=-0.3, target_condition={'text': '置顶'})
+                scroll_and_find_element(max_scroll_times=3, target_rect=0.4, target_condition={'text': '验证商品置顶刷新'},
                                     click=True)
+            else:
+                poco.scroll("vertical", 0.3)
+
             cls.wait_for_enter()
 
     @classmethod
@@ -193,3 +211,16 @@ class BasePageShop(BasePage):
     def page_shop_clean_up(cls):
         with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
             pass
+
+    @classmethod
+    def page_check_photo_permission(cls):
+        with dog.step(f"{cls.page_name}-开启所有照片权限弹框"):
+            photo_permission=find_area_image(Template(r"tpl1746586958785.png"), target_rect=get_vertical_rect(0.65))
+            if photo_permission:
+                find_area_image(Template(r"tpl1746586968705.png"), target_rect=get_vertical_rect(-0.2),click=True)
+                cls.wait_for_enter()
+
+
+
+
+

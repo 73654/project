@@ -31,7 +31,8 @@ class BasePage(object):
                 keyevent("BACK")
 
             else:
-                swipe((0, 0.5), (0.8, 0.5), duration=1)
+                # swipe((0, 0.5), (0.8, 0.5), duration=1)
+                swipe((0, 400), (680, 400), duration=2)
 
             sleep(ui.step_wait_time)
     @classmethod

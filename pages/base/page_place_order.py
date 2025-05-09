@@ -22,7 +22,7 @@ class PagePlaceOrder(BasePage):
     @classmethod
     def page_place_choose_customer(cls):
         with dog.step(f"{cls.page_name}-点击选择客户"):
-            find_area_image(Template(r"tpl1744883934215.png"), target_rect=get_vertical_rect(0.3), click=True)
+            find_area_image(Template(r"tpl1744883934215.png",threshold=0.6), target_rect=get_vertical_rect(0.3), click=True)
             cls.wait_for_enter()
 
 

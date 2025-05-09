@@ -29,9 +29,10 @@ from .page_im_message import IOSPageImMessage as PageImMessage
 from .page_clean_up_images import IOSPageCleanUpImages as PageCleanUpImages
 from .page_live_stream import IOSPageLiveStream as PageLiveStream
 from .page_mobile_phone_album import IOSPageMobilePhoneAlbum as PageMobilePhoneAlbum
+from .page_team_permissons import IOSPageTeamPermissions as PageTeamPermissions
 
 __all__ = ["PageMain", "PageFriends", "PageShop", "PageMine", "PageQrShare", "PageWechat", "PageMiniProgram",
            "PageShare", "PageShare2", "PageClubberRecharge", "PageDynamicDetail", "PageBatchEdit", "PageBatchForward",
            "PageWorkBench", "PagePlaceOrder", "PageSendReceiveMessages", "PageChooseGoods", "PageConfigure",
            "PageVisitor", "PageReceiveAndPayment", "BasePageAlbumDynamic", "PageAddProductsCart", "PageImMessage",
-           "PageCleanUpImages","PageLiveStream","PageMobilePhoneAlbum"]
+           "PageCleanUpImages","PageLiveStream","PageMobilePhoneAlbum","PageTeamPermissions"]

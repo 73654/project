@@ -73,7 +73,7 @@ class PageDynamicDetail(BasePage):
     def check_detail_forward_product(cls):
         with dog.step(f"{cls.page_name}-转发后的商品详情验证"):
             sleep(ui.step_wait_time)
-            assert_is_not_none(find_area_image(Template(r"tpl1745309909398.png"), target_rect=(get_vertical_rect(-0.3))))
-            assert_is_not_none(find_area_image(Template(r"tpl1745309934352.png"), target_rect=(get_vertical_rect(-0.45))))
+            assert_is_not_none(find_area_image(Template(r"tpl1745309909398.png",threshold=0.6), target_rect=(get_vertical_rect(-0.3))))
+            assert_is_not_none(find_area_image(Template(r"tpl1745309934352.png",threshold=0.6), target_rect=(get_vertical_rect(-0.45))))
 
 

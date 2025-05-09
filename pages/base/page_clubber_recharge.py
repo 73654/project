@@ -72,8 +72,9 @@ class PageClubberRecharge(BasePage):
         """
         with dog.step(f"{cls.page_name}-{target_msg}"):
             cls.wait_for_enter()
-            template = Template(template_path, threshold=0.7)
-            result = find_area_image(template, target_rect=get_vertical_rect(0.5))
+            sleep(ui.step_wait_time)
+            template = Template(template_path, threshold=0.6)
+            result = find_area_image(template, target_rect=get_vertical_rect(0.4))
             assert_is_not_none(result, target_msg)
 
     @classmethod

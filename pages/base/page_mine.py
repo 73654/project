@@ -29,20 +29,21 @@ class PageMine(BasePage):
     @classmethod
     def clubber(cls):
         with dog.step(f"{cls.page_name}-进入会员(充值)页面"):
-            find_area_image(Template(r"tpl1744264284483.png"), target_rect=get_vertical_rect(0.3),click=True)
-            # find_area_image(Template(r"tpl1745821867141.png"), target_rect=get_vertical_rect(0.3), click=True)
+            # find_area_image(Template(r"tpl1744264284483.png"), target_rect=get_vertical_rect(0.3),click=True)
+            find_area_image(Template(r"tpl1745821867141.png"), target_rect=get_vertical_rect(0.3), click=True)
             cls.wait_for_enter()
             sleep(ui.step_wait_time)
 
     @classmethod
     def page_mine_configure(cls):
         with dog.step(f"{cls.page_name}-设置标识"):
-            mine_config = find_area_image(Template(r"tpl1744963717160.png"), target_rect=get_vertical_rect(0.12))
+            sleep(ui.step_wait_time)
+            mine_config = find_area_image(Template(r"tpl1744963717160.png"), target_rect=get_vertical_rect(0.14))
 
             if mine_config:
                 touch_and_wait(mine_config)
             else:
-                find_area_image(Template(r"tpl1745203758139.png"), target_rect=get_vertical_rect(0.12), click=True)
+                find_area_image(Template(r"tpl1745203758139.png",threshold=0.6), target_rect=get_vertical_rect(0.14), click=True)
 
             cls.wait_for_enter()
 

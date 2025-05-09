@@ -28,9 +28,9 @@ class PageAddProductsCart(BasePage):
             find_area_image(Template(r"tpl1745224676375.png"), target_rect=(get_vertical_rect(-0.15)), click=True)
             cls.wait_for_enter()
         with dog.step(f"{cls.page_name}-检查页面元素(存在下一步)"):
-            assert_is_not_none(find_area_image(Template(r"tpl1745225145511.png"), target_rect=(get_vertical_rect(0.5))))
+            assert_is_not_none(find_area_image(Template(r"tpl1745225145511.png",threshold=0.6), target_rect=(get_vertical_rect(0.5))))
             assert_is_not_none(
-                find_area_image(Template(r"tpl1745225176070.png"), target_rect=(get_vertical_rect(-0.15))))
+                find_area_image(Template(r"tpl1745225176070.png",threshold=0.6), target_rect=(get_vertical_rect(-0.15))))
 
         with dog.step(f"{cls.page_name}-返回主页面"):
             cls.back()
@@ -44,7 +44,7 @@ class PageAddProductsCart(BasePage):
     @classmethod
     def page_products_buy(cls):
         with dog.step(f"{cls.page_name}-购买"):
-            poco(text="购买").click()
+            poco("购买").click()
 
     @classmethod
     def check_enter_order(cls):

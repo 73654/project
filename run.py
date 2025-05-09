@@ -169,7 +169,6 @@ def send_notification(groups=None):
     user = config.read_config(config.FEISHU_USER)['user']
     var["user"] = user.get(get_executor(), "all")
     var.update(get_metric_data())
-
     # 发送通知
     for group in groups:
         a = requests.post(config.FEISHU_BOT.format(group), json=param)

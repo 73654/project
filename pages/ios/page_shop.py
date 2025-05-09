@@ -8,8 +8,8 @@
 from airtest.core.assertions import assert_false, assert_true
 from airtest.core.api import home, keyevent, sleep, swipe
 from common import dog, ui
-from common.ui import Template, find_area_image, swipe_up,poco
-from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect
+from common.ui import Template, find_area_image, swipe_up, poco, touch_and_wait
+from common.ui import swipe_wait_for, scroll_and_find_element, get_vertical_rect
 from pages.base.page_shop import BasePageShop
 from airtest.core.api import text
 from common.ui import poco
@@ -56,7 +56,7 @@ class IOSPageShop(BasePageShop):
     def _check_search_bar(cls):
         with dog.step(f"{cls.page_name}-确认搜索框存在"):
             assert_true(
-                find_area_image(Template(r"IOSPageShop__check_search_bar_1.png"), target_rect=cls.__get_tab_area()))
+                find_area_image(Template(r"tpl1746525613265.png"), target_rect=cls.__get_tab_area()))
 
         with dog.step(f"{cls.page_name}-确认搜索框-图搜图标存在"):
             assert_true(
@@ -65,23 +65,29 @@ class IOSPageShop(BasePageShop):
     @classmethod
     def batch_edit_share(cls):
         with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
-            poco("com.truedian.dragon:id/tv_batch_share").click()
+            find_area_image(Template(r"tpl1746697491599.png"),
+                            target_rect=(0.65,0.85,1,1), click=True)
 
     @classmethod
     def table_batch_edit(cls):
         with dog.step(f"{cls.page_name}-批量编辑/分享唤起的弹框--点击批量编辑"):
-            poco(text="批量编辑").click()
+            find_area_image(Template(r"tpl1746697754354.png"),
+                            target_rect=(get_vertical_rect(-0.37)), click=True)
+
 
     @classmethod
     def batch_forward(cls):
         with dog.step(f"{cls.page_name}-点击好友个人相册--批量转发按钮"):
-            poco("com.truedian.dragon:id/tv_batch_share").click()
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1746756122707.png"),
+                            target_rect=(0.7, 0.8, 0.95, 1), click=True)
+            cls.wait_for_enter()
 
 
     @classmethod
     def check_vip_status(cls):
         with dog.step(f"{cls.page_name}-校验VIP/SVIP图标暂时是否正常"):
-            assert_true(find_area_image(Template(r"common_svip.png"), target_rect=cls.__get_info_area()))
+            assert_true(find_area_image(Template(r"common_svip.png", threshold=0.6), target_rect=cls.__get_info_area()))
 
     @classmethod
     def check_new_number(cls):
@@ -134,7 +140,6 @@ class IOSPageShop(BasePageShop):
             swipe_up()
 
         with dog.step(f"{cls.page_name}-小视频列表-判断界面是否白屏"):
-
             assert_false(ui.is_white_area(target_rect=cls.__get_list_area()))
 
     @classmethod
@@ -158,18 +163,29 @@ class IOSPageShop(BasePageShop):
     @classmethod
     def shop_table_share(cls):
         with dog.step(f"{cls.page_name}-右上角分享标识"):
-            poco("nav share icon").click()
+            sleep(ui.step_wait_time)
+            # poco("nav share icon").click()
+            find_area_image(Template(r"tpl1746602248687.png"),
+                            target_rect=(0.85, 0.02, 1, 0.2), click=True)
 
     @classmethod
     def table_share_code(cls):
         with dog.step(f"{cls.page_name}-分享我的主页--二维码"):
-            poco("com.truedian.dragon:id/qr_code").click()
+
+            share_code = find_area_image(Template(r"tpl1746600676599.png"),
+                                         target_rect=(0.15, 0.65, 0.4, 0.78))
+            if share_code:
+                touch_and_wait(share_code)
+            else:
+                find_area_image(Template(r"tpl1746600751663.png"),
+                                target_rect=(0.15, 0.65, 0.4, 0.78), click=True)
+
+        sleep(ui.step_wait_time)
 
     @classmethod
     def shop_search_first_value(cls):
         with dog.step(f"{cls.page_name}-个人相册页--点击搜索出来的第一个商品标题"):
-            poco("com.truedian.dragon:id/title_home_fragment").click()
-
+            poco("验证商品置顶刷新").click()
 
     @classmethod
     def shop_search_name(cls):
@@ -188,7 +204,6 @@ class IOSPageShop(BasePageShop):
             poco("com.truedian.dragon:id/gouwuche").click()
             cls.wait_for_enter()
 
-
     @classmethod
     def shop_mine_cart_add(cls):
         with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
@@ -205,9 +220,7 @@ class IOSPageShop(BasePageShop):
         cls.shop_table_search()
         text("验证转发商品测试数")
         sleep(ui.step_wait_time)
-
-        find_area_image(Template(r"tpl1745743211519.png"),
-                                        target_rect=(get_vertical_rect(0.45)),click=True)
+        poco("验证转发商品测试数").click()
         cls.wait_for_enter()
 
     @classmethod
@@ -216,7 +229,8 @@ class IOSPageShop(BasePageShop):
             cls.shop_table_search()
             text("验证转发商品测试数")
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745743211519.png"), target_rect=get_vertical_rect(-0.45), click=True)
+            poco("验证转发商品测试数").click()
+            # find_area_image(Template(r"tpl1745743211519.png"), target_rect=get_vertical_rect(-0.45), click=True)
             cls.wait_for_enter()
 
     @classmethod
@@ -228,3 +242,19 @@ class IOSPageShop(BasePageShop):
     def page_shop_clean_up(cls):
         with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
             poco("批量删除/图文清理").click()
+
+    @classmethod
+    def shop_table_search(cls):
+        with dog.step(f"{cls.page_name}--搜索"):
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1746586369029.png"), target_rect=(0.05, 0.4, 0.5, 0.55), click=True)
+
+    @classmethod
+    def shop_share_poster_click(cls):
+        with dog.step(f"{cls.page_name}-搜索--海报分享-勿删商品"):
+            cls.shop_table_search()
+            text("海报分享-勿删")
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1745811562751.png"), target_rect=(0.7, 0.6, 1, 0.85), click=True)
+            cls.wait_for_enter()
+            cls.page_check_photo_permission()

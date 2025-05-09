@@ -8,9 +8,10 @@
 
 
 from pages.base.page import BasePage
-from common import dog
+from common import dog,ui
 from common.ui import poco
 from common.ui import Template, find_all_area_image, find_area_image,get_vertical_rect,touch_and_wait
+from common.ui import DeviceType
 
 class PageWorkBench(BasePage):
     page_name="工作台"
@@ -32,7 +33,10 @@ class PageWorkBench(BasePage):
     @classmethod
     def receiving_payment_code(cls):
         with dog.step(f"{cls.page_name}-收款码"):
-            find_area_image(Template(r"tpl1745204867043.png"), target_rect=(get_vertical_rect(0.3)), click=True)
+            if ui.current_device_type == DeviceType.Android:
+                find_area_image(Template(r"tpl1745204867043.png"), target_rect=(get_vertical_rect(0.3)), click=True)
+            else:
+                find_area_image(Template(r"tpl1745204867043.png",threshold=0.6), target_rect=(0.75,0.1,1,0.32), click=True)
             cls.wait_for_enter()
 
 

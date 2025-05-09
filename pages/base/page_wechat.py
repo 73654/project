@@ -27,9 +27,12 @@ class PageWechat(BasePage):
     def enter_mini_program(cls):
         """识别小程序码"""
         with dog.step(f"{cls.page_name}-点击商品图片小程序码"):
-
-            find_loop_area_image(Template("tpl1745812127310.png"), area_size=-0.2,
-                                 click=True)
+            if ui.current_device_type == DeviceType.Android:
+                find_loop_area_image(Template("tpl1745812127310.png"), area_size=-0.2,
+                                     click=True)
+            else:
+                find_loop_area_image(Template("tpl1746599593261.png"), area_size=0.4,
+                                     click=True)
             # find_loop_area_image(Template("PageWechat_enter_mini_program_1.png", threshold=0.6), area_size=-0.2,
             #                      click=True)
 
@@ -99,8 +102,13 @@ class PageWechat(BasePage):
             #                      click=True)
             # find_area_image(Template("tpl1744602748379.png", threshold=0.6), target_rect=get_vertical_rect(-0.24),
             #                      click=True)
-            find_area_image(Template("tpl1746503352348.png", threshold=0.45), target_rect=get_vertical_rect(-0.4),
+
+            if ui.current_device_type == DeviceType.Android:
+                find_area_image(Template("tpl1746503352348.png", threshold=0.45), target_rect=get_vertical_rect(-0.4),
                                  click=True)
+            else:
+                find_area_image(Template("tpl1746605064050.png", threshold=0.45), target_rect=get_vertical_rect(-0.4),
+                                click=True)
             sleep(ui.step_wait_time)
 
         with dog.step(f"{cls.page_name}-长按图片"):

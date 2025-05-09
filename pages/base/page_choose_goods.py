@@ -12,7 +12,7 @@ from airtest.core.api import text
 from common.ui import Template, find_area_image, get_vertical_rect, swipe_wait_for, get_horizontal_rect
 from airtest.core.api import home, keyevent, sleep, swipe
 from airtest.core.assertions import assert_exists, assert_is_not_none
-
+from common.ui import DeviceType
 
 class PageChooseGoods(BasePage):
     page_name = "选择商品"
@@ -25,11 +25,14 @@ class PageChooseGoods(BasePage):
             text("标题价格300元")
             sleep(ui.step_wait_time)
         with dog.step(f"{cls.page_name}-点击商品加购标识"):
-            find_area_image(Template(r"tpl1744948106844.png"), target_rect=(get_vertical_rect(0.4)), click=True)
+            if ui.current_device_type == DeviceType.Android:
+                find_area_image(Template(r"tpl1744948106844.png"), target_rect=(get_vertical_rect(0.4)), click=True)
+            else:
+                find_area_image(Template(r"tpl1746776120351.png"), target_rect=(0.2,0.25,0.45,0.45), click=True)
             sleep(ui.step_wait_time)
 
         with dog.step(f"{cls.page_name}-点击商品加购计数器"):
-            find_area_image(Template(r"tpl1744948403372.png"), target_rect=(get_horizontal_rect(-0.15)), click=True)
+            find_area_image(Template(r"tpl1744948403372.png",threshold=0.6), target_rect=(get_horizontal_rect(-0.15)), click=True)
             sleep(ui.step_wait_time)
 
         with dog.step(f"{cls.page_name}-点击添加"):
