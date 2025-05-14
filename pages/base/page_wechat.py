@@ -49,9 +49,10 @@ class PageWechat(BasePage):
     def keep_weixin(cls):
         with dog.step(f"{cls.page_name}-是否留在微信弹框-点击留在微信"):
             sleep(ui.step_wait_time)
-            keep_wx=find_area_image(Template(r"tpl1743674795976.png"), target_rect=get_vertical_rect(0.2, middle=True))
+            keep_wx=find_area_image(Template(r"tpl1743674795976.png"), target_rect=(0.52,0.5,0.9,0.75))
             if keep_wx:
-                touch_and_wait(keep_wx)
+                sleep(ui.step_wait_time)
+                touch(keep_wx)
                 sleep(ui.step_wait_time)
 
 
@@ -137,8 +138,12 @@ class PageWechat(BasePage):
         """识别文件传输助手中的收款码"""
         with dog.step(f"{cls.page_name}-点击文件传输助手的收款码"):
             sleep(ui.step_wait_time)
-            find_loop_area_image(Template("tpl1745220549589.png", threshold=0.6), area_size=-0.2,
-                                 click=True)
+            if ui.current_device_type == DeviceType.Android:
+                find_loop_area_image(Template("tpl1745220549589.png", threshold=0.6), area_size=-0.2,
+                                     click=True)
+            else:
+                find_loop_area_image(Template("tpl1747051480972.png", threshold=0.6), area_size=-0.2,
+                                     click=True)
 
             sleep(ui.step_wait_time)
         with dog.step(f"{cls.page_name}-长按图片"):
@@ -156,16 +161,27 @@ class PageWechat(BasePage):
     def page_payment_amount(cls):
         with dog.step(f"{cls.page_name}-跳转付款金额页面"):
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745221027845.png"), target_rect=get_vertical_rect(-0.15),click=True)
-            sleep(step_wait_time)
-            find_area_image(Template(r"tpl1745221044224.png"), target_rect=get_vertical_rect(-0.15),click=True)
-            sleep(step_wait_time)
-            find_area_image(Template(r"tpl1745221027845.png"), target_rect=get_vertical_rect(-0.15),click=True)
-            sleep(step_wait_time)
-            find_area_image(Template(r"tpl1745221267005.png"), target_rect=get_vertical_rect(-0.4),click=True)
-            sleep(step_wait_time)
-            find_area_image(Template(r"tpl1745221534520.png"), target_rect=get_vertical_rect(-0.4), click=True)
+            if ui.current_device_type == DeviceType.Android:
+                find_area_image(Template(r"tpl1745221027845.png"), target_rect=get_vertical_rect(-0.15),click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1745221044224.png"), target_rect=get_vertical_rect(-0.15),click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1745221027845.png"), target_rect=get_vertical_rect(-0.15),click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1745221267005.png"), target_rect=get_vertical_rect(-0.4),click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1745221534520.png"), target_rect=get_vertical_rect(-0.4), click=True)
 
+            else:
+                find_area_image(Template(r"tpl1747051853348.png"), target_rect=get_vertical_rect(-0.2), click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1747051923138.png"), target_rect=get_vertical_rect(-0.15), click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1747051853348.png"), target_rect=get_vertical_rect(-0.15), click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1747051963619.png"), target_rect=get_vertical_rect(-0.4), click=True)
+                sleep(step_wait_time)
+                find_area_image(Template(r"tpl1745221534520.png"), target_rect=get_vertical_rect(-0.4), click=True)
 
 
 

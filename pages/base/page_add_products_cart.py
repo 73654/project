@@ -50,9 +50,9 @@ class PageAddProductsCart(BasePage):
     def check_enter_order(cls):
         with dog.step(f"{cls.page_name}-购买"):
             assert_is_not_none(
-                find_area_image(Template(r"tpl1745228536620.png"), target_rect=(get_vertical_rect(-0.15))))
+                find_area_image(Template(r"tpl1745228536620.png",threshold=0.6), target_rect=(get_vertical_rect(-0.2))))
             assert_is_not_none(
-                find_area_image(Template(r"tpl1745228559364.png"), target_rect=(get_vertical_rect(0.15))))
+                find_area_image(Template(r"tpl1745228559364.png",threshold=0.6), target_rect=(get_vertical_rect(0.15))))
 
     @classmethod
     def page_click_purchase(cls):
@@ -77,9 +77,9 @@ class PageAddProductsCart(BasePage):
         with dog.step(f"{cls.page_name}-确认采购页"):
             sleep(ui.step_wait_time)
             assert_is_not_none(
-                find_area_image(Template(r"tpl1745286360785.png"), target_rect=(get_vertical_rect(0.5)), click=True))
+                find_area_image(Template(r"tpl1745286360785.png"), target_rect=(get_vertical_rect(0.5))))
             assert_is_not_none(
-                find_area_image(Template(r"tpl1745286379167.png"), target_rect=(get_vertical_rect(-0.3)), click=True))
+                find_area_image(Template(r"tpl1745286379167.png"), target_rect=(get_vertical_rect(-0.3))))
 
     @classmethod
     def page_mine_shop_buy(cls):

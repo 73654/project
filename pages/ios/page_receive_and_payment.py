@@ -21,8 +21,9 @@ class IOSPageReceiveAndPayment(PageReceiveAndPayment):
     @classmethod
     def page_send_friend_window(cls):
         with dog.step(f"{cls.page_name}-发送给朋友"):
-            poco("发送给朋友").click()
-            sleep(ui.step_wait_time)
+            pass
+            # poco("发送给朋友").click()
+            # sleep(ui.step_wait_time)
 
 
 

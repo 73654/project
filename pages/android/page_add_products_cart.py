@@ -24,7 +24,6 @@ class AndroidPageAddProductsCart(PageAddProductsCart):
     @classmethod
     def page_clean_invoice(cls):
         with dog.step(f"{cls.page_name}-清理相册动态的原始数据"):
-            pass
             clean_search = poco("com.truedian.dragon:id/iv_search_clear")
             if clean_search:
                 clean_search.click()

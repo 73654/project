@@ -11,7 +11,7 @@ from common import dog
 from common.ui import Template, find_area_image, poco, swipe_up
 from common.ui import swipe_wait_for,scroll_and_find_element,get_vertical_rect,get_horizontal_rect
 from pages.base.page_shop import BasePageShop
-from airtest.core.api import home, keyevent, sleep, swipe
+from airtest.core.api import home, keyevent, sleep, swipe,touch
 
 
 class AndroidPageShop(BasePageShop):
@@ -243,8 +243,16 @@ class AndroidPageShop(BasePageShop):
             cls.shop_table_search()
             text("海报分享-勿删")
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745811562751.png"), target_rect=(0.7,0.6,1,0.85), click=True)
+            poco.scroll("vertical", 0.3)
+            sleep(ui.step_wait_time)
+            test_env=poco("com.truedian.dragon:id/share_home_fragment")
+
+            if test_env:
+                test_env.click()
+            else:
+                find_area_image(Template(r"tpl1745811562751.png",threshold=0.85), target_rect=(0.82,0.4,1,0.75), click=True)
             cls.wait_for_enter()
+
 
 
     @classmethod

@@ -82,3 +82,13 @@ class PageLiveStream(BasePage):
             stop_wg_app()
             sleep(ui.step_wait_time)
             start_wg_app()
+
+    @classmethod
+    def page_live_microphone(cls):
+        with dog.step(f"{cls.page_name}-直播后允许访问麦克风弹框"):
+            share_live_wechat = find_area_image(Template(r"tpl1747041408500.png",threshold=0.6),
+                                                target_rect=(0.3,0.1,0.7,0.8))
+            if share_live_wechat:
+                find_area_image(Template(r"tpl1747041460109.png",threshold=0.6),
+                                target_rect=(0.7,0.3,1,0.6))
+

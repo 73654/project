@@ -5,7 +5,7 @@
 # Description:
 # -------------------------------------------------------------------------
 from common import dog
-from common.ui import Template, find_area_image, poco
+from common.ui import Template, find_area_image, poco,touch_and_wait
 from pages.base.page_share import PageShare, PageShare2
 
 
@@ -19,9 +19,12 @@ class AndroidPageShare(PageShare):
     @classmethod
     def enable_mini_code(cls):
         super().enable_mini_code()
-        mini = poco(nameMatches=".*:id/cb_mini_code")
-        if not mini.attr("checked"):
-            mini.click()
+        pos = find_area_image(Template(r"tpl1747221535338.png", threshold=1), timeout=3,
+                              target_rect=(0,0.38,0.25,0.55))
+        if pos:
+            touch_and_wait(pos)
+
+
 
 
 class AndroidPageShare2(PageShare2):

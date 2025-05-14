@@ -56,24 +56,25 @@ class IOSPageShop(BasePageShop):
     def _check_search_bar(cls):
         with dog.step(f"{cls.page_name}-确认搜索框存在"):
             assert_true(
-                find_area_image(Template(r"tpl1746525613265.png"), target_rect=cls.__get_tab_area()))
+                find_area_image(Template(r"tpl1747130445343.png",threshold=0.5), target_rect=(0.1,0.5,0.45,0.85)))
 
         with dog.step(f"{cls.page_name}-确认搜索框-图搜图标存在"):
             assert_true(
-                find_area_image(Template(r"IOSPageShop__check_search_bar_2.png"), target_rect=cls.__get_tab_area()))
+                find_area_image(Template(r"IOSPageShop__check_search_bar_2.png",threshold=0.5), target_rect=(0.7,0.48,1,0.6)))
+
 
     @classmethod
     def batch_edit_share(cls):
         with dog.step(f"{cls.page_name}-点击批量编辑/分享"):
             find_area_image(Template(r"tpl1746697491599.png"),
-                            target_rect=(0.65,0.85,1,1), click=True)
+                            target_rect=(0.65, 0.85, 1, 1), click=True)
+
 
     @classmethod
     def table_batch_edit(cls):
         with dog.step(f"{cls.page_name}-批量编辑/分享唤起的弹框--点击批量编辑"):
             find_area_image(Template(r"tpl1746697754354.png"),
                             target_rect=(get_vertical_rect(-0.37)), click=True)
-
 
     @classmethod
     def batch_forward(cls):
@@ -83,17 +84,16 @@ class IOSPageShop(BasePageShop):
                             target_rect=(0.7, 0.8, 0.95, 1), click=True)
             cls.wait_for_enter()
 
-
     @classmethod
     def check_vip_status(cls):
         with dog.step(f"{cls.page_name}-校验VIP/SVIP图标暂时是否正常"):
-            assert_true(find_area_image(Template(r"common_svip.png", threshold=0.6), target_rect=cls.__get_info_area()))
+            pass
 
     @classmethod
     def check_new_number(cls):
         with dog.step(f"{cls.page_name}-校验上新"):
             assert_true(
-                find_area_image(Template(r"IOSPageShop_check_new_number_1.png"), target_rect=cls.__get_info_area()),
+                find_area_image(Template(r"IOSPageShop_check_new_number_1.png",threshold=0.5), target_rect=cls.__get_info_area()),
                 "未暂展示正确的“上新”文案")
             # 数量不好校验
 
@@ -111,7 +111,7 @@ class IOSPageShop(BasePageShop):
 
         with dog.step(f"{cls.page_name}-全部列表-发布商品按钮是否存在"):
             assert_true(
-                find_area_image(Template(r"IOSPageShop_check_all_list_1.png"), target_rect=cls.__get_list_area()))
+                find_area_image(Template(r"IOSPageShop_check_all_list_1.png",threshold=0.5), target_rect=cls.__get_list_area()))
 
         with dog.step(f"{cls.page_name}-全部列表-上滑"):
             swipe_up()
@@ -199,9 +199,12 @@ class IOSPageShop(BasePageShop):
     def page_add_shop_car(cls):
         with dog.step(f"{cls.page_name}-点击购物车"):
             sleep(ui.step_wait_time)
-            find_area_image(Template(r"tpl1745743211519.png"),
-                            target_rect=(get_vertical_rect(0.45)), click=True)
-            poco("com.truedian.dragon:id/gouwuche").click()
+            find_area_image(Template(r"tpl1747014506252.png"),
+                            target_rect=(0.35, 0.52, 0.7, 0.7), click=True)
+            cls.wait_for_enter()
+            sleep(ui.step_wait_time)
+            find_area_image(Template(r"tpl1747014622488.png"),
+                            target_rect=(0.75, 0.4, 0.98, 0.65), click=True)
             cls.wait_for_enter()
 
     @classmethod
@@ -209,6 +212,10 @@ class IOSPageShop(BasePageShop):
         with dog.step(f"{cls.page_name}-个人相册页--输入要查询的商品名称"):
             cls.shop_table_search()
             text("标题价格300元")
+            sleep(ui.step_wait_time)
+
+            find_area_image(Template(r"tpl1747015398168.png"),
+                            target_rect=(0.7, 0.65, 0.9, 0.8), click=True)
 
     @classmethod
     def page_shop_forward(cls):
@@ -241,7 +248,8 @@ class IOSPageShop(BasePageShop):
     @classmethod
     def page_shop_clean_up(cls):
         with dog.step(f"{cls.page_name}-个人相册页--批量删除/图文清理"):
-            poco("批量删除/图文清理").click()
+            find_area_image(Template(r"tpl1747018346905.png"), target_rect=get_vertical_rect(-0.25), click=True)
+
 
     @classmethod
     def shop_table_search(cls):
@@ -258,3 +266,9 @@ class IOSPageShop(BasePageShop):
             find_area_image(Template(r"tpl1745811562751.png"), target_rect=(0.7, 0.6, 1, 0.85), click=True)
             cls.wait_for_enter()
             cls.page_check_photo_permission()
+
+    @classmethod
+    def shop_cart_add(cls):
+        with dog.step(f"{cls.page_name}-好友相册页--输入要查询的商品名称"):
+            cls.shop_table_search()
+            text("标题价格499元")

@@ -11,7 +11,7 @@ from common.ui import Template, find_area_image
 from pages.base.page import BasePage
 from common.ui import poco, Template, find_area_image, get_vertical_rect, swipe_wait_for, touch_and_wait
 from airtest.core.api import home, keyevent, sleep, swipe
-
+from common.ui import DeviceType
 
 
 class PageQrShare(BasePage):
@@ -31,13 +31,23 @@ class PageQrShare(BasePage):
     def _check_qr_code(cls, name):
         with dog.step(f"{cls.page_name}-解析“{name}”不为空"):
             if name == "小程序码":
-                # poco.scroll("vertical", 0.35)
-                assert_is_not_none(
-                    find_area_image(Template("tpl1745806953109.png", threshold=0.6), target_rect=(0.25, 0.55, 0.8, 1)))
+                if ui.current_device_type == DeviceType.Android:
+                    assert_is_not_none(
+                        find_area_image(Template("tpl1745806953109.png", threshold=0.6), target_rect=(0.25, 0.55, 0.8, 1)))
+                else:
+                    assert_is_not_none(
+                        find_area_image(Template("tpl1747135883847.png", threshold=0.35),
+                                        target_rect=(0.25, 0.55, 0.7, 1)))
+
                 # assert assert_is_not_none(
                 #     find_area_image(Template("common_mini_qr.png", threshold=0.6), target_rect=(0, 0, 1, 0.8)))
             elif name == "二维码":
-                assert_is_not_none(utils.parse_qr_code())
+                if ui.current_device_type == DeviceType.Android:
+                    assert_is_not_none(utils.parse_qr_code())
+                else:
+                    find_area_image(Template("tpl1747134947864.png", threshold=0.35), target_rect=(0, 0, 1, 0.8))
+
+
             else:
                 # 收款码没有适配
                 pass
@@ -57,7 +67,10 @@ class PageQrShare(BasePage):
     def tab_mini_qr(cls):
         cls.wait_for_enter()
         sleep(ui.step_wait_time)
-        find_area_image(Template("tpl1745755795184.png"), target_rect=(0.3, 0.15, 0.75, 0.4),click=True)
+        if ui.current_device_type == DeviceType.Android:
+            find_area_image(Template("tpl1745755795184.png"), target_rect=(0.3, 0.11, 0.75, 0.4),click=True)
+        else:
+            find_area_image(Template("tpl1747135167896.png"), target_rect=(0.3, 0.1, 0.75, 0.4), click=True)
         # cls._click_tab("小程序码")
 
     @classmethod

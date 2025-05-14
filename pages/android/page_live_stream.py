@@ -86,7 +86,7 @@ class AndroidPageLiveStream(PageLiveStream):
                 assert_is_not_none(
                     find_area_image(Template(r"tpl1745463461524.png"), target_rect=(get_vertical_rect(-0.6))))
 
-        cls.back()
+            cls.back()
 
     @classmethod
     def page_live_continue(cls):
@@ -141,4 +141,5 @@ class AndroidPageLiveStream(PageLiveStream):
     def page_assistant_live(cls):
         poco(text="进直播间").click()
         cls.wait_for_enter()
+
 

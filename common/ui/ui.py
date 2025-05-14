@@ -353,7 +353,7 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     return percentage > threshold
 
 
-def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_condition: dict|str, click=False):
+def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_condition: dict|str|None = None, click=False):
     """
     滚动屏幕查找目标元素
     :param max_scroll_times: 最大滚动次数
@@ -367,23 +367,24 @@ def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_co
         poco.scroll("vertical", target_rect)
         sleep(ui.step_wait_time)
 
-        if target_condition is not None:
-            # 查找目标元素
-            if isinstance(target_condition, dict):
-                target_element = poco(**target_condition)
-            elif isinstance(target_condition, str):
-                # 根据字符串内容执行不同的查找操作
-                # 例如，假设字符串是元素的名称
-                target_element = poco(target_condition)
+        # 如果未指定目标条件，则仅执行滚动
+        if target_condition is None:
+            pass
 
-                if target_element.exists():
-                    if click:
-                        target_element.click()
-                    return True
+        else:
+            # 统一处理dict和str类型的查找条件
+            target_element = poco(**target_condition) if isinstance(target_condition, dict) else poco(target_condition)
+            if target_element.exists():
+                if click:
+                    target_element.click()
+                return True
+
         scroll_count += 1
 
     # 如果滚动指定次数后仍未找到目标元素（或仅进行滚动操作）
     return False
+
+
 
 
 def long_click_custom(target, duration=2):
