@@ -76,7 +76,8 @@ def save_image(image: Image.Image | np.ndarray = None, prefix="") -> str:
 def image_toarray(image: Image.Image | Template | str = None, prefix=""):
     """将图片转为图片数组
         image 需要转的图片，不传自动截图
-        prefix 自动截图的前缀名称
+        prefix 自动截图的前缀名称.
+        
     """
     if isinstance(image, Image.Image):
         return np.array(image)

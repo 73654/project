@@ -1,9 +1,4 @@
-# -------------------------------------------------------------------------
-# Project: dogdog-ui
-# Author: songjianfeng
-# Date: 2025/3/28 14:25
-# Description:
-# -------------------------------------------------------------------------
+
 from .start import DeviceType, DEBUG_ON, current_device_id, current_device_type, poco, device, start_wg_app, stop_wg_app
 from .start import step_wait_time
 from .ui import DogTemplate as Template

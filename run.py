@@ -15,52 +15,72 @@ import signal
 
 import requests
 from airtest.core.helper import log
-
+from common.ui.set_allure import SetAllureW
 from common import utils
 from common.config import Env, config
 
+# 获取项目根目录
 root_dir = config.get_project_dir()
+# 测试结果目录
 results_dir = os.path.join(root_dir, 'reports', 'results')
+# 测试报告目录
 reports_dir = os.path.join(root_dir, 'reports', 'reports')
+# 结果历史目录
 results_history = os.path.join(results_dir, 'history')
+# 报告历史目录
 reports_history = os.path.join(reports_dir, 'history')
+# Prometheus数据文件
 metric_file = os.path.join(reports_dir, 'export', 'prometheusData.txt')
+# allure命令行工具路径
 allure_bin = os.path.join(root_dir, 'external', 'allure-2.32.2', 'bin', 'allure')
+# 环境信息文件
 environment_file = os.path.join(results_dir, 'environment.properties')
+# pytest配置文件
 pyconfig_file = os.path.join(root_dir, config.TEST_DIR_NAME, 'pytest.ini')
+# 判断是否本地运行
 local_run = not platform.system() == 'Linux'
+# 判断是否命令行运行
 cmd_run = 'PYCHARM_HOSTED' not in os.environ
 
 
 def run_test(tests: str = '', m='', k=''):
     """
-    执行pytest命令
-    :param tests: 包，模块，类等 tests/album/test_case/test.py::TestA::test_c
-    :param m: 执行指定的marker用例或跳过指定marker用例 a and not b，名称和pytest.ini中定义的一致
-    :param k: 指定用例名称、类名的类、marker名称， test_method and not test_class，名称不区分大小写
-    :return:
+    执行pytest命令，生成allure测试结果
+    :param tests: 指定测试用例、模块、类等
+    :param m: pytest -m参数，指定marker
+    :param k: pytest -k参数，指定用例名、类名等
     """
     if m:
         m = f'-m "{m}"'
     if k:
         k = f'-k "{k}"'
 
-    # 删除之前的目录
+    # 删除之前的测试结果目录，保证结果干净
     shutil.rmtree(results_dir, ignore_errors=True)
 
+    # 执行pytest命令，生成allure原始结果
     os.system(f"pytest {tests} {m} {k} -c {pyconfig_file} -s -q --alluredir={results_dir} --clean-alluredir")
 
 
 def gen_report():
-    # 把历史记录拷过来集成到新的报告中去
+    """
+    生成allure测试报告，并集成历史数据
+    """
+    # 如果有历史报告，拷贝到新结果目录
     if os.path.exists(reports_history):
         shutil.copytree(reports_history, results_history)
 
+    # 生成allure报告
     os.system(f"{allure_bin} generate {results_dir} -o {reports_dir} --clean")
+    SetAllureW().set_windows_title(reports_dir, 'LF1 Report')  # 设置allure窗口标题
+    SetAllureW().set_report_name(reports_dir, 'LF1自动化')  # 设置overview标题文案
 
 
 def open_report():
-    # 杀掉之前占用 62012 端口的进程
+    """
+    打开allure测试报告，自动释放端口
+    """
+    # 杀掉之前占用 62010 端口的进程，避免端口冲突
     try:
         with os.popen('netstat -aon|findstr "62010"') as res:
             res = res.read().split('\n')
@@ -75,42 +95,45 @@ def open_report():
     except Exception as msg:
         print(msg)
 
+    # 启动allure报告服务
     os.system(f"{allure_bin} open {reports_dir} -p 62010")
 
 
 def set_environment():
+    """
+    生成环境信息文件，供allure报告展示
+    """
     envs = {
         "Git.Version": utils.execute_command("git rev-parse HEAD"),
         "Git.Commit.Time": utils.execute_command("git show -s --format=%ci HEAD"),
         "Python.Version": utils.execute_command("python --version").replace("Python ", ""),
     }
 
+    # 写入环境信息到文件
     with open(environment_file, mode='w', encoding='utf-8') as f:
         for k, v in envs.items():
             f.write(f"{k}={v}\n")
 
 
 def get_executor():
+    """
+    根据主机IP获取执行人
+    """
     env_map = {
-        "192.168.10.16": "吴有源",
-        "192.168.10.181": "黄炜邦",
-        "192.168.10.215": "吴楚如",
-        "192.168.10.25": "黄晓丹",
-        "192.168.10.63": "宋东红",
-        "192.168.10.17": "王荣",
-        "192.168.10.50": "李子琴",
-        "192.168.10.46": "鄢佳迎",
-        "192.168.10.111": "张芳",
-        "192.168.10.37": "郭昭德",
-        "192.168.10.49": "聂燕妮",
-        "192.168.10.27": "柯美银",
-        "192.168.10.11": "叶开",
-        "192.168.10.105": "宋剑锋"
+        "10.23.3.88": "芝士",
     }
-    return env_map.get(utils.get_host_ip())
+    executor_ip = utils.get_host_ip()
+    executor = env_map.get(utils.get_host_ip())
+    if executor:
+        return executor
+    else:
+        return executor_ip
 
 
 def convert_minutes(minutes):
+    """
+    分钟数转为天、小时、分钟的字符串
+    """
     days = minutes // 1440
     hours = minutes // 60 - (days * 24)
     minutes = minutes % 60
@@ -194,6 +217,9 @@ def add_user_route(sandbox: str):
 
 
 def run(tests='', m='', k='', notice=''):
+    """
+    测试主流程：执行用例、生成环境、生成报告、推送通知、打开报告
+    """
     run_test(tests, m, k)
     set_environment()
 
@@ -203,6 +229,9 @@ def run(tests='', m='', k='', notice=''):
 
 
 def main(tests='', m='', k='', env='', sandbox='', notice=''):
+    """
+    命令行参数解析与主控入口
+    """
     class Args:
         pass
 

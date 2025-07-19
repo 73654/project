@@ -178,7 +178,7 @@ def get_timeout_cycle(timeout, interval=None):
 
 
 def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
-                    timeout: int = 10, click=False, target: Template = None):
+                    timeout: int = 1000, click=False, target: Template = None):
     """
     在指定控件内查找图片或者点击图片
 

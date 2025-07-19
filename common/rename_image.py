@@ -10,13 +10,17 @@ from pathlib import Path
 import cv2
 from skimage.metrics import structural_similarity as ssim
 
+# 批量重命名图片并同步更新代码文件中的图片路径
+# file_path: 需要处理的代码文件路径
+# image_dir: 图片所在目录
 
 def rename_images_and_update_code(file_path, image_dir):
-    class_name = None
-    method_name = None
-    count = 0
-    new_lines = []
+    class_name = None  # 当前类名
+    method_name = None  # 当前方法名
+    count = 0  # 当前方法下图片计数
+    new_lines = []  # 存储更新后的代码行
 
+    # 读取原始代码文件内容
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -27,14 +31,14 @@ def rename_images_and_update_code(file_path, image_dir):
             new_lines.append(line)
             continue
 
-        # 匹配方法定义
+        # 匹配方法定义，记录方法名并重置计数
         if line.strip().startswith("def "):
             method_name = line.split()[1].split("(")[0]
             count = 0
             new_lines.append(line)
             continue
 
-        # 查找下一行中的 Template 参数
+        # 查找包含 Template 的行，处理图片路径
         if line.strip().__contains__("(Template("):
             # 提取旧文件名
             old_path = line.split('"')[1]
@@ -43,7 +47,7 @@ def rename_images_and_update_code(file_path, image_dir):
                 print(f"Template Not StartWith: {line}")
                 continue
 
-            # 生成新文件名
+            # 生成新文件名：类名_方法名_序号
             count += 1
             new_name = f"{class_name}_{method_name}_{count}"
             new_path = old_path.replace(old_name, new_name)
@@ -66,6 +70,8 @@ def rename_images_and_update_code(file_path, image_dir):
     with open(file_path, "w", encoding="utf-8") as f:
         f.writelines(new_lines)
 
+# 计算两张图片的结构相似度（SSIM），用于判断图片内容是否相似
+# image1, image2: 图片路径
 
 def calculate_similarity(image1, image2):
     """计算两张图片的结构相似度 (SSIM)"""
@@ -75,6 +81,9 @@ def calculate_similarity(image1, image2):
     img2 = cv2.resize(img2, (100, 100))
     return ssim(img1, img2)
 
+# 查找 ios 目录下与 android 目录下相似的图片，并将 android 目录下的图片重命名为 ios 的图片名
+# ios_dir: ios 图片目录
+# android_dir: android 图片目录
 
 def find_similar_images(ios_dir, android_dir):
     """查找 ios 目录下相似的图片，并重命名 android 目录下的对应图片"""
@@ -88,7 +97,7 @@ def find_similar_images(ios_dir, android_dir):
                 print(f"Renamed: {android_image} -> {new_path}")
                 continue
 
-
+# 主程序入口，演示如何调用批量重命名和相似图片查找
 if __name__ == "__main__":
     # 定义 images 文件夹路径
     IMAGES_DIR = Path("d:/code/python/dogdog-ui/test/images")
