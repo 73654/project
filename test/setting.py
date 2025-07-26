@@ -10,7 +10,7 @@ import toml
 
 setting_config_path = os.path.abspath(__file__).replace('.py', '.toml')
 setting_config = toml.load(setting_config_path)
-
+print(setting_config)
 # 获取飞书消息模板
 report = setting_config.get('report')
 feishu_bot = setting_config.get('feishu')['bot_url']

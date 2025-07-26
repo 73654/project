@@ -45,6 +45,39 @@ def get_host_ip() -> str:
         log(f"获取IP地址失败: {str(e)}")
         return ''
 
+def auto_screenshot(name=None):
+    """
+    装饰器：自动截图并附加到Allure报告
+    :param name: 截图名称，如果不提供则使用函数名
+    """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            
+            # 执行完函数后截图
+            try:
+                import allure
+                screenshot_name = name or f"{func.__name__}执行后截图"
+                screenshot_path = save_image(prefix=f"{func.__name__}_")
+                
+                with open(screenshot_path, "rb") as image_file:
+                    allure.attach(
+                        image_file.read(),
+                        name=screenshot_name,
+                        attachment_type=allure.attachment_type.PNG
+                    )
+            except Exception as e:
+                try:
+                    import allure
+                    allure.attach(f"自动截图失败: {str(e)}", "截图错误", allure.attachment_type.TEXT)
+                except:
+                    pass
+                    
+            return result
+        return wrapper
+    return decorator
+
+
 def execute_command(command: str):
     """
     执行命令，并获取返回值
@@ -76,7 +109,8 @@ def save_image(image: Image.Image | np.ndarray = None, prefix="") -> str:
 def image_toarray(image: Image.Image | Template | str = None, prefix=""):
     """将图片转为图片数组
         image 需要转的图片，不传自动截图
-        prefix 自动截图的前缀名称
+        prefix 自动截图的前缀名称.
+        
     """
     if isinstance(image, Image.Image):
         return np.array(image)

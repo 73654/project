@@ -5,8 +5,10 @@
 # Description:
 # -------------------------------------------------------------------------
 import os
+import time
 
 import cv2
+import numpy as np
 from PIL import Image
 from airtest.aircv import aircv
 from airtest.core.android.touch_methods.base_touch import DownEvent, MotionEvent, MoveEvent, SleepEvent, UpEvent
@@ -16,10 +18,12 @@ from airtest.core.cv import Template
 from airtest.core.helper import G, log
 from poco.proxy import UIObjectProxy
 
-from common import ui, utils
+from common import utils
 from common.config import config
-from common.ui import current_device_type, device, poco
+from common.ui.start import current_device_type, device, poco, step_wait_time, DEBUG_ON
 from common.utils import save_image
+
+
 
 
 class DogTemplate(Template):
@@ -34,7 +38,7 @@ def swipe_up(start=0.5):
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
     swipe((start, 0.6), (start, 0.4))
-    sleep(ui.step_wait_time)
+    sleep(step_wait_time)
 
 
 def swipe_down(start=0.5):
@@ -42,7 +46,7 @@ def swipe_down(start=0.5):
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
     swipe((start, 0.4), (start, 0.6))
-    sleep(ui.step_wait_time)
+    sleep(step_wait_time)
 
 
 def swipe_right(start=0.5):
@@ -50,7 +54,7 @@ def swipe_right(start=0.5):
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
     swipe((0.4, start), (0.6, start))
-    sleep(ui.step_wait_time)
+    sleep(step_wait_time)
 
 
 def swipe_left(start):
@@ -58,14 +62,16 @@ def swipe_left(start):
     :param start: 滑动的位置，上下滑动X的位置，或者左右滑动Y的位置
     """
     swipe((0.6, start), (0.4, start))
-    sleep(ui.step_wait_time)
+    sleep(step_wait_time)
 
 
-def touch_and_wait(pos, wait: float = ui.step_wait_time, times=1, **kwargs):
+def touch_and_wait(pos, wait: float = step_wait_time, times=1, **kwargs):
     sleep(wait * 0.5)
     touch(pos, times=times, **kwargs)
     sleep(wait)
 
+def adb_snapshot():
+    return G.DEVICE.snapshot(quality=99)
 
 def get_vertical_rect(ration, middle=False):
     """
@@ -169,53 +175,115 @@ def get_timeout_cycle(timeout, interval=None):
     :param interval: sleep的时间，默认用统一的时间
     return: 返回循环次数
     """
-    interval = interval or ui.step_wait_time
+    interval = interval or step_wait_time
     if timeout % interval == 0:
         cycle = timeout // interval
     else:
         cycle = timeout // interval + 1
     return int(cycle)
 
+def find_gray_image(source, locality_image, thd=0.9, types=1):
+    '''
+    灰度找图
+    :param source: Template对象，包含模板图片信息
+    :param locality_image: 要搜索的图像数组（numpy array）
+    :param thd: 相似度阈值
+    :param types: 默认1为灰度化找图，其他为彩色找图
+    :return: 匹配到的坐标 (x, y) 或 None，格式与 focus_pos 完全一致
+    '''
+    # 从 Template 对象获取模板图像
+    template = cv2.imdecode(np.fromfile(source.filepath, dtype=np.uint8), cv2.IMREAD_COLOR)
+    th, tw = template.shape[:2]
+    
+    # 处理图像格式
+    if types == 1:
+        locality_image = cv2.cvtColor(locality_image, cv2.COLOR_RGB2GRAY)
+        template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+    
+    # 模板匹配
+    rv = cv2.matchTemplate(locality_image, template, cv2.TM_CCOEFF_NORMED)
+    minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(rv)
+    
+    if maxVal < thd:
+        return None
+    else:
+        focus_pos = (int(maxLoc[0] + tw / 2), int(maxLoc[1] + th / 2))
+        return focus_pos
+    
+
+# def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
+#                     timeout: int = 10, click=False, target: Template = None):
+#     """
+#     在指定控件内查找图片或者点击图片
+
+#     :param source: 需要查找的图片
+#     :param target_rect: 在所需控件范围内查找 或 指定区域(x0,y0, x1,y1) 是相对坐标值
+#     :param timeout: 查找超时时间，间隔1s查一次
+#     :param click: 是否需要点击
+#     :param target: 在指定的图片中找（如果是指定图片，timeout没用），None - 自动截屏
+#     :return: 查找到了就返回对应的坐标值，否则返回None
+#     """
+#     rect = get_area(target_rect)
+
+#     path = ""
+#     locality_image = None
+#     cycle = 1 if target is not None else get_timeout_cycle(timeout)
+#     for i in range(cycle):
+#         log(f"->第{i}次查找图片<-")
+#         if target:
+#             locality = utils.image_toarray(image=target.filepath)
+#         else:
+#             locality = adb_snapshot()
+#         locality_image = aircv.crop_image(locality, rect)
+#         r = source.match_in(locality_image)
+#         if r:
+#             r = (r[0] + rect[0], r[1] + rect[1])
+#             log(f"区域图片{path}里面找到图片{r} {source.filepath}")
+#             if click:
+#                 touch_and_wait(r)
+#             return r
+
+#         sleep(ui.step_wait_time)
+
+#     if ui.DEBUG_ON:
+#         path = save_image(locality_image, "find_area_image")
+#     if click:
+#         assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
+#     return None
+
 
 def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
-                    timeout: int = 10, click=False, target: Template = None):
+                    click=False, offset=0, click_times=1, target: Template = None):
     """
-    在指定控件内查找图片或者点击图片
+    在指定控件/范围内查找图片或者点击图片
 
     :param source: 需要查找的图片
     :param target_rect: 在所需控件范围内查找 或 指定区域(x0,y0, x1,y1) 是相对坐标值
-    :param timeout: 查找超时时间，间隔1s查一次
     :param click: 是否需要点击
-    :param target: 在指定的图片中找（如果是指定图片，timeout没用），None - 自动截屏
+    :param target: 在指定的图片中找，None - 自动截屏
     :return: 查找到了就返回对应的坐标值，否则返回None
     """
     rect = get_area(target_rect)
 
     path = ""
     locality_image = None
-    cycle = 1 if target is not None else get_timeout_cycle(timeout)
-    for i in range(cycle):
-        log(f"->第{i}次查找图片<-")
-        if target:
-            locality = utils.image_toarray(image=target.filepath)
-        else:
-            locality = G.DEVICE.snapshot(quality=99)
-        locality_image = aircv.crop_image(locality, rect)
-        r = source.match_in(locality_image)
-        if r:
-            r = (r[0] + rect[0], r[1] + rect[1])
-            log(f"区域图片{path}里面找到图片{r} {source.filepath}")
-            if click:
-                touch_and_wait(r)
-            return r
-
-        sleep(ui.step_wait_time)
-
-    if ui.DEBUG_ON:
-        path = save_image(locality_image, "find_area_image")
-    if click:
-        assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
-    return None
+    if target:
+        locality = utils.image_toarray(image=target.filepath)
+    else:
+        locality = adb_snapshot()
+    locality_image = aircv.crop_image(locality, rect)
+    r = source.match_in(locality_image)
+    if r:
+        r = (r[0] + rect[0], r[1] + rect[1])
+        log(f"区域图片{path}里面找到图片{r} {source.filepath}")
+        if click:
+            log(f"点击坐标{r}")
+            touch_and_wait(r,times=click_times)
+        return r
+    else:
+        log(f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
+        # sleep(ui.step_wait_time)
+        return None
 
 
 def find_loop_area_image(source: Template, area_size: float, click=False, target: Template = None):
@@ -286,9 +354,9 @@ def find_all_area_image(source: Template, target_rect: UIObjectProxy | tuple[flo
             r = [(x[0] + rect[0], x[1] + rect[1]) for x in r]
             return r
 
-        sleep(ui.step_wait_time)
+        sleep(step_wait_time)
 
-    if ui.DEBUG_ON:
+    if DEBUG_ON:
         path = save_image(locality_image, "find_all_area_image")
     if click >= 1:
         assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
@@ -323,7 +391,7 @@ def is_white_screen(image: Image.Image | Template = None, threshold=0.98) -> boo
     percentage = white / len(percentages) >= 0.7
     log(f"全屏白屏情况比例：{percentage}")
     if percentage:
-        if ui.DEBUG_ON:
+        if DEBUG_ON:
             save_image(image, "is_white_screen")
         return True
     else:
@@ -348,7 +416,7 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     image = image.crop(rect)
     percentage = utils.calculate_white_percentage(image)
     log(f"区域图片白屏占比：{percentage}")
-    if ui.DEBUG_ON:
+    if DEBUG_ON:
         save_image(image, "is_white_area")
     return percentage > threshold
 
@@ -365,7 +433,7 @@ def scroll_and_find_element(max_scroll_times: int, target_rect: float, target_co
     while scroll_count < max_scroll_times:
         # 执行滚动操作
         poco.scroll("vertical", target_rect)
-        sleep(ui.step_wait_time)
+        sleep(step_wait_time)
 
         # 如果未指定目标条件，则仅执行滚动
         if target_condition is None:
@@ -448,6 +516,163 @@ def drag_to(from_: Template, to: Template | tuple[float, float],
     device.touch_proxy.perform(events)
 
 
+def parse_coordinate_string(coord_str):
+    """解析坐标字符串 "(0.26, 0.53, 0.7, 0.7)" 为元组"""
+    try:
+        # 移除括号并分割
+        coord_str = coord_str.strip('()')
+        coords = [float(x.strip()) for x in coord_str.split(',')]
+        if len(coords) != 4:
+            raise ValueError(f"坐标应该有4个值，实际有{len(coords)}个")
+        return tuple(coords)
+    except Exception as e:
+        raise ValueError(f"解析坐标字符串失败 '{coord_str}': {e}")
+
+
+
+
+
+# def clear_feature_cache():
+#     """清除特征配置缓存"""
+#     global _global_feature_cache, _cache_initialized
+#     _global_feature_cache.clear()
+#     _cache_initialized = False
+#     log("特征配置缓存已清除")
+
+
+# def get_feature_cache_info():
+#     """获取特征配置缓存信息"""
+#     global _global_feature_cache, _cache_initialized
+    
+#     info = {
+#         'initialized': _cache_initialized,
+#         'files': list(_global_feature_cache.keys()),
+#         'total_features': sum(len(features) for features in _global_feature_cache.values())
+#     }
+    
+#     for file_name, features in _global_feature_cache.items():
+#         info[f'features_in_{file_name}'] = list(features.keys())
+    
+#     return info
+
+
+def find_feature_until_end(end_feature_names: list[str], feature_names: list[str], 
+                          timeout: int = 600):
+    """
+    读取feature.py文件，循环查找指定特征直到找到任意一个结束特征
+    :param end_feature_names: 结束特征名称列表（在feature.py中定义，找到任意一个就停止）
+    :param feature_names: 循环查找的特征名称列表（在feature.py中定义）
+    :param timeout: 超时时间（秒），默认600秒
+    :return: True表示找到结束特征，False表示超时失败
+    """
+    
+    # 直接导入feature.py配置
+    try:
+        from test.黎明堡垒sdk测试.feature import features
+        log(f"📋 从feature.py加载特征配置")
+    except ImportError as e:
+        assert_true(False, f"无法导入特征配置: {e}")
+        return False
+    
+    # 解析结束特征
+    end_features = []
+    for end_feature_name in end_feature_names:
+        if end_feature_name not in features:
+            assert_true(False, f"结束特征 '{end_feature_name}' 在配置文件中不存在")
+            return False
+        
+        coord_str, image_file = features[end_feature_name]
+        target_rect = parse_coordinate_string(coord_str)
+        template = DogTemplate(image_file)
+        
+        end_features.append({
+            'name': end_feature_name,
+            'description': f"结束特征-{end_feature_name}",
+            'template': template,
+            'target_rect': target_rect
+        })
+        log(f"✓ 加载结束特征: {end_feature_name}")
+    
+    # 解析循环特征
+    cycle_features = []
+    for feature_name in feature_names:
+        if feature_name not in features:
+            assert_true(False, f"循环特征 '{feature_name}' 在配置文件中不存在")
+            return False
+        
+        coord_str, image_file = features[feature_name]
+        target_rect = parse_coordinate_string(coord_str)
+        template = DogTemplate(image_file)
+        
+        cycle_features.append({
+            'name': feature_name,
+            'description': f"循环特征-{feature_name}",
+            'template': template,
+            'target_rect': target_rect
+        })
+        log(f"✓ 加载循环特征: {feature_name}")
+    
+    # 开始循环查找
+    start_time = time.time()
+    
+    log(f"开始循环查找特征，结束特征: {[f['description'] for f in end_features]}")
+    log(f"循环特征列表: {[f['description'] for f in cycle_features]}")
+    
+    cycle_index = 0
+    while True:
+        cycle_index += 1
+        current_time = time.time()
+        elapsed_time = current_time - start_time
+        
+        # 检查是否超时
+        if elapsed_time >= timeout:
+            log(f"查找超时: {elapsed_time:.1f}秒")
+            break
+            
+        log(f"->第{cycle_index}次大循环，已用时: {elapsed_time:.1f}秒<-")
+        
+        # 首先检查所有结束特征
+        for end_feature in end_features:
+            if find_area_image(end_feature['template'], target_rect=end_feature['target_rect'], click=False):
+                log(f"找到结束特征: {end_feature['description']}")
+                return True
+        
+        # 遍历所有循环特征，找到第一个存在的特征就点击
+        found_any_feature = False
+        for j, current_feature in enumerate(cycle_features):
+            log(f"  查找特征 {j+1}/{len(cycle_features)}: {current_feature['description']}")
+            
+            # 查找当前特征
+            if find_area_image(current_feature['template'], 
+                              target_rect=current_feature['target_rect'], 
+                              click=True):
+                log(f"  ✓ 已点击特征: {current_feature['description']}")
+                found_any_feature = True
+                break  # 找到一个特征后就跳出内循环
+            else:
+                log(f"  ✗ 未找到特征: {current_feature['description']}")
+        
+        if not found_any_feature:
+            log(f"  本轮未找到任何循环特征，等待后继续")
+            sleep(step_wait_time)
+        else:
+            # 找到并点击了特征，稍作等待再继续下一轮大循环
+            sleep(step_wait_time)
+    
+    # 超时失败，保存截图并断言失败
+    log(f"查找特征超时失败，总用时: {time.time() - start_time:.1f}秒")
+    
+    if DEBUG_ON:
+        # 保存失败时的截图
+        locality = adb_snapshot()
+        path = save_image(locality, f"find_feature_timeout_{end_feature_names[0]}")
+        log(f"超时失败截图已保存: {path}")
+    
+    assert_true(False, f"在{timeout}秒内未找到任何结束特征{[f['description'] for f in end_features]}，查找的循环特征: {[f['description'] for f in cycle_features]}")
+    return False
+
+
+
 
 
 
@@ -456,5 +681,6 @@ if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")
     # find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4), timeout=1)
-    drag_to(DogTemplate(r"tpl1745390496173.png"), DogTemplate(r"tpl1745390507116.png", target_pos=6),
-            target_rect=get_vertical_rect(0.5))
+    # drag_to(DogTemplate(r"tpl1745390496173.png"), DogTemplate(r"tpl1745390507116.png", target_pos=6),
+    #         target_rect=get_vertical_rect(0.5))
+    pass

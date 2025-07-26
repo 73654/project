@@ -5,7 +5,8 @@ import time
 import allure
 import subprocess
 from airtest.core.api import home, keyevent, sleep, swipe
-from common import dog,ui
+from common import dog
+from common.ui import step_wait_time
 from airtest.core.helper import log
 from run import results_dir,reports_dir
 allure_raw_dir=results_dir
@@ -43,7 +44,7 @@ def capture_error_screenshot(error_msg):
     retry_delay = 2  # 重试间隔时间（秒）
     for attempt in range(max_retries):
         for i in range(4):
-            sleep(ui.step_wait_time)
+            sleep(step_wait_time)
         try:
             timestamp = time.strftime("%Y%m%d-%H%M%S")
             screenshot_filename = f"error_{timestamp}.png"

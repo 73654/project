@@ -2,7 +2,7 @@
 # 飞书卡片消息
 # https://open.feishu.cn/document/uAjLw4CM/ukzMukzMukzM/feishu-cards/quick-start/send-message-cards-with-custom-bot
 [feishu]
-bot_url = "https://open.feishu.cn/open-apis/bot/v2/hook/{}"
+bot_url = "https://open.feishu.cn/open-apis/bot/v2/hook/9cc0b25a-a2eb-4629-9d47-55c426192434"
 
 [report]
 msg_type = "interactive"
