@@ -8,3 +8,6 @@ exists(Template(r"tpl1753362662427.png", record_pos=(-0.005, -0.053), resolution
 touch(Template(r"tpl1753362714944.png", record_pos=(0.44, -0.002), resolution=(1280, 720)))
 exists(Template(r"tpl1753364871670.png", record_pos=(0.448, -0.251), resolution=(1280, 720)))
 exists(Template(r"tpl1753365346108.png", record_pos=(-0.003, -0.054), resolution=(1280, 720)))
+exists(Template(r"tpl1753673605448.png", record_pos=(-0.098, 0.085), resolution=(1280, 720)))
+
+exists(Template(r"tpl1753684922906.png", record_pos=(0.231, 0.051), resolution=(1920, 1080)))

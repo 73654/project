@@ -70,7 +70,7 @@ def touch_and_wait(pos, wait: float = step_wait_time, times=1, **kwargs):
     touch(pos, times=times, **kwargs)
     sleep(wait)
 
-def adb_snapshot():
+def adb_keep_capture ():
     return G.DEVICE.snapshot(quality=99)
 
 def get_vertical_rect(ration, middle=False):
@@ -163,7 +163,7 @@ def get_area(target_rect: UIObjectProxy | tuple[float, float, float, float] = No
         rect = (target_rect[0] * w, target_rect[1] * h, target_rect[2] * w, target_rect[3] * h)
     else:
         rect = (0, 0, w, h)
-    log(f"所需查找图片的范围：{rect}")
+    # log(f"所需查找图片的范围：{rect}")
     return rect
 
 
@@ -211,49 +211,8 @@ def find_gray_image(source, locality_image, thd=0.9, types=1):
         return focus_pos
     
 
-# def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
-#                     timeout: int = 10, click=False, target: Template = None):
-#     """
-#     在指定控件内查找图片或者点击图片
-
-#     :param source: 需要查找的图片
-#     :param target_rect: 在所需控件范围内查找 或 指定区域(x0,y0, x1,y1) 是相对坐标值
-#     :param timeout: 查找超时时间，间隔1s查一次
-#     :param click: 是否需要点击
-#     :param target: 在指定的图片中找（如果是指定图片，timeout没用），None - 自动截屏
-#     :return: 查找到了就返回对应的坐标值，否则返回None
-#     """
-#     rect = get_area(target_rect)
-
-#     path = ""
-#     locality_image = None
-#     cycle = 1 if target is not None else get_timeout_cycle(timeout)
-#     for i in range(cycle):
-#         log(f"->第{i}次查找图片<-")
-#         if target:
-#             locality = utils.image_toarray(image=target.filepath)
-#         else:
-#             locality = adb_snapshot()
-#         locality_image = aircv.crop_image(locality, rect)
-#         r = source.match_in(locality_image)
-#         if r:
-#             r = (r[0] + rect[0], r[1] + rect[1])
-#             log(f"区域图片{path}里面找到图片{r} {source.filepath}")
-#             if click:
-#                 touch_and_wait(r)
-#             return r
-
-#         sleep(ui.step_wait_time)
-
-#     if ui.DEBUG_ON:
-#         path = save_image(locality_image, "find_area_image")
-#     if click:
-#         assert_true(False, f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
-#     return None
-
-
 def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, float, float, float] = None,
-                    click=False, offset=0, click_times=1, target: Template = None):
+                    click=False, offset=0, click_times=1, target: Template = None, target_array=None):
     """
     在指定控件/范围内查找图片或者点击图片
 
@@ -261,28 +220,28 @@ def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, 
     :param target_rect: 在所需控件范围内查找 或 指定区域(x0,y0, x1,y1) 是相对坐标值
     :param click: 是否需要点击
     :param target: 在指定的图片中找，None - 自动截屏
+    :param target_array: 直接传入截图数组，优先级高于target参数
     :return: 查找到了就返回对应的坐标值，否则返回None
     """
     rect = get_area(target_rect)
 
     path = ""
     locality_image = None
-    if target:
+    if target_array is not None:
+        locality = target_array
+    elif target:
         locality = utils.image_toarray(image=target.filepath)
     else:
-        locality = adb_snapshot()
+        locality = adb_keep_capture ()
     locality_image = aircv.crop_image(locality, rect)
     r = source.match_in(locality_image)
     if r:
         r = (r[0] + rect[0], r[1] + rect[1])
-        log(f"区域图片{path}里面找到图片{r} {source.filepath}")
+        # log(f"区域{path}里面找到图片{source.filepath}坐标为：{r} 点击次数：{click_times}")
         if click:
-            log(f"点击坐标{r}")
             touch_and_wait(r,times=click_times)
         return r
     else:
-        log(f"在区域：{rect}图片{path}中，未找到对应图片{source.filepath}")
-        # sleep(ui.step_wait_time)
         return None
 
 
@@ -530,30 +489,32 @@ def parse_coordinate_string(coord_str):
 
 
 
-
-
-# def clear_feature_cache():
-#     """清除特征配置缓存"""
-#     global _global_feature_cache, _cache_initialized
-#     _global_feature_cache.clear()
-#     _cache_initialized = False
-#     log("特征配置缓存已清除")
-
-
-# def get_feature_cache_info():
-#     """获取特征配置缓存信息"""
-#     global _global_feature_cache, _cache_initialized
+def _parse_features(feature_names: list[str], feature_type: str, features_config: dict) -> list[dict]:
+    """
+    解析特征配置
+    :param feature_names: 特征名称列表
+    :param feature_type: 特征类型（用于描述和错误信息）
+    :param features_config: 特征配置字典
+    :return: 解析后的特征列表
+    """
+    parsed_features = []
+    for feature_name in feature_names:
+        if feature_name not in features_config:
+            assert_true(False, f"{feature_type}特征 '{feature_name}' 在配置文件中不存在")
+            return []
+        
+        coord_str, image_file = features_config[feature_name]
+        target_rect = parse_coordinate_string(coord_str)
+        template = DogTemplate(image_file)
+        
+        parsed_features.append({
+            'name': feature_name,
+            'description': f"{feature_type}特征-{feature_name}",
+            'template': template,
+            'target_rect': target_rect
+        })
     
-#     info = {
-#         'initialized': _cache_initialized,
-#         'files': list(_global_feature_cache.keys()),
-#         'total_features': sum(len(features) for features in _global_feature_cache.values())
-#     }
-    
-#     for file_name, features in _global_feature_cache.items():
-#         info[f'features_in_{file_name}'] = list(features.keys())
-    
-#     return info
+    return parsed_features
 
 
 def find_feature_until_end(end_feature_names: list[str], feature_names: list[str], 
@@ -565,118 +526,73 @@ def find_feature_until_end(end_feature_names: list[str], feature_names: list[str
     :param timeout: 超时时间（秒），默认600秒
     :return: True表示找到结束特征，False表示超时失败
     """
-    
-    # 直接导入feature.py配置
+    # 导入feature.py配置
     try:
         from test.黎明堡垒sdk测试.feature import features
-        log(f"📋 从feature.py加载特征配置")
     except ImportError as e:
         assert_true(False, f"无法导入特征配置: {e}")
         return False
     
-    # 解析结束特征
-    end_features = []
-    for end_feature_name in end_feature_names:
-        if end_feature_name not in features:
-            assert_true(False, f"结束特征 '{end_feature_name}' 在配置文件中不存在")
-            return False
-        
-        coord_str, image_file = features[end_feature_name]
-        target_rect = parse_coordinate_string(coord_str)
-        template = DogTemplate(image_file)
-        
-        end_features.append({
-            'name': end_feature_name,
-            'description': f"结束特征-{end_feature_name}",
-            'template': template,
-            'target_rect': target_rect
-        })
-        log(f"✓ 加载结束特征: {end_feature_name}")
+    # 解析特征
+    end_features = _parse_features(end_feature_names, "结束", features)
+    cycle_features = _parse_features(feature_names, "循环", features)
     
-    # 解析循环特征
-    cycle_features = []
-    for feature_name in feature_names:
-        if feature_name not in features:
-            assert_true(False, f"循环特征 '{feature_name}' 在配置文件中不存在")
-            return False
-        
-        coord_str, image_file = features[feature_name]
-        target_rect = parse_coordinate_string(coord_str)
-        template = DogTemplate(image_file)
-        
-        cycle_features.append({
-            'name': feature_name,
-            'description': f"循环特征-{feature_name}",
-            'template': template,
-            'target_rect': target_rect
-        })
-        log(f"✓ 加载循环特征: {feature_name}")
+    if not end_features or not cycle_features:
+        return False
     
     # 开始循环查找
     start_time = time.time()
-    
-    log(f"开始循环查找特征，结束特征: {[f['description'] for f in end_features]}")
-    log(f"循环特征列表: {[f['description'] for f in cycle_features]}")
-    
     cycle_index = 0
-    while True:
+    
+    
+    while time.time() - start_time < timeout:
         cycle_index += 1
-        current_time = time.time()
-        elapsed_time = current_time - start_time
+        elapsed_time = time.time() - start_time
         
-        # 检查是否超时
-        if elapsed_time >= timeout:
-            log(f"查找超时: {elapsed_time:.1f}秒")
-            break
-            
-        log(f"->第{cycle_index}次大循环，已用时: {elapsed_time:.1f}秒<-")
+        # 每5次循环或第1次打印进度
+        if cycle_index == 1 or cycle_index % 5 == 0:
+            log(f"->第{cycle_index}次循环查找，已用时: {elapsed_time:.1f}秒<-")
         
-        # 首先检查所有结束特征
+        current_screenshot = adb_keep_capture ()
+        
+        # 检查结束特征
         for end_feature in end_features:
-            if find_area_image(end_feature['template'], target_rect=end_feature['target_rect'], click=False):
-                log(f"找到结束特征: {end_feature['description']}")
+            if find_area_image(end_feature['template'], 
+                             target_rect=end_feature['target_rect'], 
+                             click=False,
+                             target_array=current_screenshot):
+                log(f"✅ 找到结束特征: {end_feature['description']} (第{cycle_index}次循环)")
                 return True
         
-        # 遍历所有循环特征，找到第一个存在的特征就点击
-        found_any_feature = False
-        for j, current_feature in enumerate(cycle_features):
-            log(f"  查找特征 {j+1}/{len(cycle_features)}: {current_feature['description']}")
-            
-            # 查找当前特征
+        # 检查循环特征，找到第一个就点击
+        for current_feature in cycle_features:
             if find_area_image(current_feature['template'], 
-                              target_rect=current_feature['target_rect'], 
-                              click=True):
-                log(f"  ✓ 已点击特征: {current_feature['description']}")
-                found_any_feature = True
-                break  # 找到一个特征后就跳出内循环
-            else:
-                log(f"  ✗ 未找到特征: {current_feature['description']}")
+                             target_rect=current_feature['target_rect'], 
+                             click=True,
+                             target_array=current_screenshot):
+                if cycle_index <= 10 or cycle_index % 10 == 0:  # 前10次或每10次打印一次
+                    log(f"  ✓ 已点击特征: {current_feature['description']}")
+                break
         
-        if not found_any_feature:
-            log(f"  本轮未找到任何循环特征，等待后继续")
-            sleep(step_wait_time)
-        else:
-            # 找到并点击了特征，稍作等待再继续下一轮大循环
-            sleep(step_wait_time)
+        sleep(step_wait_time)
     
-    # 超时失败，保存截图并断言失败
-    log(f"查找特征超时失败，总用时: {time.time() - start_time:.1f}秒")
+    # 超时失败处理
+    elapsed_time = time.time() - start_time
+    log(f"❌ 查找特征超时失败，总用时: {elapsed_time:.1f}秒，共尝试{cycle_index}次")
     
     if DEBUG_ON:
         # 保存失败时的截图
-        locality = adb_snapshot()
-        path = save_image(locality, f"find_feature_timeout_{end_feature_names[0]}")
-        log(f"超时失败截图已保存: {path}")
+        screenshot = adb_keep_capture ()
+        screenshot_path = save_image(screenshot, f"find_feature_timeout_{end_feature_names[0]}")
+        log(f"超时失败截图已保存: {screenshot_path}")
     
-    assert_true(False, f"在{timeout}秒内未找到任何结束特征{[f['description'] for f in end_features]}，查找的循环特征: {[f['description'] for f in cycle_features]}")
+    # 构建错误信息
+    end_names = [f['name'] for f in end_features]
+    cycle_names = [f['name'] for f in cycle_features]
+    error_msg = f"在{timeout}秒内未找到任何结束特征{end_names}，查找的循环特征: {cycle_names}"
+    
+    assert_true(False, error_msg)
     return False
-
-
-
-
-
-
-
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")

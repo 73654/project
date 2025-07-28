@@ -32,11 +32,11 @@ class BasePageMain(BasePage):
     def login(cls):
         """登录"""
         with dog.step(f"{cls.page_name}-找到小手"):
-            find_feature_until_end(end_feature_names=["hand"], feature_names=["skip", "duihuakuang1", "duihuakuang2"])
+            find_feature_until_end(end_feature_names=["hand"], feature_names=["skip", "duihuakuang1", "duihuakuang2", "new_game"])
         with dog.step(f"{cls.page_name}-进入瞄准"):
             find_feature_until_end(end_feature_names=["miaozhun"], feature_names=["skip", "hand", "duihuakuang1", "duihuakuang2"])
         with dog.step(f"{cls.page_name}-进入搜索"):
-            find_feature_until_end(end_feature_names=["search"], feature_names=["skip", "miaozhun", "duihuakuang1", "duihuakuang2"])
+            find_feature_until_end(end_feature_names=["search"], feature_names=["skip", "miaozhun", "duihuakuang1", "duihuakuang2", "miaozhun2"])
         with dog.step(f"{cls.page_name}-进入日记"):
             find_feature_until_end(end_feature_names=["riji"], feature_names=["skip", "search", "hand", "duihuakuang1", "duihuakuang2", "id_card"])
         with dog.step(f"{cls.page_name}-进入翻页"):

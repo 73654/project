@@ -59,7 +59,7 @@ def get_device_id(device_type: DeviceType) -> str | None:
 # 初始化当前设备类型
 current_device_type = get_device_type()
 # 步骤等待时间，Android 为 1.5 秒，iOS 为 1 秒
-step_wait_time = 1.5 if current_device_type == DeviceType.Android else 1
+step_wait_time = 0.5 if current_device_type == DeviceType.Android else 0.25
 
 # 获取 poco 实例，Android 返回 AndroidUiautomationPoco，iOS 返回 iosPoco
 # 用于后续 UI 自动化操作
