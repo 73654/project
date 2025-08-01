@@ -15,19 +15,7 @@ from pyzbar import pyzbar
 
 from common.config import config
 
-def add_user_route(user: str, sandbox: str, album_user_list: list[str]):
-    """
-    添加预发环境路由
-    """
-    headers = {"Content-Type": "application/json", "X-User": user}
 
-    param = [{
-        "pre_uuid": sandbox,
-        "rules": reduce(lambda x, y: x + [{"albumid": y}], album_user_list, [])
-    }]
-
-    result = requests.post(config.OPERATION_HOST + "/public/api/v1/envs/grayrule/update", json=param, headers=headers)
-    return result
 
 
 def get_host_ip() -> str:
@@ -73,6 +61,104 @@ def auto_screenshot(name=None):
                 except:
                     pass
                     
+            return result
+        return wrapper
+    return decorator
+
+
+def step_screenshot(step_name=None):
+    """
+    装饰器：在函数执行完成后自动截图
+    :param step_name: 步骤名称，如果不提供则使用函数名
+    """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # 获取步骤名称
+            if step_name:
+                screenshot_name = step_name
+            else:
+                # 尝试从类中获取page_name
+                if args and hasattr(args[0], 'page_name'):
+                    screenshot_name = f"{args[0].page_name}-{func.__name__}"
+                else:
+                    screenshot_name = func.__name__
+            
+            # 执行原函数
+            result = func(*args, **kwargs)
+            
+            # 函数执行完成后截图
+            try:
+                import allure
+                screenshot_path = save_image(prefix=f"{screenshot_name}_")
+                
+                # 将截图添加到Allure报告
+                with open(screenshot_path, "rb") as image_file:
+                    allure.attach(
+                        image_file.read(),
+                        name=screenshot_name,
+                        attachment_type=allure.attachment_type.PNG
+                    )
+                log(f"📸 步骤截图已添加到Allure报告: {screenshot_name}")
+            except Exception as e:
+                log(f"❌ 截图失败: {e}")
+            
+            return result
+        return wrapper
+    return decorator
+
+
+def step_screenshot_each(step_name=None):
+    """
+    装饰器：在每个dog.step步骤后自动截图
+    :param step_name: 步骤名称，如果不提供则使用函数名
+    """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # 获取基础步骤名称
+            if step_name:
+                base_name = step_name
+            else:
+                # 尝试从类中获取page_name
+                if args and hasattr(args[0], 'page_name'):
+                    base_name = f"{args[0].page_name}-{func.__name__}"
+                else:
+                    base_name = func.__name__
+            
+            # 重写dog.step以在每个步骤后截图
+            original_step = dog.step
+            
+            def step_with_screenshot(step_name):
+                def step_decorator(func):
+                    def step_wrapper(*args, **kwargs):
+                        result = func(*args, **kwargs)
+                        # 每个步骤完成后截图
+                        try:
+                            import allure
+                            screenshot_path = save_image(prefix=f"{base_name}-{step_name}_")
+                            
+                            # 将截图添加到Allure报告
+                            with open(screenshot_path, "rb") as image_file:
+                                allure.attach(
+                                    image_file.read(),
+                                    name=f"{base_name}-{step_name}",
+                                    attachment_type=allure.attachment_type.PNG
+                                )
+                            log(f"📸 步骤截图已添加到Allure报告: {base_name}-{step_name}")
+                        except Exception as e:
+                            log(f"❌ 截图失败: {e}")
+                        return result
+                    return step_wrapper
+                return step_decorator
+            
+            # 临时替换dog.step
+            dog.step = step_with_screenshot
+            
+            # 执行原函数
+            result = func(*args, **kwargs)
+            
+            # 恢复原始的dog.step
+            dog.step = original_step
+            
             return result
         return wrapper
     return decorator

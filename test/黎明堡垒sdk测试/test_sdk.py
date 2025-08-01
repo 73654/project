@@ -8,13 +8,13 @@
 
 from common import dog
 from common.ui import *
-from pages.base import PageMain
+from pages.base import PageLogin, PageNewGame
 
 
-@dog.parent_suite("自动化测试套件")
-@dog.suite("登录功能测试")
-@dog.feature("用户认证")
-class TestLogin:
+@dog.parent_suite("sdk测试")
+@dog.suite("新手引导功能测试")
+@dog.feature("新手引导")
+class TestNewGame:
 
     @staticmethod
     def setup_method():
@@ -22,9 +22,12 @@ class TestLogin:
 
     @staticmethod
     def teardown_method():
-        stop_wg_app()
+        # stop_wg_app()
+        pass
 
 
-    @dog.title("进入登录页面")
+    @dog.title("新手引导")
     def test_login_page(self):
-        PageMain.login()
+        PageLogin.login()
+        PageNewGame.zh_new_game()
+        

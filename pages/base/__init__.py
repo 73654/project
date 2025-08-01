@@ -5,7 +5,8 @@
 # Description:
 # -------------------------------------------------------------------------
 
-from .page_main import BasePageMain as PageMain
+from .page_login import BasePageLogin as PageLogin
+from .page_new_game import BasePageNewGame as PageNewGame
 
 
-__all__ = ["PageMain"]
+__all__ = ["PageLogin", "PageNewGame"]

@@ -1,13 +1,23 @@
-exists(Template(r"tpl1753362405398.png", record_pos=(0.002, 0.206), resolution=(1280, 720)))
-exists(Template(r"tpl1753362451007.png", record_pos=(-0.001, 0.206), resolution=(1280, 720)))
-exists(Template(r"tpl1753362466542.png", record_pos=(0.448, -0.251), resolution=(1280, 720)))
-exists(Template(r"tpl1753362480735.png", record_pos=(0.097, -0.041), resolution=(1280, 720)))
-exists(Template(r"tpl1753362554676.png", record_pos=(-0.212, 0.014), resolution=(1280, 720)))
-exists(Template(r"tpl1753362579468.png", record_pos=(-0.091, 0.049), resolution=(1280, 720)))
-exists(Template(r"tpl1753362662427.png", record_pos=(-0.005, -0.053), resolution=(1280, 720)))
-touch(Template(r"tpl1753362714944.png", record_pos=(0.44, -0.002), resolution=(1280, 720)))
-exists(Template(r"tpl1753364871670.png", record_pos=(0.448, -0.251), resolution=(1280, 720)))
-exists(Template(r"tpl1753365346108.png", record_pos=(-0.003, -0.054), resolution=(1280, 720)))
-exists(Template(r"tpl1753673605448.png", record_pos=(-0.098, 0.085), resolution=(1280, 720)))
 
-exists(Template(r"tpl1753684922906.png", record_pos=(0.231, 0.051), resolution=(1920, 1080)))
+from poco.drivers.android.uiautomation import AndroidUiautomationPoco
+poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
+
+
+exists(Template(r"tpl1753969340330.png", record_pos=(-0.402, 0.15), resolution=(1280, 720)))
+exists(Template(r"tpl1753969354027.png", record_pos=(-0.402, 0.152), resolution=(1280, 720)))
+exists(Template(r"tpl1753969635904.png", record_pos=(-0.001, 0.202), resolution=(1280, 720)))
+
+
+
+exists(Template(r"tpl1753969968301.png", record_pos=(0.304, -0.099), resolution=(1280, 720)))
+exists(Template(r"tpl1753969991774.png", record_pos=(0.423, -0.239), resolution=(1280, 720)))
+exists(Template(r"tpl1754020575421.png", record_pos=(-0.001, -0.001), resolution=(1280, 720)))
+exists(Template(r"tpl1754020704338.png", record_pos=(0.001, 0.066), resolution=(1280, 720)))
+exists(Template(r"tpl1754020771891.png", record_pos=(-0.383, 0.149), resolution=(1280, 720)))
+exists(Template(r"tpl1754020868916.png", record_pos=(-0.001, 0.16), resolution=(1280, 720)))
+exists(Template(r"tpl1754021029266.png", record_pos=(0.45, 0.163), resolution=(1280, 720)))
+exists(Template(r"tpl1754021099797.png", record_pos=(-0.438, 0.105), resolution=(1280, 720)))
+exists(Template(r"tpl1754021207903.png", record_pos=(-0.245, 0.09), resolution=(1280, 720)))
+exists(Template(r"tpl1754021294653.png", record_pos=(0.036, 0.105), resolution=(1280, 720)))
+exists(Template(r"tpl1754021341415.png", record_pos=(0.026, -0.007), resolution=(1280, 720)))
+exists(Template(r"tpl1754021394383.png", record_pos=(-0.07, 0.02), resolution=(1280, 720)))

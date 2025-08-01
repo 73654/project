@@ -17,7 +17,7 @@ import requests
 from airtest.core.helper import log
 from common.ui.set_allure import SetAllureW
 from common import utils
-from common.config import Env, config
+from common.config import config
 
 # 获取项目根目录
 root_dir = config.get_project_dir()
@@ -154,7 +154,6 @@ def send_notification(groups=None):
     if groups:
         groups = groups.split(",")
     else:
-        # groups = ["54fa5b01-f4f2-43a6-becb-ec148ca2af66"]
         groups = ["92d9800b-74e3-4abf-ae58-924458c00b26"]
 
     def get_metric_data():
@@ -199,22 +198,7 @@ def send_notification(groups=None):
         log(a.text)
 
 
-def add_user_route(sandbox: str):
-    """
-    预发环境自动把用法id，添加到对应的沙箱环境中
-    :param sandbox: 预发沙箱名，对应运维平台接口 pre_uuid字段
-    :return: 错误报异常
-    """
-    operation_user = "songjianfeng"  # 用例执行人，运维平台用
 
-    # 使用嵌套列表推导式获取所有用户ID
-    album_user_ids = config.read_config(config.FEISHU_USER)['user'].get('ids')
-
-    if album_user_ids:
-        log(f"添加到沙箱环境[{sandbox}]的用户id={album_user_ids}")
-        utils.add_user_route(operation_user, sandbox, album_user_ids)
-    else:
-        raise RuntimeError("未获取到预发环境执行用例的用户ID，无法添加到沙箱中")
 
 
 def run(tests='', m='', k='', notice=''):
@@ -229,7 +213,7 @@ def run(tests='', m='', k='', notice=''):
     open_report()
 
 
-def main(tests='', m='', k='', env='', sandbox='', notice=''):
+def main(tests='', m='', k='', notice=''):
     """
     命令行参数解析与主控入口
     """
@@ -238,8 +222,6 @@ def main(tests='', m='', k='', env='', sandbox='', notice=''):
 
     if cmd_run:
         parser = argparse.ArgumentParser()
-        parser.add_argument('-env', type=str, default=Env.DAILY, help='测试环境')
-        parser.add_argument('-sandbox', type=str, default='', help='沙箱环境id')
         parser.add_argument('-tests', type=str, default='', help='测试集')
         parser.add_argument('-m', type=str, default='',
                             help='同pytest -m参数，同一个组用逗号分隔，解析为or，不同组用空格分隔，解析为and。"1,2 3,4"解析为(1 or 2) and (3 or 4)')
@@ -251,8 +233,6 @@ def main(tests='', m='', k='', env='', sandbox='', notice=''):
         args.tests = tests
         args.m = m
         args.k = k
-        args.env = env if env else Env.DAILY
-        args.sandbox = sandbox
         args.notice = notice
 
     if args.m:
@@ -262,17 +242,10 @@ def main(tests='', m='', k='', env='', sandbox='', notice=''):
             temp.append(f"({' or '.join(s.split(','))})")
         args.m = ' and '.join(temp)
 
-    if args.env == Env.PRE:
-        add_user_route(sandbox=args.sandbox)
-
-    log(f"请求参数为：{args.tests} {args.m} {args.k} {args.env} {args.sandbox}")
+    log(f"请求参数为：{args.tests} {args.m} {args.k}")
     run(args.tests, args.m, args.k, args.notice)
 
 
 if __name__ == '__main__':
-    # test/tests/test_微商相册A类.py::TestCompanyA::test_0006 指定跑单个用例
-    # 日常环境运行
-    main(tests='test/黎明堡垒sdk测试/test_登录.py', env=Env.DAILY)
-
-    # 预发环境运行（sandbox为预发环境的沙箱id，按情况改，会自动把测试帐号加到对应的沙箱环境中去）
-    # main(tests='test/tests/test_微商相册A类.py', env=Env.PRE, sandbox='preprod')
+    # test/tests/test_sdk.py::TestCompanyA::test_0006 指定跑单个用例
+    main(tests='test/黎明堡垒sdk测试/test_sdk.py')

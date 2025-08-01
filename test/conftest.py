@@ -23,13 +23,12 @@ def adb_screenshot(screenshot_path):
             return None
 
     try:
-        # 使用 ADB 命令进行截图
-        adb_screenshot_cmd = f"adb shell screencap -p /sdcard/screenshot.png"
-        subprocess.run(adb_screenshot_cmd, shell=True, check=True)
-
-        # 将截图从设备复制到本地
-        adb_pull_cmd = f"adb pull /sdcard/screenshot.png {screenshot_path}"
-        subprocess.run(adb_pull_cmd, shell=True, check=True)
+        # 使用统一的截图函数，支持Android和iOS
+        from common.ui.ui import keep_capture
+        from common.utils import save_image
+        
+        screenshot_data = keep_capture()
+        screenshot_path = save_image(screenshot_data, f"test_failure_{time.time()}")
 
         print(f"截图已保存到 {screenshot_path}")
         return screenshot_path

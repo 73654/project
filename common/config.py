@@ -5,11 +5,7 @@ from typing import Any
 import toml
 from airtest.core.helper import log
 
-# 定义环境类型的枚举类，包含日常、预发、线上三种环境
-class Env(str, Enum):
-    DAILY = "日常"  # 日常环境
-    PRE = "预发"    # 预发布环境
-    ONLINE = "线上"  # 线上环境
+
 
 # 配置管理类，负责管理和读取项目的各种配置信息
 class __ConfigManage(object):
@@ -27,7 +23,7 @@ class __ConfigManage(object):
     FEISHU_BOT = "https://open.feishu.cn/open-apis/bot/v2/hook/9cc0b25a-a2eb-4629-9d47-55c426192434"
 
     # 运维api地址
-    OPERATION_HOST = "http://api-ops.default.devops.szwego.com"
+    # OPERATION_HOST = "http://api-ops.default.devops.szwego.com"
 
     @classmethod
     def get_project_dir(cls):
@@ -72,7 +68,7 @@ class __ConfigManage(object):
     @classmethod
     def read_config(cls, config_name: str) -> dict[str, Any]:
         """
-        读取config目录下的配置文件，传入文件名，会自动区分环境
+        读取config目录下的配置文件
         :param config_name: 配置文件名（如 user.toml）
         :return: 配置内容的字典
         """
@@ -90,4 +86,5 @@ config = __ConfigManage
 
 if __name__ == '__main__':
     # 测试：打印项目根目录
-    print(config.get_project_dir())
+    # print(config.get_project_dir())
+    pass

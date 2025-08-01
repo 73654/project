@@ -5,8 +5,13 @@
 # Description:
 # -------------------------------------------------------------------------
 import os
+import sys
 import time
-
+# 添加项目根目录到 Python 路径
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 import cv2
 import numpy as np
 from PIL import Image
@@ -20,7 +25,7 @@ from poco.proxy import UIObjectProxy
 
 from common import utils
 from common.config import config
-from common.ui.start import current_device_type, device, poco, step_wait_time, DEBUG_ON
+from common.ui.start import current_device_type, device, poco, step_wait_time, DEBUG_ON, DeviceType
 from common.utils import save_image
 
 
@@ -70,8 +75,27 @@ def touch_and_wait(pos, wait: float = step_wait_time, times=1, **kwargs):
     touch(pos, times=times, **kwargs)
     sleep(wait)
 
-def adb_keep_capture ():
-    return G.DEVICE.snapshot(quality=99)
+def keep_capture():
+    """
+    获取设备截图，支持Android和iOS设备
+    """
+    try:
+        if current_device_type == DeviceType.IOS:
+            # iOS设备截图
+            screenshot = device.snapshot()
+            # 修复iOS颜色反向问题 - 交换红蓝通道(BGR→RGB)
+            import numpy as np
+            if isinstance(screenshot, np.ndarray) and len(screenshot.shape) == 3 and screenshot.shape[2] >= 3:
+                # 交换红蓝通道：BGR → RGB
+                screenshot = screenshot.copy()
+                screenshot[:, :, [0, 2]] = screenshot[:, :, [2, 0]]
+            return screenshot
+        else:
+            # Android设备截图
+            return G.DEVICE.snapshot(quality=99)
+    except Exception as e:
+        log(f"截图失败: {e}")
+        raise e
 
 def get_vertical_rect(ration, middle=False):
     """
@@ -153,6 +177,20 @@ def get_area(target_rect: UIObjectProxy | tuple[float, float, float, float] = No
     """
 
     w, h = poco.get_screen_size()
+    
+    # iOS设备屏幕旋转时，需要调整宽高
+    if current_device_type == DeviceType.IOS:
+        # 获取实际截图尺寸来验证方向
+        try:
+            screenshot = keep_capture()
+            actual_h, actual_w = screenshot.shape[:2]
+            # 如果截图宽高与poco宽高相反，说明屏幕已旋转
+            if (actual_w == h and actual_h == w) or (actual_w == w and actual_h == h):
+                # 使用实际截图尺寸
+                w, h = actual_w, actual_h
+        except:
+            pass
+    
     if isinstance(target_rect, UIObjectProxy):
         view_w, view_h = target_rect.get_size()  # 这个是相对值
         x0, y0 = target_rect.get_position((0, 0))  # 这个也是相对值
@@ -163,7 +201,40 @@ def get_area(target_rect: UIObjectProxy | tuple[float, float, float, float] = No
         rect = (target_rect[0] * w, target_rect[1] * h, target_rect[2] * w, target_rect[3] * h)
     else:
         rect = (0, 0, w, h)
-    # log(f"所需查找图片的范围：{rect}")
+    
+    log(f"计算得到的裁剪区域: {rect}")
+    return rect
+
+
+def get_area_with_image(target_rect: UIObjectProxy | tuple[float, float, float, float] = None, 
+                       image_array=None) -> tuple[float, float, float, float]:
+    """
+    获取裁剪区域，使用传入的图像尺寸而不是重新截图
+    :param target_rect: 屏幕截图区域(x0,y0, x1,y1) 这个是相对坐标在0~1之间
+    :param image_array: 图像数组，用于获取实际尺寸
+    :return: 返回绝对坐标值[x0,y0, x1,y1]
+    """
+    w, h = poco.get_screen_size()
+    
+    # iOS设备屏幕旋转时，使用传入的图像尺寸
+    if current_device_type == DeviceType.IOS and image_array is not None:
+        actual_h, actual_w = image_array.shape[:2]
+        # 如果截图宽高与poco宽高相反，说明屏幕已旋转
+        if (actual_w == h and actual_h == w) or (actual_w == w and actual_h == h):
+            # 使用实际截图尺寸
+            w, h = actual_w, actual_h
+    
+    if isinstance(target_rect, UIObjectProxy):
+        view_w, view_h = target_rect.get_size()  # 这个是相对值
+        x0, y0 = target_rect.get_position((0, 0))  # 这个也是相对值
+        x0, y0 = x0 * w, y0 * h
+        x1, y1 = x0 + w * view_w, y0 + h * view_h
+        rect = (x0, y0, x1, y1)
+    elif target_rect:
+        rect = (target_rect[0] * w, target_rect[1] * h, target_rect[2] * w, target_rect[3] * h)
+    else:
+        rect = (0, 0, w, h)
+    
     return rect
 
 
@@ -223,21 +294,23 @@ def find_area_image(source: Template, target_rect: UIObjectProxy | tuple[float, 
     :param target_array: 直接传入截图数组，优先级高于target参数
     :return: 查找到了就返回对应的坐标值，否则返回None
     """
-    rect = get_area(target_rect)
-
-    path = ""
-    locality_image = None
+    # 先获取目标图像，避免在get_area中重复截图
     if target_array is not None:
         locality = target_array
     elif target:
         locality = utils.image_toarray(image=target.filepath)
     else:
-        locality = adb_keep_capture ()
+        locality = keep_capture()
+    
+    # 传递图像尺寸给get_area，避免重复截图
+    rect = get_area_with_image(target_rect, locality)
+    
+    path = ""
     locality_image = aircv.crop_image(locality, rect)
     r = source.match_in(locality_image)
     if r:
         r = (r[0] + rect[0], r[1] + rect[1])
-        # log(f"区域{path}里面找到图片{source.filepath}坐标为：{r} 点击次数：{click_times}")
+        log(f"区域{path}里面找到图片{source.filepath}坐标为：{r} 点击次数：{click_times}")
         if click:
             touch_and_wait(r,times=click_times)
         return r
@@ -301,7 +374,7 @@ def find_all_area_image(source: Template, target_rect: UIObjectProxy | tuple[flo
         if target:
             locality = utils.image_toarray(image=target.filepath)
         else:
-            locality = G.DEVICE.snapshot(quality=99)
+            locality = keep_capture()
         locality_image = aircv.crop_image(locality, rect)
         r = source.match_all_in(locality_image)
         if r:
@@ -330,7 +403,7 @@ def is_white_screen(image: Image.Image | Template = None, threshold=0.98) -> boo
     :return: 是否为白屏
     """
     if image is None:
-        image = G.DEVICE.snapshot(quality=99)
+        image = keep_capture()
     elif isinstance(image, Template):
         image = cv2.imread(image.filepath, cv2.IMREAD_COLOR_RGB)
     image = Image.fromarray(image)
@@ -367,7 +440,7 @@ def is_white_area(image: Template = None, target_rect: UIObjectProxy | tuple[flo
     :return: 是否为白屏
     """
     if image is None:
-        image = G.DEVICE.snapshot(quality=99)
+        image = keep_capture()
     elif isinstance(image, Template):
         image = cv2.imread(image.filepath, cv2.IMREAD_COLOR_RGB)
     image = Image.fromarray(image)
@@ -516,9 +589,61 @@ def _parse_features(feature_names: list[str], feature_type: str, features_config
     
     return parsed_features
 
+def find_node_until_end(end_node_names: list[str], timeout: int = 100):
+    """
+    循环查找指定poco节点直到找到任意一个结束节点
+    :param end_node_names: 结束节点名称列表（在feature.toml中定义，找到任意一个就停止）
+    :param timeout: 超时时间（秒），默认100秒
+    :return: True表示找到结束节点，False表示超时失败
+    """
+    from test.黎明堡垒sdk测试.feature import feature_config
+    nodes_config = feature_config.get('node', {})
+    
+    # 开始循环查找
+    start_time = time.time()
+    cycle_index = 0
+    
+    while time.time() - start_time < timeout:
+        cycle_index += 1
+        elapsed_time = time.time() - start_time
+        
+        # 每5次循环打印进度
+        if cycle_index % 5 == 0:
+            log(f"->第{cycle_index}次循环查找节点，已用时: {elapsed_time:.1f}秒<-")
+        
+        # 检查结束节点
+        for node_name in end_node_names:
+            node_config = nodes_config[node_name]  # 格式: ["text", "接受"]
+            find_type = node_config[0]  # 查找类型
+            find_value = node_config[1]  # 查找值
+            
+            # 根据配置查找节点
+            if find_type == "text":
+                if poco(text=find_value).exists():
+                    log(f"✅ 找到结束节点: {node_name}")
+                    return True
+            elif find_type == "resourceId":
+                if poco(resourceId=find_value).exists():
+                    log(f"✅ 找到结束节点: {node_name}")
+                    return True
+            elif find_type == "desc":
+                if poco(desc=find_value).exists():
+                    log(f"✅ 找到结束节点: {node_name}")
+                    return True
+            elif find_type == "name":
+                if poco(name=find_value).exists():
+                    log(f"✅ 找到结束节点: {node_name}")
+                    return True
+        
+        sleep(step_wait_time)
+    
+    # 超时失败
+    log(f"❌ 查找节点超时失败，总用时: {timeout}秒")
+    assert_true(False, f"在{timeout}秒内未找到任何结束节点{end_node_names}")
+    return False
 
 def find_feature_until_end(end_feature_names: list[str], feature_names: list[str], 
-                          timeout: int = 600):
+                          timeout: int = 100, click=True):
     """
     读取feature.py文件，循环查找指定特征直到找到任意一个结束特征
     :param end_feature_names: 结束特征名称列表（在feature.py中定义，找到任意一个就停止）
@@ -552,14 +677,14 @@ def find_feature_until_end(end_feature_names: list[str], feature_names: list[str
         # 每5次循环或第1次打印进度
         if cycle_index == 1 or cycle_index % 5 == 0:
             log(f"->第{cycle_index}次循环查找，已用时: {elapsed_time:.1f}秒<-")
-        
-        current_screenshot = adb_keep_capture ()
+            
+        current_screenshot = keep_capture ()
         
         # 检查结束特征
         for end_feature in end_features:
             if find_area_image(end_feature['template'], 
                              target_rect=end_feature['target_rect'], 
-                             click=False,
+                             click=click,
                              target_array=current_screenshot):
                 log(f"✅ 找到结束特征: {end_feature['description']} (第{cycle_index}次循环)")
                 return True
@@ -582,7 +707,7 @@ def find_feature_until_end(end_feature_names: list[str], feature_names: list[str
     
     if DEBUG_ON:
         # 保存失败时的截图
-        screenshot = adb_keep_capture ()
+        screenshot = keep_capture ()
         screenshot_path = save_image(screenshot, f"find_feature_timeout_{end_feature_names[0]}")
         log(f"超时失败截图已保存: {screenshot_path}")
     
@@ -593,10 +718,11 @@ def find_feature_until_end(end_feature_names: list[str], feature_names: list[str
     
     assert_true(False, error_msg)
     return False
+
 if __name__ == "__main__":
     # for p1 in Path(config.get_temp_dir()).iterdir():
     #     print(f"{p1}: {is_white_screen(Template(p1))}")
-    # find_area_image(DogTemplate(r"tpl1744091478418.png"), target_rect=(0.7, 0.2, 1, 0.4), timeout=1)
+    # find_area_image(DogTemplate(r"tpl1753362480735.png"), target_rect=(0, 0, 1, 1), target=DogTemplate(r"find_feature_until_end_101753872245.6101499.png"))
     # drag_to(DogTemplate(r"tpl1745390496173.png"), DogTemplate(r"tpl1745390507116.png", target_pos=6),
-    #         target_rect=get_vertical_rect(0.5))
+    #         target_rect=get_vertical_rect(0.5))    
     pass

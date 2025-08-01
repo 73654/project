@@ -25,7 +25,7 @@ class IOS17HigherAutomation:
             'ios', 'runwda',
             f'--bundleid={self.wda_package_name}',
             f'--testrunnerbundleid={self.wda_package_name}',
-            '--xctestconfig=WebDriverAgentRunner.xctest'
+            '--xctestconfig=webdriveragentrunner.xctrunner'
         ]
         subprocess.Popen(run_wda_command)
         time.sleep(6)
@@ -88,4 +88,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    pass

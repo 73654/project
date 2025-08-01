@@ -3,6 +3,7 @@ from airtest.core.assertions import assert_true
 
 from common import dog
 from common.ui import DeviceType, step_wait_time, get_timeout_cycle, is_white_screen, current_device_type
+from common.utils import save_image
 
 
 class BasePage(object):
@@ -33,3 +34,16 @@ class BasePage(object):
     def home(cls):
         with dog.step("按home键返回主页面"):
             home()
+    
+    @classmethod
+    def take_step_screenshot(cls, step_name):
+        import allure
+        screenshot_path = save_image(prefix=f"{cls.page_name}-{step_name}_")
+        
+        # 将截图添加到Allure报告，使用简洁的步骤名称
+        with open(screenshot_path, "rb") as image_file:
+            allure.attach(
+                image_file.read(),
+                name=step_name,  # 只使用步骤名称，不包含页面名称
+                attachment_type=allure.attachment_type.PNG
+            )
