@@ -1,2 +1,5 @@
 [user]
 "芝士" = "ou_d6cb92a022cba23999efded9fb0d4b18"
+
+[feishu]
+bot_url = "https://open.feishu.cn/open-apis/bot/v2/hook/9cc0b25a-a2eb-4629-9d47-55c426192434"

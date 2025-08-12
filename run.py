@@ -1,11 +1,4 @@
-#!/usr/bin/env python3.12
-# -*- coding: utf-8 -*-
-# -------------------------------------------------------------------------
-# Project: dogdog
-# Author: songjianfeng
-# Date: 2025/2/7 14:37
-# Description: 运行测试用例
-# -------------------------------------------------------------------------
+
 import argparse
 import math
 import os
@@ -43,24 +36,27 @@ local_run = not platform.system() == 'Linux'
 cmd_run = 'PYCHARM_HOSTED' not in os.environ
 
 
-def run_test(tests: str = '', m='', k=''):
+def run_test(tests: str = '', m='', k='', package_name=''):
     """
     执行pytest命令，生成allure测试结果
     :param tests: 指定测试用例、模块、类等
     :param m: pytest -m参数，指定marker
     :param k: pytest -k参数，指定用例名、类名等
+    :param package_name: 应用包名，不设置则使用默认包名
     """
     
     if m:
         m = f'-m "{m}"'
     if k:
         k = f'-k "{k}"'
+    if package_name:
+        package_name = f'--package-name="{package_name}"'
 
     # 删除之前的测试结果目录，保证结果干净
     shutil.rmtree(results_dir, ignore_errors=True)
 
     # 执行pytest命令，生成allure原始结果
-    os.system(f"pytest {tests} {m} {k} -c {pyconfig_file} -s -q --alluredir={results_dir} --clean-alluredir")
+    os.system(f"pytest {tests} {m} {k} {package_name} -c {pyconfig_file} -s -q --alluredir={results_dir} --clean-alluredir")
 
 
 def gen_report():
@@ -185,6 +181,7 @@ def send_notification(groups=None):
 
     metric = get_metric_data()
 
+    # 直接使用config.read_config获取报告配置
     param = config.read_config(config.CARD_CONFIG).get("report")
     var = param["card"]["data"]["template_variable"]
     var["result"] = metric["ratio"] == "100%" and "<font color='green'>成功</font>" or "<font color='red'>失败</font>"
@@ -194,18 +191,26 @@ def send_notification(groups=None):
     var.update(get_metric_data())
     # 发送通知
     for group in groups:
-        a = requests.post(config.FEISHU_BOT.format(group), json=param)
+        # 从user.toml获取飞书机器人URL，如果没有则使用默认值
+        try:
+            from common.utils import load_toml_config
+            user_config = load_toml_config(os.path.join(root_dir, 'config', 'user.toml'))
+            feishu_bot_url = user_config.get('feishu', {}).get('bot_url', config.FEISHU_BOT)
+        except:
+            feishu_bot_url = config.FEISHU_BOT
+        
+        a = requests.post(feishu_bot_url.format(group), json=param)
         log(a.text)
 
 
 
 
 
-def run(tests='', m='', k='', notice=''):
+def run(tests='', m='', k='', notice='', package_name=''):
     """
     测试主流程：执行用例、生成环境、生成报告、推送通知、打开报告
     """
-    run_test(tests, m, k)
+    run_test(tests, m, k, package_name)
     set_environment()
 
     gen_report()
@@ -213,7 +218,7 @@ def run(tests='', m='', k='', notice=''):
     open_report()
 
 
-def main(tests='', m='', k='', notice=''):
+def main(tests='', m='', k='', notice='', package_name=''):
     """
     命令行参数解析与主控入口
     """
@@ -227,6 +232,7 @@ def main(tests='', m='', k='', notice=''):
                             help='同pytest -m参数，同一个组用逗号分隔，解析为or，不同组用空格分隔，解析为and。"1,2 3,4"解析为(1 or 2) and (3 or 4)')
         parser.add_argument('-k', type=str, default='', help='同pytest -k参数')
         parser.add_argument('-notice', type=str, default=None, help='飞书通知群id,多个群用逗号分隔')
+        parser.add_argument('--package-name', type=str, default='com.lmbl.im30.cn', help='应用包名，不设置则使用默认包名')
         args = parser.parse_args()
     else:
         args = Args()
@@ -234,6 +240,7 @@ def main(tests='', m='', k='', notice=''):
         args.m = m
         args.k = k
         args.notice = notice
+        args.package_name = package_name
 
     if args.m:
         # Jenkins多个标记是通过逗号分隔传进来的，转化一下
@@ -242,10 +249,10 @@ def main(tests='', m='', k='', notice=''):
             temp.append(f"({' or '.join(s.split(','))})")
         args.m = ' and '.join(temp)
 
-    log(f"请求参数为：{args.tests} {args.m} {args.k}")
-    run(args.tests, args.m, args.k, args.notice)
+    log(f"请求参数为：{args.tests} {args.m} {args.k} {args.package_name}")
+    run(args.tests, args.m, args.k, args.notice, args.package_name)
 
 
 if __name__ == '__main__':
     # test/tests/test_sdk.py::TestCompanyA::test_0006 指定跑单个用例
-    main(tests='test/黎明堡垒sdk测试/test_sdk.py')
+    main(tests='test/黎明堡垒sdk测试/test_sdk.py',package_name='com.lmbl.im30.cn')

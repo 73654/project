@@ -1,17 +1,6 @@
-# -------------------------------------------------------------------------
-# Project: dogdog-ui
-# Author: songjianfeng
-# Date: 2025/3/28 14:25
-# Description:
-# -------------------------------------------------------------------------
+
 import os
-import sys
 import time
-# 添加项目根目录到 Python 路径
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
 import cv2
 import numpy as np
 from PIL import Image
@@ -75,24 +64,25 @@ def touch_and_wait(pos, wait: float = step_wait_time, times=1, **kwargs):
     touch(pos, times=times, **kwargs)
     sleep(wait)
 
+def bgr_to_rgb(screenshot):
+    if isinstance(screenshot, np.ndarray) and len(screenshot.shape) == 3 and screenshot.shape[2] >= 3:
+        screenshot = screenshot.copy()
+        screenshot[:, :, [0, 2]] = screenshot[:, :, [2, 0]]
+    else:
+        pass
+    return screenshot
+
 def keep_capture():
     """
     获取设备截图，支持Android和iOS设备
     """
     try:
         if current_device_type == DeviceType.IOS:
-            # iOS设备截图
             screenshot = device.snapshot()
-            # 修复iOS颜色反向问题 - 交换红蓝通道(BGR→RGB)
-            import numpy as np
-            if isinstance(screenshot, np.ndarray) and len(screenshot.shape) == 3 and screenshot.shape[2] >= 3:
-                # 交换红蓝通道：BGR → RGB
-                screenshot = screenshot.copy()
-                screenshot[:, :, [0, 2]] = screenshot[:, :, [2, 0]]
-            return screenshot
         else:
-            # Android设备截图
-            return G.DEVICE.snapshot(quality=99)
+            screenshot = G.DEVICE.snapshot(quality=99)
+        screenshot = bgr_to_rgb(screenshot)
+        return screenshot
     except Exception as e:
         log(f"截图失败: {e}")
         raise e
@@ -175,21 +165,12 @@ def get_area(target_rect: UIObjectProxy | tuple[float, float, float, float] = No
     target_rect: 屏幕截图区域(x0,y0, x1,y1) 这个是相对坐标在0~1之间
     return: 返回绝对坐标值[x0,y0, x1,y1]
     """
-
-    w, h = poco.get_screen_size()
-    
-    # iOS设备屏幕旋转时，需要调整宽高
-    if current_device_type == DeviceType.IOS:
-        # 获取实际截图尺寸来验证方向
-        try:
-            screenshot = keep_capture()
-            actual_h, actual_w = screenshot.shape[:2]
-            # 如果截图宽高与poco宽高相反，说明屏幕已旋转
-            if (actual_w == h and actual_h == w) or (actual_w == w and actual_h == h):
-                # 使用实际截图尺寸
-                w, h = actual_w, actual_h
-        except:
-            pass
+    try:
+        screenshot = keep_capture()
+        h, w = screenshot.shape[:2]
+    except Exception as e:
+        log(f"获取截图失败，使用poco尺寸: {e}")
+        w, h = poco.get_screen_size()
     
     if isinstance(target_rect, UIObjectProxy):
         view_w, view_h = target_rect.get_size()  # 这个是相对值
@@ -214,15 +195,10 @@ def get_area_with_image(target_rect: UIObjectProxy | tuple[float, float, float, 
     :param image_array: 图像数组，用于获取实际尺寸
     :return: 返回绝对坐标值[x0,y0, x1,y1]
     """
-    w, h = poco.get_screen_size()
-    
-    # iOS设备屏幕旋转时，使用传入的图像尺寸
-    if current_device_type == DeviceType.IOS and image_array is not None:
-        actual_h, actual_w = image_array.shape[:2]
-        # 如果截图宽高与poco宽高相反，说明屏幕已旋转
-        if (actual_w == h and actual_h == w) or (actual_w == w and actual_h == h):
-            # 使用实际截图尺寸
-            w, h = actual_w, actual_h
+    if image_array is not None:
+        h, w = image_array.shape[:2]
+    else:
+        w, h = poco.get_screen_size()
     
     if isinstance(target_rect, UIObjectProxy):
         view_w, view_h = target_rect.get_size()  # 这个是相对值
@@ -589,15 +565,34 @@ def _parse_features(feature_names: list[str], feature_type: str, features_config
     
     return parsed_features
 
-def find_node_until_end(end_node_names: list[str], timeout: int = 100):
+def find_node_until_end(end_node_names: list[str], timeout: int = 500):
     """
     循环查找指定poco节点直到找到任意一个结束节点
     :param end_node_names: 结束节点名称列表（在feature.toml中定义，找到任意一个就停止）
     :param timeout: 超时时间（秒），默认100秒
     :return: True表示找到结束节点，False表示超时失败
     """
-    from test.黎明堡垒sdk测试.feature import feature_config
-    nodes_config = feature_config.get('node', {})
+    # 直接加载feature.toml配置
+    try:
+        from common.utils import load_toml_config
+        import os.path
+        
+        # 构建feature.toml文件路径
+        feature_config_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+            'test', '黎明堡垒sdk测试', 'feature.toml'
+        )
+        
+        feature_config = load_toml_config(feature_config_path)
+        nodes_config = feature_config.get('node', {})
+        
+        if not nodes_config:
+            assert_true(False, "节点配置为空或未找到node配置项")
+            return False
+            
+    except Exception as e:
+        assert_true(False, f"无法加载特征配置: {e}")
+        return False
     
     # 开始循环查找
     start_time = time.time()
@@ -643,19 +638,28 @@ def find_node_until_end(end_node_names: list[str], timeout: int = 100):
     return False
 
 def find_feature_until_end(end_feature_names: list[str], feature_names: list[str], 
-                          timeout: int = 100, click=True):
+                          timeout: int = 500, click=True):
     """
-    读取feature.py文件，循环查找指定特征直到找到任意一个结束特征
-    :param end_feature_names: 结束特征名称列表（在feature.py中定义，找到任意一个就停止）
-    :param feature_names: 循环查找的特征名称列表（在feature.py中定义）
+    读取feature.toml文件，循环查找指定特征直到找到任意一个结束特征
+    :param end_feature_names: 结束特征名称列表（在feature.toml中定义，找到任意一个就停止）
+    :param feature_names: 循环查找的特征名称列表（在feature.toml中定义）
     :param timeout: 超时时间（秒），默认600秒
     :return: True表示找到结束特征，False表示超时失败
     """
-    # 导入feature.py配置
     try:
-        from test.黎明堡垒sdk测试.feature import features
-    except ImportError as e:
-        assert_true(False, f"无法导入特征配置: {e}")
+        from common.utils import load_toml_config
+        
+        import os.path
+        
+        # 构建feature.toml文件路径
+        feature_config_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+            'test', '黎明堡垒sdk测试', 'feature.toml'
+        )
+        feature_config = load_toml_config(feature_config_path)
+        features = feature_config.get('feature', {})
+    except Exception as e:
+        assert_true(False, f"无法加载特征配置: {e}")
         return False
     
     # 解析特征

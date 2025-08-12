@@ -1,15 +1,7 @@
-# -------------------------------------------------------------------------
-# Project: dogdog
-# Author: songjianfeng
-# Date: 2025/1/24 16:13
-# Description: 封装一些写测试用例的插件进来
-# 1、pytest_check
-# 2、allure
-# -------------------------------------------------------------------------
 import sys
 
-from common.dog.d_allure import dog_allure
-from common.dog.d_pytest_check import dog_check
+from common.allure.allure import dog_allure
+from common.allure.pytest_check import dog_check
 
 for attr_name in dog_allure.__all__:
     setattr(sys.modules[__name__], attr_name, getattr(dog_allure, attr_name))

@@ -47,7 +47,7 @@ class __ConfigManage(object):
         获取测试图片目录的绝对路径
         :return: 测试图片目录绝对路径
         """
-        return os.path.join(cls.get_project_dir(), cls.TEST_DIR_NAME, 'images')
+        return os.path.join(cls.get_project_dir(), 'images')
 
     @classmethod
     def get_temp_dir(cls):

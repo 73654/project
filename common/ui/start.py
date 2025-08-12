@@ -19,7 +19,23 @@ class DeviceType(Enum):
     IOS = "ios"
 
 # 各平台包名映射
-package_name = {DeviceType.Android: "com.lmbl.im30.cn", DeviceType.IOS: "com.more.lastfortress.appstore"}
+def get_package_name():
+    import pytest
+    try:
+        config = pytest.get_config()
+        custom_package = config.getoption("--package-name")
+        if custom_package:
+            return {DeviceType.Android: custom_package, DeviceType.IOS: custom_package}
+    except (RuntimeError, AttributeError):
+        pass
+    
+    # 使用默认包名
+    return {
+        DeviceType.Android: "com.lmbl.im30.cn",
+        DeviceType.IOS: "com.more.lastfortress.appstore"
+    }
+
+package_name = get_package_name()
 
 current_device_id = None  # 当前设备ID
 

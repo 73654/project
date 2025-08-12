@@ -1,20 +1,13 @@
-# -------------------------------------------------------------------------
-# Project: dogdog-ui
-# Author: songjianfeng
-# Date: 2025/3/25 9:53
-# Description:
-# -------------------------------------------------------------------------
 
-
-from common import dog
+from common import allure
 from common.ui import *
 from pages.base import PageLogin, PageNewGame
+import pytest
 
-
-@dog.parent_suite("sdk测试")
-@dog.suite("新手引导功能测试")
-@dog.feature("新手引导")
-class TestNewGame:
+@allure.parent_suite("sdk测试")
+@allure.suite("新手引导功能测试")
+@allure.feature("新手引导")
+class Test_SDK:
 
     @staticmethod
     def setup_method():
@@ -26,8 +19,9 @@ class TestNewGame:
         pass
 
 
-    @dog.title("新手引导")
+    @allure.title("新手引导")
+    @pytest.mark.login
     def test_login_page(self):
-        PageLogin.login()
+        # PageLogin.login()
         PageNewGame.zh_new_game()
         

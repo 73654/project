@@ -1,7 +1,7 @@
 from airtest.core.api import home, keyevent, sleep, swipe
 from airtest.core.assertions import assert_true
 
-from common import dog
+from common import allure
 from common.ui import DeviceType, step_wait_time, get_timeout_cycle, is_white_screen, current_device_type
 from common.utils import save_image
 
@@ -21,7 +21,7 @@ class BasePage(object):
 
     @classmethod
     def back(cls):
-        with dog.step("返回上一页"):
+        with allure.step("返回上一页"):
             if current_device_type == DeviceType.Android:
                 keyevent("BACK")
 
@@ -32,7 +32,7 @@ class BasePage(object):
             sleep(step_wait_time)
     @classmethod
     def home(cls):
-        with dog.step("按home键返回主页面"):
+        with allure.step("按home键返回主页面"):
             home()
     
     @classmethod

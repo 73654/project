@@ -1,9 +1,4 @@
-# -------------------------------------------------------------------------
-# Project: dogdog-ui
-# Author: songjianfeng
-# Date: 2025/3/27 17:50
-# Description:
-# -------------------------------------------------------------------------
+
 import os
 from pathlib import Path
 
@@ -100,9 +95,9 @@ def find_similar_images(ios_dir, android_dir):
 # 主程序入口，演示如何调用批量重命名和相似图片查找
 if __name__ == "__main__":
     # 定义 images 文件夹路径
-    IMAGES_DIR = Path("d:/code/python/dogdog-ui/test/images")
+    IMAGES_DIR = Path("d:/LFToolss/dogdog-ui/images")
     _android_dir = IMAGES_DIR / "android"
     _ios_dir = IMAGES_DIR / "ios"
-    _file_path = "d:/code/python/dogdog-ui/pages/base/page_share.py"
+    _file_path = "d:/LFToolss/dogdog-ui/pages/base/page_share.py"
     rename_images_and_update_code(_file_path, _ios_dir)
     # find_similar_images(_ios_dir, _android_dir)

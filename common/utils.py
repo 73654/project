@@ -107,63 +107,6 @@ def step_screenshot(step_name=None):
     return decorator
 
 
-def step_screenshot_each(step_name=None):
-    """
-    装饰器：在每个dog.step步骤后自动截图
-    :param step_name: 步骤名称，如果不提供则使用函数名
-    """
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            # 获取基础步骤名称
-            if step_name:
-                base_name = step_name
-            else:
-                # 尝试从类中获取page_name
-                if args and hasattr(args[0], 'page_name'):
-                    base_name = f"{args[0].page_name}-{func.__name__}"
-                else:
-                    base_name = func.__name__
-            
-            # 重写dog.step以在每个步骤后截图
-            original_step = dog.step
-            
-            def step_with_screenshot(step_name):
-                def step_decorator(func):
-                    def step_wrapper(*args, **kwargs):
-                        result = func(*args, **kwargs)
-                        # 每个步骤完成后截图
-                        try:
-                            import allure
-                            screenshot_path = save_image(prefix=f"{base_name}-{step_name}_")
-                            
-                            # 将截图添加到Allure报告
-                            with open(screenshot_path, "rb") as image_file:
-                                allure.attach(
-                                    image_file.read(),
-                                    name=f"{base_name}-{step_name}",
-                                    attachment_type=allure.attachment_type.PNG
-                                )
-                            log(f"📸 步骤截图已添加到Allure报告: {base_name}-{step_name}")
-                        except Exception as e:
-                            log(f"❌ 截图失败: {e}")
-                        return result
-                    return step_wrapper
-                return step_decorator
-            
-            # 临时替换dog.step
-            dog.step = step_with_screenshot
-            
-            # 执行原函数
-            result = func(*args, **kwargs)
-            
-            # 恢复原始的dog.step
-            dog.step = original_step
-            
-            return result
-        return wrapper
-    return decorator
-
-
 def execute_command(command: str):
     """
     执行命令，并获取返回值
@@ -275,6 +218,37 @@ def calculate_white_percentage_parts(image: Image, parts: int, white_threshold: 
         percentages.append(calculate_white_percentage(part, white_threshold))
 
     return percentages
+
+
+def load_toml_config(file_path: str) -> dict:
+    """
+    通用的toml配置文件读取方法
+    
+    Args:
+        file_path: toml文件路径（必需参数）
+        
+    Returns:
+        dict: 配置内容字典
+        
+    Examples:
+        # 指定toml文件路径
+        features = load_toml_config("path/to/config.toml")
+    """
+    import toml
+    
+    try:
+        # 确保文件存在
+        if not os.path.exists(file_path):
+            log(f"❌ 配置文件不存在: {file_path}")
+            return {}
+        
+        # 读取toml文件
+        config_data = toml.load(file_path)
+        return config_data
+        
+    except Exception as e:
+        log(f"❌ 读取配置文件失败: {file_path}, 错误: {str(e)}")
+        return {}
 
 
 if __name__ == "__main__":

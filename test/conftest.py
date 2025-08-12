@@ -5,11 +5,21 @@ import time
 import allure
 import subprocess
 from airtest.core.api import home, keyevent, sleep, swipe
-from common import dog
+from common import allure
 from common.ui import step_wait_time
 from airtest.core.helper import log
 from run import results_dir,reports_dir
+
+# 全局变量定义
 allure_raw_dir=results_dir
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--package-name",
+        action="store",
+        default="",
+        help="应用包名，不设置则使用默认包名"
+    )
 
 def adb_screenshot(screenshot_path):
     screenshot_dir = os.path.dirname(screenshot_path)
